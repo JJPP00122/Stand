@@ -21,7 +21,7 @@ devid = {{
 }
 
 sxid = {{
-    playeridx = "RhymeBear"
+    playeridx = "RhymeBear" --测试
 }, {
     playeridx = "hinrcituqzQZ"
 }, {
@@ -29,19 +29,19 @@ sxid = {{
 }, {
     playeridx = "chen_you123"
 }, {
-    playeridx = "Last100million"
+    playeridx = "Last100million" --]
+}, {                             --]
+    playeridx = "FallenMountain" --]
 }, {
-    playeridx = "FallenMountain"
-}, {
-    playeridx = "Lil_Windows_XP"
-}, {
-    playeridx = "Dreams_dog"
+    playeridx = "Lil_Windows_XP" --]
+}, {                             --]
+    playeridx = "Dreams_dog"     --]
 }, {
     playeridx = "bilal22520"
 }, {
-    playeridx = "Mag7777V"
-}, {
-    playeridx = "Magicswordstar"
+    playeridx = "Mag7777V"       --]
+}, {                             --]
+    playeridx = "Magicswordstar" --]
 }, {
     playeridx = "xyzkzero"
 }, {
@@ -49,19 +49,19 @@ sxid = {{
 }, {
     playeridx = "jinxCore"
 }, {
-    playeridx = "yangtuoao"
-}, {
-    playeridx = "Gods_daxiong"
+    playeridx = "yangtuoao"    --]
+}, {                           --]
+    playeridx = "Gods_daxiong" --]
 }, {
     playeridx = "-ZackFair-"
 }, {
-    playeridx = "Msinc"
-}, {
-    playeridx = "Msincer"
+    playeridx = "Msinc"   --]
+}, {                      --]
+    playeridx = "Msincer" --]
 }, {
     playeridx = "WXH_666"
 }, {
-    playeridx = "shanheya"
+    playeridx = "xusdsd11"
 }, {
     playeridx = "XiaoYuXin_qwq"
 }, {
@@ -72,7 +72,15 @@ sxid = {{
     playeridx = "zxzppq"
 }, {
     playeridx = "John-Wick-AC"
-},
+}, {
+    playeridx = "yjsdj8bag"
+}, {
+    playeridx = "Doll0v0"   --]
+}, {                        --]
+    playeridx = "Herykcz"   --]
+}, {                        --]
+    playeridx = "sshanheya" --]
+}, 
 }
 
 spid = {{
@@ -588,7 +596,7 @@ spid = {{
 }, {
     playerid = "1ts_Karma"
 }, {
-    playerid = "Tmiiqq"
+    playerid = "DNMDBABY"
 }, {
     playerid = "HanserAngel"
 }, {
@@ -912,7 +920,7 @@ spid = {{
 }, {
     playerid = "aswqam"
 }, {
-    playerid = "hunpoyooo"
+    playerid = "mozheng114514"
 }, {
     playerid = "myrdok87"
 }, {
@@ -1498,7 +1506,7 @@ spid = {{
 }, {
     playerid = "yangtuoao"
 }, {
-    playerid = "Yistaeliy"
+    playerid = "shateit"
 }, {
     playerid = "Liuyunxi01"
 }, {
@@ -1604,7 +1612,7 @@ spid = {{
 }, {
     playerid = "soo-cat"
 }, {
-    playerid = "Aa151633"
+    playerid = "Strikese"
 }, {
     playerid = "GSD-Queen6"
 }, {
@@ -1639,8 +1647,6 @@ spid = {{
     playerid = "xiao_yyy6"
 }, {
     playerid = "tool236"
-}, {
-    playerid = "Herykcz"
 }, {
     playerid = "fhwnbkls666"
 }, {
@@ -1686,7 +1692,7 @@ spid = {{
 }, {
     playerid = "CNSeven"
 }, {
-    playerid = "wananxiaoguang"
+    playerid = "WanAnXiaoGuang"
 }, {
     playerid = "Komorebi1219"
 }, {
@@ -1707,6 +1713,150 @@ spid = {{
     playerid = "lmqwit"
 }, {
     playerid = "woshishabiSSS"
+}, {
+    playerid = "pan1919X"
+}, {
+    playerid = "xiaoyaoxiaoqi"
+}, {
+    playerid = "coke1471"
+}, {
+    playerid = "LIANGFAZHI"
+}, {
+    playerid = "qdstwk"
+}, {
+    playerid = "AfterJesus"
+}, {
+    playerid = "lmqwit"
+}, {
+    playerid = "SL198198"
+}, {
+    playerid = "shanghengyu"
+}, {
+    playerid = "Ez2uuG"
+}, {
+    playerid = "LSP-KunK"
+}, {
+    playerid = "zxnb05"
+}, {
+    playerid = "YanGtaoNB"
+}, {
+    playerid = "TianLin0908"
+}, {
+    playerid = "vansmano"
+}, {
+    playerid = "Chiefowo"
+}, {
+    playerid = "c2332618"
+}, {
+    playerid = "kingpo030715"
+}, {
+    playerid = "wyy798002"
+}, {
+    playerid = "Guruodi1"
+}, {
+    playerid = "First_encounters"
+}, {
+    playerid = "___JVKE___"
+}, {
+    playerid = "XIaohe_1_1"
+}, {
+    playerid = "Xiaomao_m"
+}, {
+    playerid = "zzh20040212"
+}, {
+    playerid = "Excyses_J"
+}, {
+    playerid = "YAK820"
+}, {
+    playerid = "qqqsna"
+}, {
+    playerid = "1234gta5_"
+}, {
+    playerid = "Admin-Stand"
+}, {
+    playerid = "XiProNB"
+}, {
+    playerid = "Q_w_1ko"
+}, {
+    playerid = "On1_Tapp"
+}, {
+    playerid = "Tovh-0520"
+}, {
+    playerid = "Lrop994"
+}, {
+    playerid = "liang_6957"
+}, {
+    playerid = "X-Lxalingyu"
+}, {
+    playerid = "FallSakura0"
+}, {
+    playerid = "ZXH0292"
+}, {
+    playerid = "Excyses_J"
+}, {
+    playerid = "novelty0018"
+}, {
+    playerid = "iooooe"
+}, {
+    playerid = "15kunkun"
+}, {
+    playerid = "qqqsna"
+}, {
+    playerid = "xiaochengzi3311"
+}, {
+    playerid = "XiaoxinVIP"
+}, {
+    playerid = "Ares-ROG"
+}, {
+    playerid = "new541788vest"
+}, {
+    playerid = "tqd9cha6"
+}, {
+    playerid = "damaodm"
+}, {
+    playerid = "kucha-520"
+}, {
+    playerid = "SiZhi_99"
+}, {
+    playerid = "wyt666666"
+}, {
+    playerid = "100by3"
+}, {
+    playerid = "LJH6626"
+}, {
+    playerid = "su123mou"
+}, {
+    playerid = "WangQuanFuGui_01"
+}, {
+    playerid = "EX3690"
+}, {
+    playerid = "luochenhongyan"
+}, {
+    playerid = "xusdsd11"
+}, {
+    playerid = "LeiYu66666"
+}, {
+    playerid = "caomei-666"
+}, {
+    playerid = "xiao-lin666"
+}, {
+    playerid = "GOD______NESS"
+}, {
+    playerid = "awasde1314"
+}, {
+    playerid = "NeverDieA"
+}, {
+    playerid = "Dialog04_-"
+}, {
+    playerid = "TizzTcKEe3"
+}, {
+    playerid = "XIAOLIN1022"
+}, {
+    playerid = "xiaobai_0714"
+}, {
+    playerid = "weiyangxiarong"
+}, {
+    playerid = "long10011"
 }, {
     playerid = ""
 },

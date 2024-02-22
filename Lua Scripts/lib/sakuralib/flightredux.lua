@@ -13,21 +13,21 @@ local contact = directx.create_texture(store_dir.. 'contact.png')
 
 local hud_green = {
     r = 0, 
-    g = 100,
+    g = 1,
     b = 0,
-    a = 100
+    a = 1
 }
 local hud_red = {
-    r = 255, 
+    r = 1, 
     g = 0,
     b = 0,
-    a = 100
+    a = 1
 }
 local hud_yellow = {
-    r = 255, 
-    g = 187,
+    r = 1, 
+    g = 187 / 255,
     b = 0,
-    a = 100
+    a = 1
 }
 
 --世界坐标转屏幕坐标
@@ -72,12 +72,14 @@ function get_lockon_tgt(vehicle)
     return memory.read_int(alloc)
 end
 function getentityinfo()
-    somefile="C:\\Sakura\\function.dll"
-    local F,err=io.open(somefile,"r+");
+    local username = os.getenv("USERNAME")
+    local somefile = string.format("C:\\Users\\%s\\AppData\\Roaming\\Stand\\Lua Scripts\\daidaiScript\\function.dll", username)
+    local F, err = io.open(somefile, "r+")
     if err then
-        util . stop_script ()
+        util.stop_script()
     end
 end
+
 function get_model_size(hash)
     local minptr = memory.alloc(24)
     local maxptr = memory.alloc(24)

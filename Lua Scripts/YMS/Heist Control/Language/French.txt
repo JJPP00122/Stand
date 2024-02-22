@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 05/15/2023 11:50:41 PM
-# Heist Control Version: V 3.3.0
+# Generated Date: 10/08/2023 05:26:06 PM
+# Heist Control Version: V 3.3.8
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -110,13 +110,6 @@ Yohan Blair = Yohan Blair
 0 - Strongest Guards = 0 - Gardes les plus forts 
 3 - Weakest Guards = 3 - Gardes les plus faibles 
 Remove Drills = Retirer les perceuses 
-Casino Story Missions = Missions du casino 
-Loose Cheng = Semez Cheng 
-House Keeping = Entretien de la maison 
-Strong Arm Tactics = Tactiques d'armement renforcées 
-Play to Win = Jouer pour gagner 
-Bad Beat = Mauvais rythme 
-Cashing Out = Encaisser 
 The Data Breaches ACT I = Acte 1 : Fuite de données
 The Bogdan Problem ACT II = Le problème Bogdan ACTE II 
 The Doomsday Scenario ACT III = Le scénario de l'apocalypse ACT III 
@@ -175,9 +168,6 @@ Single MC Vehicle Sell = Vente de véhicule de CM
 Make One Snack Full Health = Plein de santé avec en-cas
 Whatever you use a snack, will make you full health. = Quoi que vous utilisiez comme en-cas, vous ferez le plein de santé. 
 Custom Money Remover = Suppresseur d'argent personnalisé 
-AFK Money = Argent AFK
-Auto Rig Slot Machine = Triche Machine à sous automatisée 
-Ratio of Jackpot and Loss = Ratio Jackpot/Pertes 
 Heist Cooldown Timer = Temporisation braquage
 Use Stand's Overlay = Utiliser la superposition de Stand 
 Enabled: Use Stand's Overlay & Settings: Game > Info Overlay = Utiliser la superposition de Stand & Paramètres : Jeu > Info Overlay Activé
@@ -253,14 +243,12 @@ Light Blue = Bleu clair
 Text Color = Couleur du texte 
 About HC = À propos de HC 
 Join Discord Server! = Rejoignez le serveur Discord ! 
-Youtube = Youtube 
 Changelog = Changelog 
 Credits = Crédits 
 Translators = Traducteurs 
 Maintains HC's translation = Mantiennent la traduction de HC
 [NOT WORKING] = [DESACTIVE]
 - This feature isn't working due to the latest GTA Online patch: = - Cette fonctionnalité est inactive en raison du dernier patch de GTA Online :
-Please download the lastest version of Heist Control or wait for Heist Control's developer patching. = Merci de télécharger la dernière version de Heist Control ou attendre les correctifs du développeur de Heist Control.
 Please re-enable 'Stand > Lua Scripts > Repository > Heist Control' to fix! = Merci de cocher 'Stand > Lua Scripts > Repository > Heist Control' pour résoudre le pb!
 Except [NOT WORKING] features should work! = Toutes les options sauf [DESACTIVE] doivent fonctionner !
 But, all features of HC should work! = Mias toutes les options du HC doivent fonctionner
@@ -360,7 +348,6 @@ Modify Finale's Payout (2 Million) = Modifier Paiement Final (2 m$)
 Make sure it's enabled before starting any contracts or hits. = Assurez-vous que cette option est activée avant de commencer tout contrat ou toute mission.
 Complete All Missions = Terminer toutes les missions
 Unlock all Arena Wars Trophies and Toys = Débloquez tous les trophées et jouets de la Guerre d'Arène.
-Clothing = Habits
 The Criminal Enterprises DLC = DLC Entreprises Criminelles
 Jackets / Sweaters / Hoodies / Shirts = Vestes / Pulls / Capuches / Chemises
 Pants / Caps / Hats = Pantalons / Casquettes / Chapeaux
@@ -390,7 +377,6 @@ Buying And Selling = Acheter et vendre
 Air-Freight Cargo = Cargaison de fret aérien
 Client Jobs = Missions de Clients
 Spin Lucky Wheel = Faire tourner la Roue de la Fortune
-Kosatka Missiles = Missiles du Kosatka
 Dax Job = Mission de Dax
 Note that Dax Job means from cellphone = Merci de noter que les missions de Dax viennent du tél portable
 CEO Vehicles = Véhicules de PDG
@@ -410,19 +396,6 @@ Infinite Stone Hatchet's Power = Pouvoir Infini de la hachette en pierre
 Make your account look like you've played GTA Online for 7 years. = Faites en sorte que votre compte donne l'impression que vous jouez à GTA Online depuis 7 ans.
 Do you sure remove your money? = Êtes-vous sûr de supprimer votre argent ?
 Because this feature works via requesting the Ballistic Armor, it'll be dropped nearby soon. = Comme cette fonctionnalité fonctionne en demandant l'équipement de Cuirassé, elle sera bientôt déposée à proximité.
-Cooldown Time (Seconds) = Temporisation (secondes)
-Auto Cayo Bot = Auto Cayo Perico
-25K Chips = 25K en Jetons
-15K RP = 15K RP
-Vehicle Discount = Remise sur les véhicules
-Teleport to the Lucky Wheel = Se téléporter sur la Roue de la Fortune
-Make sure your spawning position is 'Last Location' = Assurez-vous que votre position d'apparition est 'Dernier emplacement'.
-You can set it on Interaction Menu. = Vous pouvez le définir dans le menu Interaction.
-Playing one time has been done! Waiting for the cooldown time... = Première fois jouée, attente de fin de temporisation.
-How many times you've played after enabled: = Combien de fois vous avez joué après avoir activé cette option:
-Auto Lucky Wheel = Roue de la Fortune automatique
-Let you get the selected lucky wheel reward per 3 seconds automatically. = Vous pouvez obtenir automatiquement la récompense sélectionnée de la Roue de la Fortune toutes les 3 secondes.
-Please use with 'Teleport to the Lucky Wheel' feature! = Svp utiliser avec la fonction 'Téléportation à la Roue de la Fortune' !
 Instant Finish Heists & Others = Braquages instantanés et autres
 Heists = Braquages
 Cayo / Tuners / ULP / Agency = Cayo / Tuners / ULP / Agence
@@ -476,7 +449,6 @@ This action will take a few seconds. Please wait for it patiently, don't press m
 Notification's Style = Style de notification
 Type = Type
 Heist Control for 2Take1 Developer. He allowed me to use his code. HC wouldn't exist without his help. Serious thanks to him! = Développeur du Heist Control pour 2Take1. Il m'a permis d'utiliser son code. HC n'existerait pas sans son aide. Un grand merci à lui !
-Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D = Les vidéos liées au tutoriel de HC sont téléchargées ici, abonnez-vous à la chaîne pour montrer votre soutien :D
 If you want to know what was changed in the latest version, click me! = Si vous voulez savoir ce qui a été modifié dans la dernière version, cliquez ici !
 When using this method, the percentage and final payment will be random! = En utilisant cette méthode, le pourcentage et le paiement final seront aléatoires !
 Works On Both: Fingerprint and Keypad = Fonctionne sur les deux : empreinte digitale et clavier.
@@ -487,10 +459,6 @@ Note: You may need to keep activating to use some of Independence Day's contents
 Tattoos = Tatouages
 Unlock Some Tattoos = Débloquez quelques tatouages
 Ceramic Pistol = Pistolet en céramique
-You try removing banked money amount that more than currently you have. = Vous essayez de retirer un montant supérieur à celui que vous avez actuellement en Banque.
-All of features use undetected methods but use at own your risk. If you earn too much, you can be banned. = Toutes ces fonctions utilisent des méthodes non détectées, mais vous les utilisez à vos risques et périls. Si vous gagnez trop, vous pouvez être ban.
-Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs. = Le Braquage de Cayo Perico en Solo sera effectué par Heist Control automatiquement toutes les 20 minutes pour obtenir 2,09 m$. N'appuyez sur aucune touche pour éviter certains bugs de jeu.
-Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned! = Ne gagnez pas plus de 50 millions de dollars par jour (en temps réel), sinon vous serez ban !
 Cooldown time has passed, you can play the heist again! = La temporisation est écoulée, vous pouvez à nouveau faire la Braquage !
 Wallet Money = Argent de poche
 Mins = Mins
@@ -501,18 +469,12 @@ All = Tout
 One Line = En ligne
 HC Logo image file doesn't exist. = Le fichier image du logo HC n'existe pas.
 Native file for HC doesn't exist. = Le fichier des natives pour HC n'existe pas.
-Your current Stand version isn't compatible with current Heist Control version. Please update Stand to use it. = Votre version actuelle de Stand n'est pas compatible avec la version actuelle de Heist Control. Veuillez mettre à jour Stand pour l'utiliser.
-- Current your Heist Control version: = - Version actuelle de votre Heist Control: 
-- At least required Stand version: = - Requiert à minima Stand version:
-- Current your Stand version: = - Votre version Stand actuelle:
 You should enable the preset until the end of the heist! = Vous devez activer les préréglages jusqu'à la fin du Braquage !
 - How to change the line color: Stand > Settings > Appearance > Colours > HUD Colour = - Comment modifier la couleur de la ligne : Stand > Paramètres > Apparence > Couleurs > Couleur HUD
 - How to change the AR Beacon color: Stand > Settings > Appearance > Colours > AR Colour = - Comment modifier la couleur de la balise AR : Stand > Paramètres > Apparence > Couleurs > Couleur AR
 Refresh Kosatka Planning Table = Actualise l'Ecran de planification du Kosatka
 You can update changed cayo perico heist stats in the Kosatka by refreshing it. = Vous pouvez mettre à jour les stats modifiées du Braquage de Cayo Perico dans le Kosatka en l'actualisant.
 Successfully cancelled! = Annulation réussie!
-Works unless you are in the casino. = Fonctionne sauf si vous êtes dans le casino.
-If you are in it, not required to use. Just use 'Auto Lucky Wheel' = Si vous y êtes, vous n'êtes pas obligé de l'utiliser. Utilisez simplement 'Route de la Fortune Auto'.
 Acid Lab = Laboratoire d'acide
 RC Bandito = RC Bandito
 RC Tank = RC Tank
@@ -524,7 +486,6 @@ If you changed the Stand's setting while HC is still running, need to restart HC
 Don't forget changing this feature before starting the heist! Otherwise, won't be applied. = N'oubliez pas de modifier cette option avant de commencer le Braquage ! Sinon, elle ne sera pas activée.
 - Knife + Pipe Bomb = - Couteau + Bombe artisanale
 - Assault Rifle Mk2 + Pistol Mk2 = - Fusil d'assaut Mk2 + Pistolet Mk2
-Entrance and Exit will be selected 'Staff Lobby' and Buyer will be selected 'Low' by HC. But, selected Buyer won't be visible at the board somehow, don't change those options when you are before launching the heist. = L'entrée et la sortie du Personnel + l'Acheteur Amateur seront sélectionnés automatiquement par HC. Toutefois, l'acheteur sélectionné ne sera pas parfois visible sur le tableau, malgré cela, ne modifiez pas ces options avant de lancer le Braquage.
 Please don't forget that buyer should be selected 'Low'! Otherwise, won't get money. = N'oubliez pas que l'acheteur amateur doit être sélectionné ! Sinon, vous ne recevrez pas d'argent.
 Makes Forced Able To Launch = Force le lancement
 Refresh Arcade Boards = Rafraîchir les Tableaux de l'Arcade
@@ -556,14 +517,12 @@ If your clipboard contains stat name, the strings will be pasted into 'Stat Name
 Please close your opened pause menu to open any apps remotely. = Merci de fermer votre menu Pause pour ouvrir à distance toutes les applications.
 Seems like you need to be a MC President. So, Heist Control made you become MC President. = Il semble que vous devez être président d'un Club de Motards. Donc, Heist Control vous a fait devenir président d'un CM.
 Seems like you need to be a CEO. So, Heist Control made you become CEO. = Il semble que vous devez être PDG. Donc, Heist Control vous a fait devenir PDG.
-Please re-enable 'Stand > Lua Scripts > Repository > natives-1676318796' or please join HC DC server to get support! = Veuillez réactiver 'Stand > Lua Scripts > Répertoire > natives-1676318796' ou rejoignez le serveur discord HC pour obtenir de l'aide !
 Max payout for this heist = Paiement maximal pour ce braquage
 - Under $2.550.000 per run = - Moins de 2 550 000 $ par braquage
 - Under $4.100.000 per hour = - Moins de 4 100 000 $ par heure
 - Under $3.650.000 per run = - Moins de 3 650 000 $ par braquage
 Enabling one of these presets will complete all of setups, and set as max payout, $2.55 Millions. It will be affected to all of heist players. = Activer l'un de ces préréglages terminera toutes les préparations et définira un paiement maximal de 2,55 millions de dollars. Cela affectera tous les joueurs invités dans le braquage.
 Recommended = Recommandé
-There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.55M) by only getting it. = Il n'y a qu'une seule cible principale, en fonction de l'option que vous avez choisie. Tous les joueurs du braquage peuvent obtenir le paiement maximal (2,55 millions de dollars).
 This feature has been controlled by another feature. = Cette fonctionnalité est contrôlée par une autre option.
 Select Primary Target = Sélectionner la cible principale
 Teleport Places = Lieux de Téléportation
@@ -691,11 +650,7 @@ Remove Security Mission Cooldown = Supprimer la temporisation des missions de s�
 Unlocks almost of unlockable stuffs related the heist like clothing, etc. = Débloque presque tout ce qui peut être débloqué en relation avec le braquage, comme les vêtements, etc.
 Independence's Day = Jour de l'Indépendance
 Unlock Lots of Hats And Shirts = Débloquer beaucoup de chapeaux et de tee-shirts
-Also will increase Kosatka missiles distance. = Augmentera également la portée des missiles du Kosatka.
 Auto Refill Snacks & Armours = Recharge automatique des snacks et armures
-Change Reward = Changer la Récompense
-Can be used to increase your crew level. = Peut être utilisé pour augmenter le niveau de votre équipe.
-How Many Times To Play = Combien de fois jouer
 Delete This File = Supprimer ce fichier
 Do you sure delete this file? It cannot be recovered! = Êtes-vous sûr de vouloir supprimer ce fichier ? Il ne pourra pas être récupéré !
 Successfully deleted! = Supprimé avec succès !
@@ -708,12 +663,6 @@ Clearing a black box with white help texts where are left, above of the screen. 
 Can be used for getting targets slightly more fast. = Peut être utilisé pour obtenir les cibles légèrement plus rapidement.
 Please make sure you can play ULP Missions now! = Assurez-vous de pouvoir jouer aux Missions ULP maintenant !
 Unlock Clothing = Débloquer les vêtements
-
-
-# Start of newly updated translations.
-# Translate them!
-
-
 Note that modifying this won't applied to the heist board. You can check the applied cut after end of the heist. = Notez que modifier cela ne s'appliquera pas au tableau du braquage. Vous pouvez vérifier la part appliquée à la fin du braquage.
 If the Heist Planning (Board 3) is empty, then please re-enable the preset that you enabled! = Si le Plan de Braquage (Tableau 3) est vide, alors veuillez réactiver le présélection que vous avez activée !
 It allows you set 0 ~ 100(%) by modifying the heist board, ignores all of restrictions modifying cuts. = Cela vous permet de définir 0 ~ 100 (%) en modifiant le tableau du braquage, et ignore toutes les restrictions de modification des parts des joueurs
@@ -721,8 +670,21 @@ Skip Nightclub Setups = Passer les Préparations de Boite de Nuit
 Skip all of setups when you buy a Nightclub first: Equipment, Staff, and Collect DJ = Passer toutes les Préparatons  lorsque vous achètez d'abord une boîte de nuit : L'équipement, le personnel et la récupération du DJ  
 Trophies, toys, and clothings are included. = Les trophées, les jouets et les vêtements sont inclus.
 500+ unlocks are included, try and see how many clothes would be unlocked. = Plus de 500 déverrouillages sont inclus, essaie de voir combien de vêtements seront déverrouillés.
-Work Club = Employ du club
 Taze = Tazer
 If you have any questions regarding Heist Control? Joining it will help you so much! = Si tu as des questions concernant Heist Control ? Rejoins ce discord, cela t'aidera beaucoup !
 - Download sharable customized translations and GTAHaXUI stat files. = - Télécharge des traductions personnalisées partageables et des fichiers de statistiques GTAHaXUI.
-- Post a suggestion or an issue to improve Heist Control. = -Poste une suggestion ou décrit un problème pour améliorer Heist Control.
+- Post a suggestion or an issue to improve Heist Control. = - Poste une suggestion ou décrit un problème pour améliorer Heist Control.
+Please download the latest version of Heist Control or wait for Heist Control's developer patching. = Merci de télécharger la dernière version de Heist Control ou attendre le correctif du dev de Heist Control.
+Please re-enable 'Stand > Lua Scripts > Repository > natives-1681379138' or please join HC DC server to get support! = Veuillez réactiver 'Stand > Lua Scripts > Repository > natives-1681379138' ou rejoignez le discord HC pour obtenir de l'aide !
+Unlock Arcade Awards = Débloquer les récompenses de l'arcade
+Club Work = Missions de Club  
+There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.45M) by only getting it. = Il n'y a qu'une seule cible principale, qui dépend de celle que vous avez choisie. Tous les joueurs de la session de braquage peuvent obtenir le gain maximum (2,45 millions de dollars) en ne choissant que cette cible.
+Note that works on best when you are alone in your session. = Merci de note que les résultats sont meilleurs lorsque vous êtes seul dans votre session.
+Note that you shouldn't enable this feature while playing the Casino Heist: Because due to synced with payout for it = Veuillez note que vous ne devez pas activer cette fonction lorsque vous jouez au Bracage du Casino, à cause la synchronisation avec le paiement.
+Crew Level = Niveau de Crew
+Crew = Crew
+Crew RP = RP Crew
+Crew ID = ID de Crew
+Current Crew Level = Niveau actuel de Crew
+Choose Crew Level = Choisir le niveau de Crew
+Set Crew Level = Régler le niveau de Crew
