@@ -12,7 +12,6 @@ function loadgt()
 --if async_http.have_access() then
 memory.alloc_int()
     require "lib.GTSCRIPTS.GTC.logo.GLogo"  
-    require "lib.GTSCRIPTS.O"  
     require "lib.GTSCRIPTS.W"  
     require ('lib/GTSCRIPTS/T') 
     require "lib.GTSCRIPTS.GTW.fixnative"
@@ -130,7 +129,12 @@ end
 GTAC(menu.my_root(), ">>点击进入GTLua", {}, "",function () menu.trigger_command(G) end) 
 GTAC(menu.my_root(), ">>重新启动GTLua", {}, "", function () restartscript() end) 
 
-enable_options = GTTG(G, ">>快捷入口", {}, "", function (on) Quick_Enable(on) end)
+Web_Http = GTH(G, ">>GTLua 官方网站", "http://gtlua.cn", "欢迎前来访问GTLua官方网站\n您需要了解的一切内容都在这里")
+enable_options = GTTG(G, ">>快捷入口", {}, "", function (on) 
+    Quick_Enable(on) 
+end)
+menu.set_value(enable_options, eo_value)
+
 changelogs = GTLP(G, ">>更新日志", {}, "", function () updatelogs() end)
 players_root = GT(G, ">>玩家选项", {}, "")
 frendlist = GT(G, ">>好友选项", {""}, "", function(); end)
@@ -148,7 +152,7 @@ lobbyFeats = GT(G, ">>世界选项", {}, "")
 Heist_Control = GT(G, ">>任务选项", {}, "")
 Musiness_Banager = GT(G, ">>自动资产")
 Constructor_Lua = GT(G, ">>模组选项")
-other_options = GT(G, ">>其他选项")
+other_options = GT(G, ">>设置选项")
 bbttt = GTH(G, ">>GTVIP四群[下载脚本]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=8qYUvJSLb2BVHZrM5Ztu_EyvZxfO5RvE&authKey=tViPuocQN00a41qIKcrWbk7VeYeJfMFPBOFLfrLx1mZdDnt9UjkHjkpC6DALzMHj&noverify=0&group_code=655413793", "")
 --显示UI
 GTD(players_root, "[玩家选项]")
@@ -363,7 +367,7 @@ dev = GTTG(players_root, "DEV", {"devcheck"}, "", function(f)
                 if playerrid == id.playerrid and not notified_devs[id.playerrid] then
                     if pid then
                         util.show_corner_help("~h~~q~GRANDTOURINGVIP 温馨提示 ~r~开发人员 ".. playerrid .."\n目前正在此战局中")
-                        util.toast("GTVIP开发人员目前正在你的战局中")
+                        gtoast("GTVIP开发人员目前正在你的战局中")
                         devhengfu(f)
                         wait(1000)
                         notified_devs[id.playerrid] = true
@@ -381,32 +385,43 @@ menu.set_visible(dev, false)
 --皇榜
 require "lib.GTSCRIPTS.GTA.list"
 notified_sp = {}
-hb388 = false
 spo = GTTG(players_root, "SPO", {"spcheck"}, "", function(f)
     spgt = f
     while spgt do
         for pid = 0, 32 do
             playerid = players.get_name(pid)
             
-            for _,id in ipairs(sxid) do
-                if playerid == id.playeridx then
-                    hb388 = true
+            for _,idx in ipairs(sxid) do
+                if playerid == idx.playeridx then
+                    for _, id in ipairs(spid) do
+                        if playerid == id.playerid then
+                            notified_sp[id.playerid] = true
+                        end 
+                    end
                 end
             end
 
             for _, id in ipairs(spid) do
                 if playerid == id.playerid and not notified_sp[id.playerid] then
-                    if hb388 ~= true then
+
                         if pid then
-                            if off_hb ~= true and pid == players.user() then
+                            if off_hb ~= true then
                                 util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n".. playerid .."\n~p~当前正在该战局")
-                                --gtoast("GTVIP皇榜人员 ".. playerid .." 当前正在该战局")
+                                gtoast("GTVIP皇榜人员 ".. playerid .." 当前正在该战局")
                                 hengfugt(f)
                                 wait(1000)
                                 notified_sp[id.playerid] = true
-                            end
+                            elseif off_hb == true then
+                                if pid ~= players.user() then 
+                                    util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n".. playerid .."\n~p~当前正在该战局")
+                                    gtoast("GTVIP皇榜人员 ".. playerid .." 当前正在该战局")
+                                    hengfugt(f)
+                                    wait(1000)
+                                    notified_sp[id.playerid] = true 
+                                end
+                            end   
                         end
-                    end
+
                 end
             end
 
@@ -429,12 +444,20 @@ sxo = GTTG(players_root, "SXO", {"sxcheck"}, "", function(f)
             for _, id in ipairs(sxid) do
                 if playeridx == id.playeridx and not notified_sx[id.playeridx] then
                     if pid then
-                        if off_hb ~= true and pid == players.user() then
+                        if off_hb ~= true then
                             util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n".. playeridx .."\n~y~当前正在该战局")
-                            --gtoast("GTVIP至臻皇榜 ".. playeridx .." 当前正在该战局")
+                            gtoast("GTVIP至臻皇榜 ".. playeridx .." 当前正在该战局")
                             sxgt(f)
                             wait(1000)
                             notified_sx[id.playeridx] = true
+                        elseif off_hb == true then
+                            if pid ~= players.user() then
+                                util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n".. playeridx .."\n~y~当前正在该战局")
+                                gtoast("GTVIP至臻皇榜 ".. playeridx .." 当前正在该战局")
+                                sxgt(f)
+                                wait(1000)
+                                notified_sx[id.playeridx] = true
+                            end
                         end
                     end
                 end
@@ -448,6 +471,7 @@ menu.trigger_commands("sxcheck on")
 menu.set_visible(sxo, false)
 --
 menu.link(players_root, menu.ref_by_path("Online>Rockstar ID Tools"), true)
+cs2 = menu.link(players_root, menu.ref_by_path("Online>Quick Progress>Casino"), true)
 
 lightbones = GT(players_root, "光柱选项")
 
@@ -478,7 +502,6 @@ GTLP(lightbones, "载具光柱", {}, "", function()
             ped_pos.z + 20, 0, 200, 0, 255)
     end
 end)
-
 
 toushi=GT(players_root, "玩家透视选项", {}, "")
 
@@ -6354,6 +6377,28 @@ ptfx2 = GTTG(players_root, "终极过载", {"lens"}, "", function(on)
             GRAPHICS.REMOVE_PARTICLE_FX(p, false)
             GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
         end
+
+        for _, p in pairs(load_ptfxs) do
+            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
+            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
+        end
+
+        for _, p in pairs(load_ptfxs) do
+            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
+            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
+        end
+
+        for _, p in pairs(load_ptfxs) do
+            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
+            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
+        end
+
+        for _, p in pairs(load_ptfxs) do
+            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
+            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
+        end
+
+
     else
         request_ptfx_asset(man_ptfx_asset)
         for _, bone in pairs(l_bones) do
@@ -6364,13 +6409,7 @@ ptfx2 = GTTG(players_root, "终极过载", {"lens"}, "", function(on)
             load_ptfxs[#load_ptfxs + 1] = fx
             GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, 255, 255, 0, 255)
         end
-    end
-    if not on then
-        for _, p in pairs(load_ptfxs) do
-            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
-            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
-        end
-    else
+
         request_ptfx_asset(man_ptfx_asset)
         for _, bone in pairs(l_bones) do
             GRAPHICS.USE_PARTICLE_FX_ASSET(man_ptfx_asset)
@@ -6380,13 +6419,7 @@ ptfx2 = GTTG(players_root, "终极过载", {"lens"}, "", function(on)
             load_ptfxs[#load_ptfxs + 1] = fx
             GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, 255, 0, 0, 255)
         end
-    end
-    if not on then
-        for _, p in pairs(load_ptfxs) do
-            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
-            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
-        end
-    else
+
         request_ptfx_asset(man_ptfx_asset)
         for _, bone in pairs(l_bones) do
             GRAPHICS.USE_PARTICLE_FX_ASSET(man_ptfx_asset)
@@ -6396,13 +6429,7 @@ ptfx2 = GTTG(players_root, "终极过载", {"lens"}, "", function(on)
             load_ptfxs[#load_ptfxs + 1] = fx
             GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, 255, 0, 255, 255)
         end
-    end
-    if not on then
-        for _, p in pairs(load_ptfxs) do
-            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
-            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
-        end
-    else
+
         request_ptfx_asset(man_ptfx_asset)
         for _, bone in pairs(l_bones) do
             GRAPHICS.USE_PARTICLE_FX_ASSET(man_ptfx_asset)
@@ -6412,13 +6439,7 @@ ptfx2 = GTTG(players_root, "终极过载", {"lens"}, "", function(on)
             load_ptfxs[#load_ptfxs + 1] = fx
             GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, 0, 255, 255, 255)
         end
-    end
-    if not on then
-        for _, p in pairs(load_ptfxs) do
-            GRAPHICS.REMOVE_PARTICLE_FX(p, false)
-            GRAPHICS.STOP_PARTICLE_FX_LOOPED(p, false)
-        end
-    else
+
         request_ptfx_asset(man_ptfx_asset)
         for _, bone in pairs(l_bones) do
             GRAPHICS.USE_PARTICLE_FX_ASSET(man_ptfx_asset)
@@ -6495,30 +6516,30 @@ end, function()
 end)
 
 magfunc = GTTG(players_root, "Mag的王座", {"magic"}, "定制级功能:)", function(on)
-    if players.get_name(players.user()) == "Mag7777v" 
-    or players.get_name(players.user()) == "Magicswordstar" 
-    or players.get_name(players.user()) == "RhymeBear" then
+
+    if WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Mag7777V"
+    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Magicwordstar" 
+    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "RhymeBear" then
 
         if on then
             menu.trigger_commands("jiajia1 on")
             menu.trigger_commands("jiajia2 on")
             menu.trigger_commands("lens on")
-            menu.trigger_commands("lightk on")
+            --menu.trigger_commands("lightk on")
             menu.trigger_commands("sans on")
         else
             menu.trigger_commands("jiajia1 off")
             menu.trigger_commands("jiajia2 off")
             menu.trigger_commands("lens off")
-            menu.trigger_commands("lightk off")
+            --menu.trigger_commands("lightk off")
             menu.trigger_commands("sans off")
         end
-        
     else
-        gtoast("暂无权使用\n至高之物 尔等何以染指")
-        return
+        gtoast("不可使用")
         menu.set_value(magfunc, false)
     end
 end)
+
 
 ptfx1.visible = false
 ptfx2.visible = false
@@ -21606,18 +21627,18 @@ restartgt = GTAC(G, ">>重新启动", {}, "", function ()
 end)
 
 myString = "关于更新脚本到最新版,您可加入群聊(651502721)下载新版GTLua 关于脚本的基本功能疑问,您可直接加入聊天群获得帮助(716431566) 购买其他菜单,您可在经销商列表中找到各个经销商(您可以选择xgmenu.me/symenu.me) 获取1v1的帮助,您可联系Mag(907401714)或草莓酱(1104626388)"
-GTAC(other_options,"获取技术支持",{},myString,function()end)
+--GTAC(other_options,"获取技术支持",{},myString,function()end)
 
 require "lib.GTSCRIPTS.GTA.hbl"
-sponsor = GT(other_options, 'Pro级用户', {}, '功德无量，爱心支持')
-for _, v in ipairs(hb_id) do 
-    GTD(sponsor, "GTVIP: "..v.name, function() 
+sponsor = GT(other_options, 'GTVIP Pro 用户', {}, '功德无量，爱心支持')
+for _, v in ipairs(hb_id) do
+    GTD(sponsor, "GTVIP: " .. v.name, function()
     end)
 end
-GTD(sponsor, "...未完待续...", function() 
+GTD(sponsor, "...未完待续...", function()
 end)
 
-blackweb = GT(other_options, "卡网及经销", {}, "你可以在此找到经过GTVIP团队认证的经销商")
+blackweb = GT(other_options, "经销商级卡网", {}, "你可以在此找到经过GTVIP团队认证的经销商")
 GTD(blackweb, "经销商列表")
 GTH(blackweb, "佳佳小铺", "https://7777v.cn/", "留言:官网直售")
 GTH(blackweb, "沙耶的小店", "https://symenu.me/", "留言:暂无")
@@ -21633,14 +21654,7 @@ GTH(blackweb, "艾洛佩斯伽的超级小店", "http://ailuopeisjia.top", "留�
 GTH(blackweb, "DLHPJY", "https://fzgw.7egg.cn/", "留言:暂无")
 GTH(blackweb, "KexiaoLove", "http://kexiaonolove.asia/", "留言:暂无")
 
-minimap = GT(other_options, "小地图")
-misclightmenu = GT(other_options, "追光灯")
-WaterMark = GT(other_options, "信息栏", {""}, "非常好看且实用的信息显示~")
-rainbowinfo = GTAC(WaterMark, "开启信息显示", {""}, "开启该功能选项在最下方", function()
-dofile(filesystem.scripts_dir().."\\lib\\GTSCRIPTS\\GTW\\WM.lua")
-GTLuaScript.delete(rainbowinfo)
-end)
-zhujixianshi = GT(other_options, "显示选项", {}, "在这里修改各种显示在屏幕中的元素")
+zhujixianshi = GT(other_options, "UI显示选项", {}, "在这里修改各种显示在屏幕中的元素")
 zanzhuzx = GT(other_options, "GTLua 团队")
 
 baocunanjain=GTTG(zhujixianshi, "[按F8保存设置]", {""}, "",function(f)
@@ -21656,152 +21670,165 @@ gt=false
 end)
 menu.set_value(baocunanjain, true)
 
-stcxs=GTTG(zhujixianshi, "实体池显示", {}, "", function(ft)
-    local shiti_x = 0.80 local shiti_y = 0.018 local settings = {add_x = 0.0005,add_y = 0.0}
-        stc = ft
-        while stc do
-            wait()
-    local fullVersion = menu.get_version()["version"]
-    local ModderCount = 0
-    local MyPed = players.user_ped(players.user())
-    local MyPos = ENTITY.GET_ENTITY_COORDS(MyPed)
-    for i = 0, 31 do
-        if players.is_marked_as_modder(i, -1) then
-            ModderCount = ModderCount + 1
+stcxs = GTTG(zhujixianshi, "实体池显示", {}, "", function(ft)
+    local shiti_x = 0.80
+    local shiti_y = 0.018
+    local settings = {
+        add_x = 0.0005,
+        add_y = 0.0
+    }
+    stc = ft
+    while stc do
+        wait()
+        local fullVersion = menu.get_version()["version"]
+        local ModderCount = 0
+        local MyPed = players.user_ped(players.user())
+        local MyPos = ENTITY.GET_ENTITY_COORDS(MyPed)
+        for i = 0, 31 do
+            if players.is_marked_as_modder(i, -1) then
+                ModderCount = ModderCount + 1
+            end
         end
+        directx.draw_rect(shiti_x + settings.add_x, shiti_y, 0.171, 0.03 + settings.add_y, 1, 1, 1, 1)
+        directx.draw_rect(shiti_x + settings.add_x, shiti_y + 0.261, 0.171, 0.02 + settings.add_y, 1, 1, 1, 1)
+        directx.draw_rect(shiti_x + settings.add_x, shiti_y + 0.020, 0.171, 0.26 + settings.add_y, 0, 0, 0, 0.08)
+        directx.draw_text(shiti_x + 0.035, shiti_y + 0.005, "GRANDTOURINGVIP", ALIGN_TOP_LEFT, 0.6, 0, 1, 1, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.030,
+            "模型:" .. memory.read_int(pedInterface + 0x0110) .. "/" .. memory.read_int(pedInterface + 0x0108),
+            ALIGN_TOP_LEFT, 0.6, 0, 1, 0, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.050,
+            "载具:" .. memory.read_int(vehInterface + 0x0190) .. "/" .. memory.read_int(vehInterface + 0x0188),
+            ALIGN_TOP_LEFT, 0.6, 0, 0, 1, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.070, "实体:" .. memory.read_int(objectInterface + 0x0168) ..
+            "/" .. memory.read_int(objectInterface + 0x0160), ALIGN_TOP_LEFT, 0.6, 1, 0, 0, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.090,
+            "拾取物:" .. memory.read_int(pickupInterface + 0x0110) .. "/" ..
+                memory.read_int(pickupInterface + 0x0108), ALIGN_TOP_LEFT, 0.6, 0.4, 0.1, 1, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.110,
+            "所有实体:" .. memory.read_int(pedInterface + 0x0110) + memory.read_int(vehInterface + 0x0190) +
+                memory.read_int(objectInterface + 0x0168) + memory.read_int(pickupInterface + 0x0110) .. "/" ..
+                memory.read_int(pedInterface + 0x0108) + memory.read_int(vehInterface + 0x0188) +
+                memory.read_int(objectInterface + 0x0160) + memory.read_int(pickupInterface + 0x0108), ALIGN_TOP_LEFT,
+            0.6, 1, 0.5, 0.5, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.130, "作弊者:" .. ModderCount, ALIGN_TOP_LEFT, 0.6, 1, 0.5, 0,
+            1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.150, "人数:" .. #players.list(), ALIGN_TOP_LEFT, 0.6, 0.3, 0.2,
+            0.5, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.170,
+            "血量:" .. ENTITY.GET_ENTITY_HEALTH(PLAYER.GET_PLAYER_PED()), ALIGN_TOP_LEFT, 0.6, 1, 0, 0, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.190, "护甲:" .. PED.GET_PED_ARMOUR(PLAYER.GET_PLAYER_PED()),
+            ALIGN_TOP_LEFT, 0.6, 0, 0.3, 0.5, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.210,
+            "坐标:" .. string.format("\n%.5f, %.5f, %.5f", MyPos.x, MyPos.y, MyPos.z), ALIGN_TOP_LEFT, 0.6, 0, 1, 0, 1)
+        directx.draw_text(shiti_x + 0.004, shiti_y + 0.260, "STAND版本:" .. fullVersion ..
+            "             GTA在线版本:" .. NETWORK.GET_ONLINE_VERSION(), ALIGN_TOP_LEFT, 0.5, 0, 0, 0, 1)
     end
-       directx.draw_rect(shiti_x + settings.add_x, shiti_y,0.171, 0.03 + settings.add_y,1, 1, 1, 1)
-       directx.draw_rect(shiti_x + settings.add_x, shiti_y+0.261,0.171, 0.02 + settings.add_y,1, 1, 1, 1)
-       directx.draw_rect(shiti_x + settings.add_x, shiti_y+0.020,0.171, 0.26 + settings.add_y,0, 0, 0, 0.08)
-       directx.draw_text(shiti_x+0.035, shiti_y+0.005, "GRANDTOURINGVIP", ALIGN_TOP_LEFT, 0.6,0, 1, 1, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.030, "模型:"..memory.read_int(pedInterface + 0x0110).."/"..memory.read_int(pedInterface + 0x0108), ALIGN_TOP_LEFT, 0.6,0, 1, 0, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.050, "载具:"..memory.read_int(vehInterface + 0x0190).."/"..memory.read_int(vehInterface + 0x0188), ALIGN_TOP_LEFT, 0.6,0, 0, 1, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.070, "实体:"..memory.read_int(objectInterface + 0x0168).."/"..memory.read_int(objectInterface + 0x0160), ALIGN_TOP_LEFT, 0.6,1, 0, 0, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.090, "拾取物:"..memory.read_int(pickupInterface + 0x0110).."/"..memory.read_int(pickupInterface + 0x0108), ALIGN_TOP_LEFT, 0.6,0.4, 0.1, 1, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.110, "所有实体:"..memory.read_int(pedInterface + 0x0110)+memory.read_int(vehInterface + 0x0190)+memory.read_int(objectInterface + 0x0168)+memory.read_int(pickupInterface + 0x0110).."/"..memory.read_int(pedInterface + 0x0108)+memory.read_int(vehInterface + 0x0188)+memory.read_int(objectInterface + 0x0160)+memory.read_int(pickupInterface + 0x0108), ALIGN_TOP_LEFT, 0.6,1, 0.5, 0.5, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.130, "作弊者:"..ModderCount, ALIGN_TOP_LEFT, 0.6,1, 0.5, 0, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.150, "人数:"..#players.list(), ALIGN_TOP_LEFT, 0.6,0.3, 0.2, 0.5, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.170, "血量:"..ENTITY.GET_ENTITY_HEALTH(PLAYER.GET_PLAYER_PED()), ALIGN_TOP_LEFT, 0.6,1, 0, 0, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.190, "护甲:"..PED.GET_PED_ARMOUR(PLAYER.GET_PLAYER_PED()), ALIGN_TOP_LEFT, 0.6,0, 0.3, 0.5, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.210, "坐标:".. string.format("\n%.5f, %.5f, %.5f", MyPos.x, MyPos.y, MyPos.z), ALIGN_TOP_LEFT, 0.6,0, 1, 0, 1)
-       directx.draw_text(shiti_x+0.004, shiti_y+0.260, "STAND版本:"..fullVersion.."             GTA在线版本:"..NETWORK.GET_ONLINE_VERSION(), ALIGN_TOP_LEFT, 0.5,0, 0, 0, 1)
-       end
-       stc=false
-    end)
-    menu.set_value(stcxs, stcxs1)
+    stc = false
+end)
+menu.set_value(stcxs, stcxs1)
 
+minimap = GT(zhujixianshi, "小地图")
+misclightmenu = GT(zhujixianshi, "追光灯")
 playerdis = GT(zhujixianshi, "显示玩家栏")
+WaterMark = GT(zhujixianshi, "信息栏", {""}, "非常好看且实用的信息显示~")
+rainbowinfo = GTAC(WaterMark, "开启信息显示", {""}, "开启该功能选项在最下方", function()
+dofile(filesystem.scripts_dir().."\\lib\\GTSCRIPTS\\GTW\\WM.lua")
+GTLuaScript.delete(rainbowinfo)
+end)
 
 map_name_type = v2()
 bool_strar = 0
 strarS_x_type = 0.01
 strarS_y_type = 0.01
-network = memory.alloc(13*4)
-wjlxs=GTTG(playerdis, "玩家栏展示", {}, "", function(g)
-feat = g
-while feat do
-wait()
-  if feat then
-    if 0 == bool_strar then
-      map_name_type.x = strarS_x_type
-      map_name_type.y = strarS_y_type
-    elseif 1 == bool_strar then
-      map_name_type.x = 1.0E-4
-      map_name_type.y = 1.0E-6
+network = memory.alloc(13 * 4)
+wjlxs = GTTG(playerdis, "玩家栏展示", {}, "", function(g)
+    feat = g
+    while feat do
+        wait()
+        if feat then
+            if 0 == bool_strar then
+                map_name_type.x = strarS_x_type
+                map_name_type.y = strarS_y_type
+            elseif 1 == bool_strar then
+                map_name_type.x = 1.0E-4
+                map_name_type.y = 1.0E-6
+            end
+            for pid = 0, 31 do
+                if PLAYER.GET_PLAYER_PED(pid) ~= 0 then
+                    local name = PLAYER.GET_PLAYER_NAME(pid)
+                    local isYou = players.user() == pid
+                    local playercolor = {{255, 255, 255}, {255, 0, 0}, {255, 0, 255}, {0, 255, 255}}
+                    HUD.SET_TEXT_COLOUR(playercolor[1][1], playercolor[1][2], playercolor[1][3], 255)
+                    if players.is_godmode(pid) and not players.is_marked_as_modder(pid, -1) then
+                        HUD.SET_TEXT_COLOUR(playercolor[2][1], playercolor[2][2], playercolor[2][3], 255)
+                    end
+                    if players.is_godmode(pid) and players.is_marked_as_modder(pid, -1) then
+                        HUD.SET_TEXT_COLOUR(playercolor[3][1], playercolor[3][2], playercolor[3][3], 255)
+                    end
+                    if players.is_marked_as_modder(pid, -1) and not players.is_godmode(pid) then
+                        HUD.SET_TEXT_COLOUR(255, 170, 0, 255)
+                    end
+                    if NETWORK.NETWORK_IS_FRIEND(network) then
+                        HUD.SET_TEXT_COLOUR(0, 255, 0, 255)
+                    end
+                    if isYou then
+                        HUD.SET_TEXT_COLOUR(100, 165, 255, 255)
+                    end
+                    if 0 == bool_strar then
+                        if map_name_type.y > strarS_y_type + 0.27 then
+                            map_name_type.x = strarS_x_type + 0.07
+                            map_name_type.y = strarS_y_type
+                        else
+                        end
+                    else
+                        if 1 == bool_strar and map_name_type.x > 0.95 then
+                            map_name_type.y = 0.015
+                            map_name_type.x = 1.0E-4
+                        else
+                        end
+                    end
+                    HUD.SET_TEXT_SCALE(0.5, 0.35)
+                    HUD.SET_TEXT_FONT(4)
+                    HUD.SET_TEXT_CENTRE(1)
+                    HUD.SET_TEXT_OUTLINE(0)
+                    if NETWORK.NETWORK_IS_FRIEND(network) then
+                        name = name .. "[F]"
+                    elseif 0 ~= PLAYER.GET_PLAYER_WANTED_LEVEL(pid) then
+                        name = name .. "~b~[" .. tostring(PLAYER.GET_PLAYER_WANTED_LEVEL(pid)) .. "]"
+                    elseif players.is_marked_as_modder(pid, -1) and players.get_host(pid) and pid ==
+                        players.get_script_host() then
+                        name = name .. "[MHS]"
+                    elseif players.is_marked_as_modder(pid, -1) and players.get_host(pid) then
+                        name = name .. "[MH]"
+                    elseif players.is_marked_as_modder(pid, -1) and not players.get_host(pid) and pid ==
+                        players.get_script_host() then
+                        name = name .. "[MS]"
+                    elseif players.get_host(pid) and pid ~= players.get_script_host() then
+                        name = name .. "[H]"
+                    elseif pid == players.get_script_host() and not players.get_host(pid) then
+                        name = name .. "[S]"
+                    elseif u then
+                        name = name .. "[ GT ]"
+                    elseif players.get_host(pid) and pid == players.get_script_host() then
+                        name = name .. "[HS]"
+                    elseif players.is_marked_as_modder(pid, -1) and not players.get_host(pid) and pid ~=
+                        players.get_script_host() then
+                        name = name .. "[M]"
+                    end
+                    util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(" " .. name .. " ")
+                    HUD.END_TEXT_COMMAND_DISPLAY_TEXT(map_name_type.x + 0.03, map_name_type.y, 0)
+                    if 0 == bool_strar then
+                        map_name_type.y = map_name_type.y + 0.017
+                    elseif 1 == bool_strar then
+                        map_name_type.x = map_name_type.x + 0.067
+                    end
+                end
+            end
+        end
     end
-for pid = 0,31 do
-if PLAYER.GET_PLAYER_PED(pid) ~= 0 then
-        local name = PLAYER.GET_PLAYER_NAME(pid)
-        local isYou = players.user() == pid
-        local playercolor = {
-          {
-            255,
-            255,
-            255
-          },
-          {
-            255,
-            0,
-            0
-          },
-          {
-            255,
-            0,
-            255
-          },
-          {
-            0,
-            255,
-            255
-          }
-        }
-        HUD.SET_TEXT_COLOUR(playercolor[1][1], playercolor[1][2], playercolor[1][3], 255)
-        if players.is_godmode(pid) and not players.is_marked_as_modder(pid, -1) then
-          HUD.SET_TEXT_COLOUR(playercolor[2][1], playercolor[2][2], playercolor[2][3], 255)
-        end
-        if players.is_godmode(pid) and players.is_marked_as_modder(pid, -1) then
-          HUD.SET_TEXT_COLOUR(playercolor[3][1], playercolor[3][2], playercolor[3][3], 255)
-        end
-        if players.is_marked_as_modder(pid, -1) and not players.is_godmode(pid) then
-          HUD.SET_TEXT_COLOUR(255, 170, 0, 255)
-        end
-        if NETWORK.NETWORK_IS_FRIEND(network) then
-          HUD.SET_TEXT_COLOUR(0, 255, 0, 255)
-        end
-        if isYou then
-          HUD.SET_TEXT_COLOUR(100, 165, 255, 255)
-        end
-        if 0 == bool_strar then
-          if map_name_type.y > strarS_y_type + 0.27 then
-            map_name_type.x = strarS_x_type + 0.07
-            map_name_type.y = strarS_y_type
-          else
-          end
-        else
-          if 1 == bool_strar and map_name_type.x > 0.95 then
-            map_name_type.y = 0.015
-            map_name_type.x = 1.0E-4
-          else
-          end
-        end
-           HUD.SET_TEXT_SCALE(0.5, 0.35)
-           HUD.SET_TEXT_FONT(4)
-           HUD.SET_TEXT_CENTRE(1)
-           HUD.SET_TEXT_OUTLINE(0)
-        if NETWORK.NETWORK_IS_FRIEND(network) then
-          name = name .. "[F]"
-        elseif 0 ~= PLAYER.GET_PLAYER_WANTED_LEVEL(pid) then
-          name = name .. "~b~[" .. tostring(PLAYER.GET_PLAYER_WANTED_LEVEL(pid)) .. "]"
-        elseif players.is_marked_as_modder(pid, -1) and players.get_host(pid) and pid == players.get_script_host() then
-          name = name .. "[MHS]"
-        elseif players.is_marked_as_modder(pid, -1) and players.get_host(pid) then
-          name = name .. "[MH]"
-        elseif players.is_marked_as_modder(pid, -1) and not players.get_host(pid) and pid == players.get_script_host() then
-          name = name .. "[MS]"
-        elseif players.get_host(pid) and pid ~= players.get_script_host() then
-          name = name .. "[H]"
-        elseif pid == players.get_script_host() and not players.get_host(pid) then
-          name = name .. "[S]"
-        elseif u then
-          name = name .. "[ GT ]"
-        elseif players.get_host(pid) and pid == players.get_script_host() then
-          name = name .. "[HS]"
-        elseif players.is_marked_as_modder(pid, -1) and not players.get_host(pid) and pid ~= players.get_script_host() then
-          name = name .. "[M]"
-        end
-        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(" " .. name .. " ")
-        HUD.END_TEXT_COMMAND_DISPLAY_TEXT(map_name_type.x + 0.03,map_name_type.y,0)
-        if 0 == bool_strar then
-          map_name_type.y = map_name_type.y + 0.017
-        elseif 1 == bool_strar then
-          map_name_type.x = map_name_type.x + 0.067
-        end
-      end
-    end
-  end
-  end
     feat = false
 end)
+
 
 GTTG(playerdis, '切换为横版', {}, '', function (on)
 	if on then
@@ -22758,7 +22785,7 @@ wait()
 end
 end)
 
-zaxiang = GT(other_options, "其他功能")
+zaxiang = GT(other_options, "其他杂项功能")
 
 ZT = GT(zaxiang, "动态主题", {"sszt"}, "")
 util.require_no_lag"lib.GTSCRIPTS.GTW.ZT"
@@ -23576,7 +23603,7 @@ show_credits = GTTG(other_options, "鸣谢人员", {}, "", function(on)
                         if new_position > 0.05 then
                             directx.draw_text(0.5, new_position, credits_lines[i].text, ALIGN_CENTRE, credits_lines[i].size, { r = 1, g = 1, b = 1, a = 1 }, true)
                         else
-                            if i == 56 then
+                            if i == 66 then
                                 show_credits.value = false
                             end
                         end 
