@@ -3,7 +3,6 @@ pluto_use "0.8.1"
 native_invoker.accept_bools_as_ints(true)
 
 local joaat, toast, yield, draw_debug_text, reverse_joaat = util.joaat, util.toast, util.yield, util.draw_debug_text, util.reverse_joaat
-local IS_DEBUG_BUILD = false
 
 local supported_game_version = "1.68-3095"
 
@@ -126,11 +125,6 @@ enum VEHICLE_CLASS begin
 	VC_OPEN_WHEEL
 end
 
-enum EVENT_NAMES begin
-	EVENT_NETWORK_SCRIPT_EVENT = 174,
-	EVENT_NETWORK_HOST_MIGRATION = 180,
-end
-
 enum TransitionState begin
 	TRANSITION_STATE_EMPTY = 0,
 	TRANSITION_STATE_SP_SWOOP_UP = 1,
@@ -210,8 +204,6 @@ enum DUCK_TOGGLE begin
     TOGGLE_DUCK_ON
 end
 
-local spawned_objects = {}
-
 local function isNetPlayerOk(playerID, assert_playing = false, assert_done_transition = true) -- credit to sapphire *sighs* yet again
 	if not NETWORK_IS_PLAYER_ACTIVE(playerID) then return false end
 	if assert_playing and not IS_PLAYER_PLAYING(playerID) then return false end
@@ -275,11 +267,11 @@ local function getPlayerProperty(playerID)
 	return memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 267 + 34)  -- Global_1845263[PLAYER::PLAYER_ID() /*877*/].f_267.f_34)
 end
 
-local function blipData_iDisplacedInteriorID(playerID)
+local function blipInteriorID(playerID)
 	return memory.script_global(GlobalplayerBD + 1 + (playerID * 463) + 73 + 6) -- Global_2657921[bParam0 /*463*/].f_73.f_6
 end
 
-local function blipData_vDisplacedInteriorPos(playerID)
+local function blipInteriorPos(playerID)
 	return memory.script_global(GlobalplayerBD + 1 + (playerID * 463) + 73 + 7) -- Global_2657921[bParam0 /*463*/].f_73.f_7
 end
 
@@ -300,8 +292,8 @@ do
 end
 
 local function isPlayerInInterior(playerID)
-	if not isNetPlayerOk(playerID) then return end -- to prevent random access violations
-	return not (GET_INTERIOR_GROUP_ID(getPlayerCurrentInterior(playerID)) != 0 or getPlayerCurrentInterior(playerID) == 0)
+	if not isNetPlayerOk(playerID) then return end
+	  return GET_INTERIOR_GROUP_ID(getPlayerCurrentInterior(playerID)) == 0 and getPlayerCurrentInterior(playerID) != 0 and players.is_in_interior(playerID)
 end
 
 local function callVirtualFunction(pObject: int, iPosition: int, ...args) -- credit to sapphire for these 3 functions too 
@@ -331,7 +323,7 @@ end
 local function isPlayerGodmode(playerID)
 	local pos = players.get_position(playerID)
 	local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-	if isNetPlayerOk(playerID, true, true) and (players.is_godmode(playerID) or entities.is_invulnerable(ped)) and not isPlayerInInterior(playerID) and not NETWORK_IS_PLAYER_IN_MP_CUTSCENE(playerID) 
+	if isNetPlayerOk(playerID) and (players.is_godmode(playerID) or entities.is_invulnerable(ped)) and not isPlayerInInterior(playerID) and not NETWORK_IS_PLAYER_IN_MP_CUTSCENE(playerID) 
 	and isFreemodeActive(playerID) and not players.is_using_rc_vehicle(playerID) and not isPlayerRidingRollerCoaster(playerID) and pos.z > 0.0 then
 		return true
 	end
@@ -352,8 +344,9 @@ local function getSeatPedIsIn(ped)
 	end
 end
 
-local function isPlayerMoving(playerID)
-	return #NETWORK_GET_LAST_VEL_RECEIVED_OVER_NETWORK(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) != 0
+local function isPlayerInAnyVehicle(playerID)
+	local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+	return IS_PED_IN_ANY_VEHICLE(ped) and not IS_REMOTE_PLAYER_IN_NON_CLONED_VEHICLE(playerID)
 end
 
 local function isDetectionPresent(playerID, detection)
@@ -365,10 +358,6 @@ local function isDetectionPresent(playerID, detection)
 		end
 	end
 	return false
-end
- 
-local function isPlatePatternLegit(plate)
-	return string.match(plate, "%d%d%a%a%a%d%d%d") != nil
 end
 
 local function loadWeaponAsset(weaponName)
@@ -399,10 +388,6 @@ local function requestClipset(clipset)
 	while not HAS_CLIP_SET_LOADED(clipset) do
 		yield()
 	end
-end
-
-local function nullCheck(text_string)
-	return (text_string == "NULL" or text_string == nil) ? "" : text_string
 end
 
 local function getTeamID(playerID)
@@ -446,6 +431,30 @@ local function createRandomPed(pos)
 	return entities.create_ped(26, mdlHash, pos, 0)
 end
 
+
+local function godKill(playerID)
+	local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+	local ping = ROUND(NETWORK_GET_AVERAGE_PING(playerID))
+	local timer = (ping > 300) ? (util.current_time_millis() + 5000) : (util.current_time_millis() + 3000)
+	local pPed =  entities.handle_to_pointer(ped)
+	local pedPtr = entities.handle_to_pointer(players.user_ped())
+	yield()
+	yield()
+	repeat
+		util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
+		util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, joaat("weapon_pistol"), 500.0, 0, 0, DF_IsAccurate | DF_IgnorePedFlags | DF_SuppressImpactAudio | DF_IgnoreRemoteDistCheck, 0, 0, 0, 0, 0, 0, 0, 0.0)
+		if util.current_time_millis() > timer then
+			toast($"{players.get_name(playerID)} 无法删除无敌 :/")
+			timer = util.current_time_millis() + 3000
+			return
+		end
+		yield()
+	until IS_PED_DEAD_OR_DYING(ped)
+	yield()
+	yield()
+	timer = util.current_time_millis() + 3000
+end
+
 local function triggerDistanceBasedTeleport(playerID, scriptEvent)
 	local joinOrg = menu.ref_by_rel_path(menu.player_root(playerID), "Join CEO/MC")
 	local timer = util.current_time_millis() + 1000
@@ -473,8 +482,7 @@ local function triggerDistanceBasedTeleport(playerID, scriptEvent)
 		end
 		yield()
 	until DOES_ENTITY_EXIST(ped)
-	yield(50)
-	yield(50)
+	yield(500)
 	util.trigger_script_event( 1 << playerID, scriptEvent)
 	SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos, false, false, false)
 	invisibility:setState("Disabled")
@@ -560,6 +568,16 @@ local object_stuff = {
 	{util.joaat("stt_prop_stunt_soccer_ball"), "大足球"},
 	{util.joaat("prop_juicestand"), "大橙球"},
 	{util.joaat("stt_prop_stunt_jump_l"), "特技坡道"},
+}
+
+local deezBalls = {
+	{util.joaat("stt_prop_stunt_soccer_sball"), "小足球"},
+	{util.joaat("stt_prop_stunt_soccer_ball"), "中足球"},
+	{util.joaat("stt_prop_stunt_soccer_lball"), "大足球"},
+	{util.joaat("v_res_mexball"), "瑜伽球"},
+	{util.joaat("stt_prop_stunt_bowling_ball"), "保龄球"},
+	{util.joaat("imp_prop_bomb_ball"), "炸弹球"},
+	{util.joaat("prop_bskball_01"), "篮球"},
 }
 
 local vehicle_classes = {
@@ -676,6 +694,7 @@ local missionEndTeleports = {
   [97] = "乡村俱乐部",
   [114] = "乞力耶德山"
 }
+
 local interiorTpList = {
 	[70] = "地堡", -- 70 thru 80 are bunkers
 	[81] = "机动作战中心",
@@ -696,6 +715,17 @@ local interiorTpList = {
 	[160] = "怪胎店",
 	[161] = "日蚀大道车库",
 	[164] = "回收场",
+}
+
+local freemodeMissionWarps = {
+	[267] = "拉机能量高空跳伞",
+	[292] = "自行车服务",
+	[296] = "合约",
+	[304] = "致幻剂实验室",
+	[308] = "藏身处",
+	[309] = "出租车任务",
+	[318] = "计时赛",
+	[324] = "拖车服务"
 }
 
 local colors = {
@@ -752,18 +782,6 @@ local scripts = {
 	"fm_maintain_cloud_header_data"
 }
 
-local blacklistedScripts = {
-	"freemode",
-	"valentineRpReward2",
-	"main_persistent",
-	"cellphone_controller",
-	"shop_controller",
-	"stats_controller",
-	"timershud",
-	"am_npc_invites",
-	"fm_maintain_cloud_header_data"
-}
-
 local shopScripts = {
 	{"服装店", "clothes_shop_mp"},
 	{"理发店", "hairdo_shop_mp"},
@@ -772,15 +790,6 @@ local shopScripts = {
 	{"便利店", "am_hold_up"},
 	{"修车店", "carmod_shop"}
 }
-
-local stats = {
-	joaat($"MP{util.get_char_slot()}_LIFETIME_BUY_COMPLETE"),
-	joaat($"MP{util.get_char_slot()}_LIFETIME_BUY_UNDERTAKEN"),
-	joaat($"MP{util.get_char_slot()}_LIFETIME_SELL_COMPLETE"),
-	joaat($"MP{util.get_char_slot()}_LIFETIME_SELL_UNDERTAKEN"),
-}
-
-local bones = {31086, 24816, 40269, 45509, 0, 51826, 58271}
 
 local my_root = menu.my_root()
 local self = my_root:list("自我选项")
@@ -831,27 +840,28 @@ players.on_join(player_list)
 players.on_leave(handle_player_list)
 players.dispatch_on_join()
 
-playerHealth = self:slider("血量", {"playerhealth"}, "", 160, 2147483647, 328, 1, function(health)
+playerHealth = self:slider("血量", {"playearhealth"}, "", 160, 2147483647, 328, 1, function(health)
 	SET_PED_MAX_HEALTH(players.user_ped(), health)
 	SET_ENTITY_HEALTH(players.user_ped(), health, players.user_ped(), 0)
 end)  
 menu.add_value_replacement(playerHealth, 328, "默认")
 
 local proofsList = self:list("无敌", {}, "")
-local immortalityCmd = menu.ref_by_path("Self>Immortality")
 for proofs as data do
     proofsList:toggle(data.name, {data.name:lower().."proof"}, "让你刀枪不入 "..data.name:lower()..".", function(toggled)
         data.on = toggled
     end)
 end
+
 util.create_tick_handler(function()
     local local_player = players.user_ped()
-    if not menu.get_value(immortalityCmd) and not isPlayerInInterior(players.user()) then
+    if not menu.get_value(menu.ref_by_path("Self>Immortality")) and not isPlayerInInterior(players.user()) then
         SET_ENTITY_PROOFS(local_player, proofs.bullet.on, proofs.fire.on, proofs.explosion.on, proofs.collision.on, proofs.melee.on, proofs.steam.on, false, proofs.steam.on)
     end
 end)
 
-self:toggle_loop("隐形", {"stealthlevitation"}, "使用悬浮隐藏你的地图坐标和角色 其他玩家看不见", function()
+local stealthLevitation
+stealthLevitation = self:toggle_loop("隐形", {"stealthlevitation"}, "使用悬浮隐藏你的地图坐标和角色 其他玩家看不见", function()
 	local levitation = menu.ref_by_path("Self>Movement>Levitation>Levitation")
 	local vehInvisibility = menu.ref_by_path("Vehicle>Invisibility")
 	if levitation.value then
@@ -1224,15 +1234,19 @@ end, function()
 	STOP_AUDIO_SCENE("MP_CAR_MOD_SHOP")
 end)
 
-audio:toggle_loop("禁用警报", {"disablevehiclealarms"}, "禁用载具警报声", function()
-	for entities.get_all_vehicles_as_pointers() as vehPtr do
-		local vehicle = entities.pointer_to_handle(vehPtr)
-		if IS_VEHICLE_ALARM_ACTIVATED(vehicle) then
-			SET_VEHICLE_ALARM(vehicle, false)
-		end
-		if vehicle ~= entities.get_user_vehicle_as_handle() then
-			RELEASE_SCRIPT_GUID_FROM_ENTITY(vehicle)
-		end
+audio:toggle_loop("禁用电台", {"disableradio"}, "禁用电台", function()
+	if not IS_AUDIO_SCENE_ACTIVE("CAR_MOD_RADIO_MUTE_SCENE") then
+		START_AUDIO_SCENE("CAR_MOD_RADIO_MUTE_SCENE")
+	end
+end, function()
+	STOP_AUDIO_SCENE("CAR_MOD_RADIO_MUTE_SCENE")
+end)
+
+
+audio:toggle_loop("禁用警报", {"disablevehiclealarms"}, "禁用偷车时发出的警报", function()
+	local vehicle = GET_VEHICLE_PED_IS_TRYING_TO_ENTER(players.user_ped())
+	if IS_VEHICLE_ALARM_ACTIVATED(vehicle) then
+		SET_VEHICLE_ALARM(vehicle, false)
 	end
 end)	
 
@@ -1376,11 +1390,11 @@ spoofBlip:slider_float("Z", {"spoofedz"}, "", -20000, 270000, 0, 1, function(z_p
 end)
 
 spoofBlip:toggle_loop("启用", {}, "注意 这将导致小地图不显示你当前位置", function()
-	memory.write_int(blipData_iDisplacedInteriorID(players.user()), 1)
-	v3.set(blipData_vDisplacedInteriorPos(players.user()), blipX, blipY, blipZ)
+	memory.write_int(blipInteriorID(players.user()), 1)
+	v3.set(blipInteriorPos(players.user()), blipX, blipY, blipZ)
 end, function()
-	memory.write_int(blipData_iDisplacedInteriorID(players.user()), -1)
-	v3.set(blipData_vDisplacedInteriorPos(players.user()), players.get_position(players.user()))
+	memory.write_int(blipInteriorID(players.user()), -1)
+	v3.set(blipInteriorPos(players.user()), players.get_position(players.user()))
 end)
 
 
@@ -1538,14 +1552,13 @@ end)
 
 playerTutorialSessionList = tutorial_session_list:list("列表")
 local playerTutorialSession = playerTutorialSessionList:list_action("玩家", {}, "列出大厅中正在进行指导战局的所有玩家", {}, function(playerID)
-	local team = getTeamID(playerID)
-	local instance = getInstanceID(playerID)
-	if team == nil or instance == nil then return end
-	NETWORK_ALLOW_GANG_TO_JOIN_TUTORIAL_SESSION(team, instance)
+	if not NETWORK_ARE_PLAYERS_IN_SAME_TUTORIAL_SESSION(players.user(), playerID) then
+		NETWORK_ALLOW_GANG_TO_JOIN_TUTORIAL_SESSION(getTeamID(playerID), getInstanceID(playerID))
 	repeat
 		yield()
-	until getTeamID(playerID) != team or getInstanceID(playerID) != instance or not players.exists(playerID)
+	until getTeamID(playerID) == nil or getInstanceID(playerID) == nil
 	NETWORK_END_TUTORIAL_SESSION()
+end
 end)
 
 util.create_tick_handler(function()
@@ -1592,6 +1605,14 @@ tutorialSession = tutorial_session:toggle_loop("进入", {}, "", function()
 	end
 end, function()
 	NETWORK_END_TUTORIAL_SESSION()
+end)
+
+lobby:action("野兽全部", {}, "野兽战局全部玩家", function()
+	for players.list_except() as playerID do
+		if not players.is_marked_as_modder(playerID) then
+			util.trigger_script_event(1 << playerID, {1450115979, players.user(), 8192, 267, 1})
+		end
+	end
 end)
 
 local orbital = lobby:list("反天基炮")
@@ -1669,7 +1690,7 @@ spoofOrbital:toggle_loop("启用", {}, "", function()
 	end
 end)
 
-orbital:toggle_loop("封闭室门", {"blockorb"}, "生成物体阻挡对方进入天基炮室", function() -- credit to lance, just cleaned it up a bit.
+orbital:toggle_loop("封闭室门", {"blockorb"}, "生成物体阻挡对方进入天基炮室", function()
 	local blockOrbMdl = joaat("h4_prop_h4_garage_door_01a")
 	local blockOrbMdlSign = joaat("xm_prop_x17_screens_02a_07")
 	util.request_model(blockOrbMdl)
@@ -1695,7 +1716,7 @@ end, function()
 	end
 end)
 
-local annoy = orbital:list("闪烁延迟", {}, "")
+local annoy = orbital:list("闪烁延迟", {}, "快速闪烁你的名称并将其从目标玩家列表中删除")
 local orbDelay = 1000
 annoy:list_select("延迟", {}, "天基炮使用者看你名字的闪烁速度", {{1000, "慢"}, {500, "中"}, {100, "快"}}, orbDelay, function(value)
 	orbDelay = value
@@ -1717,7 +1738,7 @@ annoy_tgl = annoy:toggle_loop("启用", {}, "", function()
 end)
 
 local ghostOrb = orbital:list("幽灵模式")
-ghostOrb:toggle_loop("一直是", {"ghostorb"}, "自动幽灵化使用天基炮的玩家", function()
+ghostOrb:toggle_loop("总是", {"ghostorb"}, "自动幽灵化使用天基炮的玩家", function()
 	for players.list_except() as playerID do
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 		local cam_dist = v3.distance(players.get_position(players.user()), players.get_cam_pos(playerID))
@@ -2020,6 +2041,7 @@ weapons:toggle_loop("自瞄射击", {"aimbotall"}, "", function()
 		local pedPtr = entities.handle_to_pointer(players.user_ped())
 		local wpn = GET_SELECTED_PED_WEAPON(players.user_ped())
 		local dmg = GET_WEAPON_DAMAGE(wpn, 0)
+    local bones = {31086, 24816, 40269, 45509, 0, 51826, 58271}
 		if IS_PLAYER_FREE_AIMING_AT_ENTITY(players.user(), ped) and IS_PED_SHOOTING(players.user_ped()) and not IS_ENTITY_A_GHOST(ped) then
 			boneIndex = bones[math.random(#bones)]
 			local boneCoords = GET_PED_BONE_COORDS(ped, boneIndex, 0.0, 0.0, 0.0)
@@ -2315,8 +2337,7 @@ clumsiness:toggle_loop("启用", {"vehicleclumsiness"}, "", function()
 		return 
 	end
 	local CHandlingData = entities.vehicle_get_handling(CAutomobile)
-	local veh_speed = (GET_ENTITY_SPEED(entities.get_user_vehicle_as_handle())* 2.236936)
-	memory.write_float(CHandlingData + 0x00EC, IS_CONTROL_PRESSED(0, 266) or IS_CONTROL_PRESSED(0, 267) ? -clumsy_val : 0.5)
+		memory.write_float(CHandlingData + 0x00EC, IS_CONTROL_PRESSED(0, 266) or IS_CONTROL_PRESSED(0, 267) ? -clumsy_val : 0.5)
 end, function()
 	local CAutomobile = entities.get_user_vehicle_as_pointer()
 	if CAutomobile == 0 then return end
@@ -2325,22 +2346,22 @@ end, function()
 end)
 
 
-local engine_sound = vehicles:list("载具声音", {}, "注意 某些发动机声音可能会影响你的载具加速")
-local vehicle_class = {}
+local engineSound = vehicles:list("载具声音", {}, "注意 某些发动机声音可能会影响你的载具加速")
+local vehicleClass = {}
 local ignore_duplicates = {} 
 for util.get_vehicles() as vehicle do
 	local name = util.get_label_text(vehicle.name)
 	local hash = joaat(vehicle.name)
-	local veh_class = GET_VEHICLE_CLASS_FROM_NAME(hash)
+	local vehClassName = GET_VEHICLE_CLASS_FROM_NAME(hash)
 
 	if ignore_class or name == "NULL" or ignore_duplicates[name] or (not IS_THIS_MODEL_A_CAR(hash) and not IS_THIS_MODEL_A_BIKE(hash) and not IS_THIS_MODEL_A_QUADBIKE(hash)) then 
 		continue 
 	end
-	if not vehicle_class[veh_class] then
-		vehicle_class[veh_class] = engine_sound:list(util.get_label_text($"VEH_CLASS_{veh_class}"))
+	if not vehicleClass[vehClassName] then
+		vehicleClass[vehClassName] = engineSound:list(util.get_label_text($"VEH_CLASS_{vehClassName}"))
 	end
 	ignore_duplicates[name] = true
-	engine_sound.action(vehicle_class[veh_class], name, {$"engine {name}"}, "", function()
+	engineSound.action(vehicleClass[vehClassName], name, {$"engine {name}"}, "", function()
 		PRELOAD_VEHICLE_AUDIO_BANK(hash)
 		SET_RADIO_TO_STATION_NAME("OFF") -- the radio kept changing for some reason so this should fix that
 		FORCE_USE_AUDIO_GAME_OBJECT(entities.get_user_vehicle_as_handle(), vehicle.name)
@@ -2467,18 +2488,19 @@ util.create_thread(function()
 				local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 				local vehicle = GET_VEHICLE_PED_IS_USING(ped)
 				local zoneID = GET_ZONE_AT_COORDS(players.get_position(playerID))
+        local isPlayerMoving = #NETWORK_GET_LAST_VEL_RECEIVED_OVER_NETWORK(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) != 0
 				if (zoneID == 1321 and (IS_ENTITY_IN_WATER(vehicle) or IS_ENTITY_IN_WATER(ped))) or players.is_using_rc_vehicle(playerID) or not isNetPlayerOk(players.user()) then 
 					continue 
 				end
 				if isPlayerGodmode(playerID) and not isDetectionPresent(playerID, "无敌") then
 					repeat
-						if not isPlayerMoving(playerID) and time_since_last_move >= 5 or not players.exists(playerID) or not isPlayerGodmode(playerID) or not isFreemodeActive(playerID) then
+						if not isPlayerMoving and time_since_last_move >= 5 or not players.exists(playerID) or not isPlayerGodmode(playerID) or not isFreemodeActive(playerID) then
 							time_since_last_move = 0
 							timer = util.current_time_millis() + 7500
 							break
 						end
 						yield(1000)
-						time_since_last_move = not isPlayerMoving(playerID) ? time_since_last_move + 1 : 0
+						time_since_last_move = not isPlayerMoving ? time_since_last_move + 1 : 0
 					until util.current_time_millis() > timer
 					if util.current_time_millis() > timer and players.exists(playerID) and isFreemodeActive(playerID) then
 						players.add_detection(playerID, "无敌", TOAST_ALL, 100)
@@ -2508,6 +2530,7 @@ end)
 modder_detections:toggle_loop("检测载具", {}, "检测载具无敌", function()
 	if NETWORK_IS_ACTIVITY_SESSION() then return end
 	for players.list_except(true) as playerID do
+    if not isPlayerInAnyVehicle(playerID) then continue end
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 		local pos = players.get_position(playerID)
 		local vehicle = GET_VEHICLE_PED_IS_USING(ped)
@@ -2519,77 +2542,67 @@ modder_detections:toggle_loop("检测载具", {}, "检测载具无敌", function
 end)
 
 do
-	local cached_player_data = {}
+	local cachedPlayerData = {}
 	modder_detections:toggle_loop("检测传送", {}, "检测玩家是否传送到你", function(toggled)
 		if NETWORK_IS_ACTIVITY_SESSION() or not isNetPlayerOk(players.user()) then return end
 		for players.list_except(true) as playerID do
 			if not isNetPlayerOk(playerID) then return end
 			local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 			local veh = GET_VEHICLE_PED_IS_USING(ped) == entities.get_user_vehicle_as_handle()
-			if not cached_player_data[playerID] then
-				cached_player_data[playerID] = { pos = players.get_position(playerID), interior = getPlayerCurrentInterior(playerID) }
+			if not cachedPlayerData[playerID] then
+				cachedPlayerData[playerID] = { pos = players.get_position(playerID), interior = getPlayerCurrentInterior(playerID) }
 				continue
 			end
 
-			local cachedData = cached_player_data[playerID]
-			local cur_interior = getPlayerCurrentInterior(playerID)
-			local cur_pos = players.get_position(playerID)
-			local my_pos = players.get_position(players.user())
-			local distance_between_tp = v3.distance(cachedData.pos, cur_pos)
+			local cachedData = cachedPlayerData[playerID]
+			local currentInterior = getPlayerCurrentInterior(playerID)
+			local currentPos = players.get_position(playerID)
+			local myPos = players.get_position(players.user())
+			local distanceBetweenTP = v3.distance(cachedData.pos, currentPos)
 			local vehicle = GET_VEHICLE_PED_IS_USING(ped)
 			local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
 			
 			if not isPlayerInInterior(playerID) and not veh and playerID ~= players.user() then
-				if distance_between_tp > 30.0 and cachedData.interior == cur_interior and playerID ~= players.user() and driver ~= players.user() then
-					if IS_PED_IN_ANY_VEHICLE(ped) and v3.distance(cur_pos, my_pos) < 10.0 then
+				if distanceBetweenTP > 150.0 and cachedData.interior == currentInterior and playerID ~= players.user() and driver ~= players.user() then
+					if IS_PED_IN_ANY_VEHICLE(ped) and v3.distance(currentPos, myPos) < 10.0 then
 						if not isDetectionPresent(driver, "传送") and players.exists(playerID) then
 							players.add_detection(driver, "传送", TOAST_ALL, 75)
 						end
 					else
-						if not isDetectionPresent(playerID, "传送") and v3.distance(cur_pos, my_pos) < 5.0 and players.exists(playerID) then
+						if not isDetectionPresent(playerID, "传送") and v3.distance(currentPos, myPos) < 5.0 and players.exists(playerID) then
 							players.add_detection(playerID, "传送", TOAST_ALL, 75)
 						end
 					end
 				end
 			end
-			cachedData.pos = cur_pos
-			cachedData.interior = cur_interior
-			cached_player_data[playerID] = cachedData
+			cachedData.pos = currentPos
+			cachedData.interior = currentInterior
+			cachedPlayerData[playerID] = cachedData
 		end
-		yield(100)
+		yield()
 	end)
 
 	players.on_leave(function(playerID)
-		cached_player_data[playerID] = nil
+		cachedPlayerData[playerID] = nil
 	end)
 end
 
 modder_detections:toggle_loop("检测加速", {}, "", function()
 	if NETWORK_IS_ACTIVITY_SESSION() then return end
 	for players.list_except(true) as playerID do
-		if not IS_PED_IN_ANY_VEHICLE(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) then continue end
+		if not isPlayerInAnyVehicle(playerID) then continue end
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 		local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-		local veh_speed = (GET_ENTITY_SPEED(vehicle)* 2.236936)
-		local veh_class = GET_VEHICLE_CLASS(vehicle)
+		local vehSpeed = (GET_ENTITY_SPEED(vehicle)* 2.236936)
+		local vehClass = GET_VEHICLE_CLASS(vehicle)
 		local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
-		local pVehicle = entities.handle_to_pointer(vehicle)
-		local owner = entities.get_owner(pVehicle)
-		local veh_model = players.get_vehicle_model(playerID)
-		local veh_brand = nullCheck(util.get_label_text(GET_MAKE_NAME_FROM_VEHICLE_MODEL(veh_model)))
-		local veh_name = util.get_label_text(GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(veh_model))
-		local est_speed = GET_VEHICLE_ESTIMATED_MAX_SPEED(vehicle)
-		local est_model_speed = GET_VEHICLE_MODEL_ESTIMATED_MAX_SPEED(players.get_vehicle_model(playerID))
-		local mdl_accel = GET_VEHICLE_MODEL_ACCELERATION(players.get_vehicle_model(playerID))
-		local veh_accel = GET_VEHICLE_ACCELERATION(vehicle)
-		if est_speed > (est_model_speed + 11) and veh_accel > (mdl_accel * 1.2) then
-			continue
-		end
-		if veh_class != 15 and veh_class != 16 and veh_speed >= 200 and (players.get_vehicle_model(playerID) != joaat("oppressor") and players.get_vehicle_model(playerID) != joaat("oppressor2")) and playerID == driver then
+		local owner = entities.get_owner(vehicle)
+
+		if vehClass != 15 and vehClass != 16 and vehSpeed >= 200 and playerID == driver and owner == driver and not GET_HAS_ROCKET_BOOST(vehicle) then
 			if owner != playerID then 
 				repeat
 					yield() -- cooldown incase they are launched by a modder
-				until veh_speed < 50
+				until vehSpeed < 50
 				return
 			end
 			if not isDetectionPresent(driver, "加速") then
@@ -2598,81 +2611,44 @@ modder_detections:toggle_loop("检测加速", {}, "", function()
 			end
 		end
 	end
-	yield(100)
+	yield(250)
 end)
 
 modder_detections:toggle_loop("检测天基", {}, "检测作弊天基炮", function()
 	for players.list_except(true) as playerID do
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-		if isPlayerUsingOrbitalCannon(playerID) and not GET_IS_TASK_ACTIVE(ped, 135) and isNetPlayerOk(playerID) and not IS_PLAYER_DEAD(playerID) and not isDetectionPresent(playerID, "Modded Orbital Cannon") then
+		if isPlayerUsingOrbitalCannon(playerID) and getPlayerCurrentInterior(playerID) != 269313 and not isDetectionPresent(playerID, "Modded Orbital Cannon") and isNetPlayerOk(playerID) then
 			players.add_detection(playerID, "作弊天基炮", TOAST_ALL, 100)
 			break
 		end
 	end
+  yield(250)
 end)
 
 modder_detections:toggle_loop("检测生成", {}, "检测驾驶生成载具", function()
 	if NETWORK_IS_ACTIVITY_SESSION() then return end
 	for players.list_except(true) as playerID do
-		if not IS_PED_IN_ANY_VEHICLE(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) then continue end
+		if not isPlayerInAnyVehicle(playerID) then continue end
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 		local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-		local hash = players.get_vehicle_model(playerID)
 		local plateText = GET_VEHICLE_NUMBER_PLATE_TEXT(vehicle)
-		local bitset = DECOR_GET_INT(vehicle, "MPBitset")
 		local personalVehicle = DECOR_GET_INT(vehicle, "Player_Vehicle") != 0
 		local pegasusveh = DECOR_GET_BOOL(vehicle, "CreatedByPegasus")
 		local script = GET_ENTITY_SCRIPT(vehicle, 0)
-		if script == nil then continue end
+		if not table.contains(scripts, script) and plateText != "46EEK572" then continue end
 
 		if players.get_vehicle_model(playerID) ~= 0 and not GET_IS_TASK_ACTIVE(ped, 160) and isNetPlayerOk(players.user()) and players.exists(playerID) then
 			local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
-			if players.exists(driver) and not pegasusveh and playerID == driver then
-				if (table.contains(scripts, script) or plateText == "46EEK572") and not personalVehicle then
+			if players.exists(driver) and not pegasusveh and playerID == driver and not personalVehicle then
+				if isDebugMode and script != nil then
+					draw_debug_text($"{players.get_name(driver)} 载具[模型: {reverse_joaat(players.get_vehicle_model(playerID))}] 脚本： {script}")
+				else
 					draw_debug_text($"{players.get_name(driver)} 载具[模型: {reverse_joaat(players.get_vehicle_model(playerID))}]")
 				end
 			end
 		end
 	end
 end)
-
-modder_detections:toggle_loop("检测车牌", {}, "检测修改车牌", function()
-    if NETWORK_IS_ACTIVITY_SESSION() then return end
-    for players.list_except() as playerID do
-        if not IS_PED_IN_ANY_VEHICLE(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) then continue end
-
-        local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-        local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-        local plateText = GET_VEHICLE_NUMBER_PLATE_TEXT(vehicle)
-        local bitset = DECOR_GET_INT(vehicle, "MPBitset")
-        local pegasusveh = DECOR_GET_BOOL(vehicle, "CreatedByPegasus")
-        local personalVehicle = DECOR_GET_INT(vehicle, "Player_Vehicle") != 0
-        local bitset_things = {8, 3072, 10240, 11264, 1048576, 16777216}
-        local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
-
-        local skip = false
-		for bitset_things as bitsets do
-			if bitset == bitsets then
-                skip = true
-                break
-            end
-        end
-
-        --if skip or plateText == " PR1NCE " or plateText == " PR2NCE " or plateText == "M1NDFUL " then -- leaving this in live build temporarily
-        --    continue
-        --end
-
-        if not skip and plateText ~= nil and players.exists(driver) and not isPlatePatternLegit(plateText) and not isPlayerInInterior(playerID) and not personalVehicle and not pegasusveh and playerID == driver then
-			if IS_DEBUG_BUILD then
-            	draw_debug_text($"{players.get_name(driver)} 改装车牌 [{plateText}] 位集: {bitset}")
-			else
-				draw_debug_text($"{players.get_name(driver)} 改装车牌 [{plateText}]")
-			end
-        end
-    end
-end)
-
-
 
 modder_detections:toggle_loop("检测锁定", {}, "检测使用防锁定的玩家", function()
 	local timer = util.current_time_millis() + 10000 -- compensating for player latency and vehicle chaff
@@ -2684,8 +2660,8 @@ modder_detections:toggle_loop("检测锁定", {}, "检测使用防锁定的玩�
 		local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
 		local bitset = DECOR_GET_INT(vehicle, "MPBitset")
 		local vehicleMdl = reverse_joaat(players.get_vehicle_model(playerID))
-		local bitset_things = {2048, 3072, 10240, 11264, 11272, 33792} -- the game sets some vehicles not targetable that are parts of fm activities
-		for bitset_things as bitsets do
+		local legitBitsets = {2048, 3072, 10240, 11264, 11272, 33792} -- the game sets some vehicles not targetable that are parts of fm activities
+		for legitBitsets as bitsets do
 			if bitset == bitsets then
 				return
 			end
@@ -2713,65 +2689,7 @@ modder_detections:toggle_loop("检测锁定", {}, "检测使用防锁定的玩�
 			timer = util.current_time_millis() + 10000
 		end
 	end
-	yield(100)
-end)
-
-local ignored_vehs = {}
-modder_detections:toggle_loop("检测车速", {}, "检测修改发动机功率或最高速度的人", function()
-	local timer = util.current_time_millis() + 2500
-	if NETWORK_IS_ACTIVITY_SESSION(true) then return end
-	for players.list_except(true) as playerID do
-		if not IS_PED_IN_ANY_VEHICLE(GET_PLAYER_PED_SCRIPT_INDEX(playerID)) then continue end
-		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-		local vehicle = GET_VEHICLE_PED_IS_USING(ped)
-		local veh_model = players.get_vehicle_model(playerID)
-		local veh_brand = nullCheck(util.get_label_text(GET_MAKE_NAME_FROM_VEHICLE_MODEL(veh_model)))
-		local veh_name = util.get_label_text(GET_DISPLAY_NAME_FROM_VEHICLE_MODEL(veh_model))
-		local est_speed = GET_VEHICLE_ESTIMATED_MAX_SPEED(vehicle)
-		local est_model_speed = GET_VEHICLE_MODEL_ESTIMATED_MAX_SPEED(players.get_vehicle_model(playerID))
-		local mdl_accel = GET_VEHICLE_MODEL_ACCELERATION(players.get_vehicle_model(playerID))
-		local veh_accel = GET_VEHICLE_ACCELERATION(vehicle)
-		local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
-		local pVehicle = entities.handle_to_pointer(vehicle)
-		local owner = entities.get_owner(pVehicle)
-		local veh_class = vehicle_classes[GET_VEHICLE_CLASS(vehicle) + 1]
-		local dumbVehicleMdls = {"vivanite", "dilletante", "dilletante2", "inductor", "inductor2", "flatbed", "surge", "khamelion", "surfer", "surfer2", "surfer3"} -- fuck these dumb cars
-
-		if not ignored and owner != playerID and driver == playerID and est_speed > (est_model_speed + 6) then
-			ignored_vehs[vehicle] = true
-			continue
-		end
-
-		if ignored and est_speed < (est_model_speed + 6) then
-			ignored_vehs[vehicle] = false
-			continue
-		end
-
-		for dumbVehicleMdls as dumbVehs do
-			if players.get_vehicle_model(playerID) == joaat(dumbVehs) then
-				ignored_vehs[vehicle] = true
-				continue
-			end
-		end
-		
-		if veh_brand ~= "" then
-			veh_name = $"{veh_brand} {veh_name}"
-		end
-
-		local ignored = ignored_vehs[vehicle]
-		if not isDetectionPresent(playerID, "修改车速") and not isPlayerInInterior(playerID) then
-			if est_model_speed > 1.0 and not ignored and est_speed > (est_model_speed + 6) and veh_accel > (mdl_accel * 1.3) and playerID == driver then
-				repeat
-					yield()
-				until util.current_time_millis() > timer -- for some reason the game doesnt properly calculate speed for a while. this delay seems to be good
-				toast($"[检测信息] \n实体所有者: {players.get_name(driver)} \n模型: {veh_name} \n类型: {veh_class} \n游戏预计速度: {ROUND(est_model_speed * 2.236936)} MPH \n当前预计速度: {ROUND((est_speed * 2.236936) * 1.2)} MPH")
-				players.add_detection(playerID, "修改车速", TOAST_ALL, 75)
-				ignored_vehs[vehicle] = true
-				break
-			end
-		end
-	end
-	yield(100)
+	yield(250)
 end)
 
 do
@@ -2779,28 +2697,27 @@ do
 	local cachedVehData = {}
 	modder_detections:toggle_loop("检测升级", {}, "检测在修车店外为自己或他人的载具升级的玩家", function(toggled)
 		for players.list_except(true) as playerID do
-			local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-			if not IS_PED_IN_ANY_VEHICLE(ped) then
+			if not isPlayerInAnyVehicle(playerID) then
 				if cachedModData[playerID] then
 					cachedModData[playerID] = nil
 				end
 				continue
 			end
 
-			local veh = GET_VEHICLE_PED_IS_USING(ped)
-			local pVehicle = entities.handle_to_pointer(veh)
+			local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
 			local pos = players.get_position(playerID)
-			local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(veh, -1))
+			local vehicle = GET_VEHICLE_PED_IS_USING(ped)
+			local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(vehicle, -1))
 
 			local current_vehicle_mods = {}
 			if not cachedModData[playerID] then
 				cachedModData[playerID] = { veh_mods = {} }
 				for i = 0, 49 do
-					cachedModData[playerID].veh_mods[i] = GET_VEHICLE_MOD(veh, i)
+					cachedModData[playerID].veh_mods[i] = GET_VEHICLE_MOD(vehicle, i)
 				end
 				continue
 			end
-			yield(100)
+			
 			if not cachedVehData[playerID] then
 				cachedVehData[playerID] = GET_VEHICLE_PED_IS_USING(ped)
 				continue
@@ -2810,13 +2727,14 @@ do
 			local cachedVehicle = cachedVehData[playerID]
 
 			local curVeh =  GET_VEHICLE_PED_IS_USING(ped)
-
+local owner = entities.get_owner(playerID)
 			if curVeh == cachedVehicle then
 				for i = 0, 49 do
-					local mod = GET_VEHICLE_MOD(veh, i)
-					if cachedData.veh_mods[i] ~= mod and driver == playerID and not isPlayerInInterior(playerID) and pos.z > 0.0 and GET_VEHICLE_PED_IS_USING(ped) == veh and players.exists(playerID) then
-						if not isDetectionPresent(entities.get_owner(pVehicle), "载具升级") then
-							players.add_detection(entities.get_owner(pVehicle), "载具升级", TOAST_ALL, 100)
+					local mod = GET_VEHICLE_MOD(vehicle, i)
+					if cachedData.veh_mods[i] ~= mod and owner == driver and not isPlayerInInterior(playerID) and pos.z > 0.0 and GET_VEHICLE_PED_IS_USING(ped) == vehicle and players.exists(playerID) then
+						if not isDetectionPresent(entities.get_owner(vehicle), "载具升级") then
+							players.add_detection(entities.get_owner(vehicle), "载具升级", TOAST_ALL, 100)
+              yield(500)
 							break
 						end
 					end
@@ -2826,107 +2744,13 @@ do
 			cachedModData[playerID] = cachedData
 			cachedVehData[playerID] = curVeh
 		end
-		yield(100)
+		yield(250)
 	end)
 	players.on_leave(function(playerID)
 		cachedModData[playerID] = nil
 		cachedVehData[playerID] = nil
 	end)
 end
-
-do
-	local cachedVehHealth = {}
-	local cachedVeh = {}
-	modder_detections:toggle_loop("检测维修", {}, "", function(toggled)
-		for players.list_except(true) as playerID do
-			local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-			if not IS_PED_IN_ANY_VEHICLE(ped) then
-				if cachedVehHealth[playerID] then
-					cachedVehHealth[playerID] = nil
-				end
-				continue
-			end
-
-			local veh = GET_VEHICLE_PED_IS_USING(ped)
-			local pVehicle = entities.handle_to_pointer(veh)
-			local pos = players.get_position(playerID)
-			local driver = NETWORK_GET_PLAYER_INDEX_FROM_PED(GET_PED_IN_VEHICLE_SEAT(veh, -1))
-
-			if not cachedVehHealth[playerID] then
-				cachedVehHealth[playerID] = GET_ENTITY_HEALTH(veh)
-				continue
-			end
-
-			if not cachedVeh[playerID] then
-				cachedVeh[playerID] = GET_VEHICLE_PED_IS_USING(ped)
-				continue
-			end	
-
-			local cachedHealth = cachedVehHealth[playerID]
-			local cachedVehicle = cachedVeh[playerID]
-			
-			local curVehHealth = GET_ENTITY_HEALTH(veh)
-			local curVeh =  GET_VEHICLE_PED_IS_USING(ped)
-
-			if curVeh == cachedVehicle then
-				if curVehHealth > cachedHealth and not isPlayerInInterior(playerID) and IS_ENTITY_VISIBLE(veh) and IS_ENTITY_VISIBLE(ped) and pos.z > 0.0 and driver == playerID and not NETWORK_IS_PLAYER_IN_MP_CUTSCENE(playerID) and GET_VEHICLE_PED_IS_USING(ped) == veh and players.exists(playerID) then
-					if not isDetectionPresent(entities.get_owner(pVehicle), "载具维修") then
-						players.add_detection(entities.get_owner(pVehicle), "载具维修", TOAST_ALL, 100)
-					end
-				end
-			end
-			cachedVehHealth[playerID] = curVehHealth
-			cachedVeh[playerID] = curVeh
-		end
-		yield(100)
-	end)
-	players.on_leave(function(playerID)
-		cachedVehHealth[playerID] = nil
-		cachedVeh[playerID] = nil
-	end)
-end
-
-modder_detections:toggle_loop("检测主机", {}, "检测将脚本主机交给其他玩家或在过渡期间拿脚本主机的人", function()
-	if not isNetPlayerOk(players.user()) then return end
-	local data = memory.alloc(56 * 8)
-	for queue = 0, 2 do
-		for index = 0, GET_NUMBER_OF_EVENTS(queue) - 1 do
-			local event = GET_EVENT_AT_INDEX(queue, index)
-			if event == EVENT_NETWORK_HOST_MIGRATION then
-				if not GET_EVENT_DATA(queue, index, data, 2) then
-					break
-				end
-				if memory.read_int(data) == GET_ID_OF_THIS_THREAD() and memory.read_int(data + 8) != players.user() then
-					if not isDetectionPresent(memory.read_int(data + 8), "脚本主机") then
-						local modded_sh = memory.read_int(data + 8)
-						yield(500)
-						local current_sh = players.get_script_host()
-						yield(500)
-						local new_new_sh = players.get_script_host()
-						if new_new_sh != current_sh and current_sh != modded_sh then continue end -- to prevent people from getting false flagged if a retard spams script host on everyone
-						if not isNetPlayerOk(current_sh) then
-							if modded_sh != current_sh and modded_sh != -1 then
-								if not isNetPlayerOk(modded_sh) then
-									players.add_detection(modded_sh, "脚本主机", TOAST_ALL, 100)
-									toast($"{players.get_name(modded_sh)} 刚刚中断了战局 :/")
-									break
-								end
-							else
-								players.add_detection(current_sh, "脚本主机", TOAST_ALL, 100)
-								toast($"{players.get_name(current_sh)} 刚刚中断了战局 :/")
-							end
-						else
-							if modded_sh != current_sh then
-								players.add_detection(modded_sh, "脚本主机", TOAST_ALL, 100)
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-	yield(100)
-end)
 
 modder_detections:toggle_loop("检测伤害", {}, "检测Stand本体检测不到的 修改伤害且反检测的菜单", function()
 	local timer = util.current_time_millis() + 5000
@@ -2962,7 +2786,7 @@ modder_detections:toggle_loop("检测伤害", {}, "检测Stand本体检测不到
 			end
 		end
 	end
-	yield(100)
+	yield(250)
 end)
 
 modder_detections:toggle_loop("检测2T", {}, "检测使用2Take1生成的载具并且驾驶", function()
@@ -2979,6 +2803,7 @@ modder_detections:toggle_loop("检测2T", {}, "检测使用2Take1生成的载具
 			end
 		end
 	end
+  yield(250)
 end)
 
 modder_detections:toggle_loop("检测Yim", {}, "检测使用YimMenu 这也将检测到从YimMenu套壳的菜单 比如空灵", function() -- 检查愚蠢的默认主机令牌，因为到底有谁会手动设置成这样的呢？
@@ -2991,6 +2816,7 @@ modder_detections:toggle_loop("检测Yim", {}, "检测使用YimMenu 这也将检
 			end
 		end
 	end
+  yield(250)
 end)
 
 modder_detections:toggle_loop("检测观看", {}, "检测是否有人正在使用菜单观看你", function()
@@ -3013,25 +2839,7 @@ modder_detections:toggle_loop("检测观看", {}, "检测是否有人正在使�
 	end
 end)
 
-modder_detections:toggle_loop("检测解锁", {}, "检测使用过全部解锁的人", function()
-	for players.list_except(true) as playerID do
-		if not players.are_stats_ready(playerID) or not isNetPlayerOk(playerID) then continue end
-		local iRacesWon = memory.read_int(memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 205 + 15))
-		local iRacesLost = memory.read_int(memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 205 + 16))
-		local iSexActs = memory.read_int(memory.script_global(GlobalplayerBD_FM + 1 + (playerID * 877) + 205 + 55))
-		if iSexActs == 25 then
-			if not isDetectionPresent(playerID, "可疑统计数据 (SA)") and players.exists(playerID) then
-				players.add_detection(playerID, "可疑统计数据 (SA)", TOAST_ALL, 50)
-			end
-		elseif iRacesWon >= 50 and iRacesLost <= 5 then
-			if not isDetectionPresent(playerID, "可疑统计数据 (R0)") and players.exists(playerID) then
-				players.add_detection(playerID, "可疑统计数据 (R0)", TOAST_ALL, 50)
-			end
-		end
-	end 
-end)
-
-normal_detections:toggle_loop("检测传送", {}, "检测是否有人在你身上放置路径点", function()
+normal_detections:toggle_loop("检测放置", {}, "检测是否有人在你身上放置路径点", function()
 	local getEntitySpeed = GET_ENTITY_SPEED(players.user_ped()) * 2.236936
 	local multiplyDistance = (getEntitySpeed - 20) / 20 * 0.1
 	local entitySpeed = math.max(1.1 + multiplyDistance, 1.1)
@@ -3088,7 +2896,7 @@ normal_detections:toggle_loop("检测睾酮", {}, "如果玩家使用牛鲨睾�
 	for queue = 0, 2 do
 		for index = 0, GET_NUMBER_OF_EVENTS(queue) - 1 do
 			local event = GET_EVENT_AT_INDEX(queue, index)
-			if event == EVENT_NETWORK_SCRIPT_EVENT then
+			if event == 174 then
 				if not GET_EVENT_DATA(queue, index, data, 54) then 
 					break 
 				end
@@ -3126,26 +2934,9 @@ protections:toggle_loop("阻止古奇", {}, "阻止古奇事件", function()
 	if GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("fm_content_xmas_mugger")) > 0 then
 		local amLauncherHost = NETWORK_GET_HOST_OF_SCRIPT("am_launcher", -1, 0)
 		TERMINATE_ALL_SCRIPTS_WITH_THIS_NAME("fm_content_xmas_mugger")
-		--toast($"Prevented a freemode script (fm_content_xmas_mugger). :D")
+		toast($"阻止自由模式脚本 (fm_content_xmas_mugger). :D")
 	end
 end)
-
-protections:toggle_loop("阻止克隆", {"blockclones"}, "阻止可能由作弊者生成的克隆", function()
-	for entities.get_all_peds_as_handles() as ped do
-		local script = GET_ENTITY_SCRIPT(ped, 0)
-		if entities.get_owner(ped) != players.user() then
-			if (GET_ENTITY_MODEL(ped) == joaat("mp_f_freemode_01") or GET_ENTITY_MODEL(ped) == joaat("mp_m_freemode_01")) and not IS_PED_A_PLAYER(ped) then
-				entities.delete(ped)
-				if IS_DEBUG_BUILD then
-        	   		toast($"阻止克隆生成 {players.get_name(entities.get_owner(ped))}\n创建: {script}")
-				else
-					toast($"阻止克隆生成 {players.get_name(entities.get_owner(ped))}")
-				end
-			end
-		end
-	end
-end)
-
 
 local anticage = protections:list("阻止笼子", {}, "阻挡99%的笼子而不破坏游戏")
 local cleanupType = 2
@@ -3162,7 +2953,7 @@ anticage:slider_float("半径值", {"blockingradius"}, "检测笼子半径", 100
 end)
 
 anticage:toggle_loop("启用", {"anticage"}, "", function()
-	if not NETWORK_IS_IN_SESSION() or NETWORK_IS_ACTIVITY_SESSION() then return end
+	if not isNetPlayerOk(players.user()) then return end
 	local my_ents = {players.user_ped(), entities.get_user_vehicle_as_handle()}
 	local interior = memory.read_int(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 245))
 	if interior == 275201 or interior == 274689 or interior == 281089 then
@@ -3276,15 +3067,14 @@ protections:toggle_loop("阻止劫持", {}, "阻止试图劫持你载具", funct
 	end
 end)
 
-local blockModdedEntities = protections:list("阻止实体", {}, "⚠这些功能可能会影响游戏性能或引起问题")
-blockModdedEntities:toggle_loop("阻止行人", {"blockmoddedpeds"}, "阻止非正常生成行人 这将保护你免受许多问题的影响 例如崩溃和恶意攻击功能", function()
+protections:toggle_loop("阻止行人", {"blockmoddedpeds"}, "阻止不正常生成的行人 这将保护你免受许多问题的影响 例如崩溃和恶意攻击功能", function()
 	if not isNetPlayerOk(players.user()) or isPlayerInInterior(players.user()) then return end
 	for entities.get_all_peds_as_handles() as ped do
 		local script = GET_ENTITY_SCRIPT(ped, 0)
 		local owner = entities.get_owner(ped)
 		if table.contains(scripts, script) and owner != players.user() and owner != -1 and ped != randomPed and ped != glitchPed then
 			deleteEntityLocally(ped)
-			if IS_DEBUG_BUILD then
+			if isDebugMode then
 				if GET_ENTITY_MODEL(ped) != 0 then
 					toast($"[调试信息] 已删除\n创建: {script}\n模型: {reverse_joaat(GET_ENTITY_MODEL(ped))}\n所有者: {players.get_name(owner)}")
 				end
@@ -3293,7 +3083,7 @@ blockModdedEntities:toggle_loop("阻止行人", {"blockmoddedpeds"}, "阻止非�
 	end
 end)
 
-blockModdedEntities:toggle_loop("阻止载具", {"blockmoddedvehicles"}, "阻止不正常生成的载具 这将保护你免受诸如恶搞功能之类的很多东西的侵害", function()
+protections:toggle_loop("阻止载具", {"blockmoddedvehicles"}, "阻止不正常生成的载具 这将保护你免受诸如恶搞功能之类的很多东西的侵害", function()
 	if not isNetPlayerOk(players.user()) then return end
 	for entities.get_all_vehicles_as_handles() as vehicle do
 		local script = GET_ENTITY_SCRIPT(vehicle, 0)
@@ -3306,7 +3096,7 @@ blockModdedEntities:toggle_loop("阻止载具", {"blockmoddedvehicles"}, "阻止
 		end
 		if table.contains(scripts, script) and (driver == 0 or not IS_PED_A_PLAYER(driver)) and owner != players.user() and owner != -1 then
 			deleteEntityLocally(vehicle)
-			if IS_DEBUG_BUILD then
+			if isDebugMode then
 				if GET_ENTITY_MODEL(vehicle) != 0 then
 					toast($"[调试信息] 已删除\n创建: {script}\n模型: {reverse_joaat(GET_ENTITY_MODEL(vehicle))}\n所有者: {players.get_name(owner)}")
 				end
@@ -3316,21 +3106,154 @@ blockModdedEntities:toggle_loop("阻止载具", {"blockmoddedvehicles"}, "阻止
 	end
 end)
 
-blockModdedEntities:toggle_loop("阻止物体", {"blockmoddedobjects"}, "阻止不正常生成的物体 这将保护你免受很多东西的侵害 例如笼子和其他恶搞功能", function()
-	if not isNetPlayerOk(players.user()) then return end
-	for entities.get_all_objects_as_handles() as object do
-		local script = GET_ENTITY_SCRIPT(object, 0)
-		local owner = entities.get_owner(object)
-		if (table.contains(scripts, script) or (IS_ENTITY_ATTACHED_TO_ANY_VEHICLE(object) and not IS_ENTITY_A_MISSION_ENTITY(object))) and owner != players.user() and owner != -1 then
-			deleteEntityLocally(object)
-			if IS_DEBUG_BUILD then
-				if GET_ENTITY_MODEL(object) != 0 then
-					toast($"[调试信息] 已删除\n创建: {script}\n模型: {reverse_joaat(GET_ENTITY_MODEL(object))}\n所有者: {players.get_name(owner)}")
-				end
-			end
+local epicBall = funfeatures:list("球化")
+
+local settings = {
+    ballSpeed = 0.5,
+    ballSprintMult = 2.5,
+    inAirBallSprintMult = 5.0,
+    minDistance = 10.0,
+    bounceStrength = 3.0,
+    dropVelocity = 1.5,
+    snappingForce = 0.5,
+    ballFov = 70,
+    ballHash = joaat("stt_prop_stunt_soccer_sball"),
+    ballVisibility = 0,
+    pedVisibility = 0
+}
+
+local setFov = menu.ref_by_path("Game>Camera>Field of View>Third-Person, On Foot"),
+local cachedFov = menu.get_value(setFov)
+
+local ballToggle
+ballToggle = epicBall:toggle_loop("变形", {"ball"}, "注意 这将导致传送无法工作 请切换悬浮以使用传送", function(toggled)
+	local levitation = menu.ref_by_path("Self>Movement>Levitation>Levitation")
+	local ballMdl = settings.ballHash
+	util.request_model(ballMdl)
+
+	if IS_PED_IN_ANY_VEHICLE(players.user_ped()) then
+		if ballObj != nil then
+			entities.delete(ballObj)
 		end
+		ballToggle.value = false
+		util.stop_thread()
 	end
+	
+	if ballObj == nil or not DOES_ENTITY_EXIST(ballObj) and not levitation.value then
+		ballObj = entities.create_object(ballMdl, players.get_position(players.user()))
+		pedRot = GET_ENTITY_ROTATION(players.user_ped(), 2)
+		ATTACH_ENTITY_TO_ENTITY(players.user_ped(), ballObj, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, false, 0, true, false)
+	end
+
+	if settings.ballVisibility == 1 and settings.pedVisibility == 0 and not players.is_visible(players.user()) then -- to prevent player ped from going invisible when toggling ball visibility to invisible
+		SET_ENTITY_VISIBLE(players.user_ped(), true)
+	end
+
+	if not isNetPlayerOk(players.user(), true, true) or GET_ENTITY_MODEL(ballObj) != settings.ballHash or not IS_ENTITY_ATTACHED_TO_ENTITY(players.user_ped(), ballObj) or (levitation.value and ballObj != nil) then
+		entities.delete(ballObj)
+		return
+	end
+
+	CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
+	SET_GAMEPLAY_CAM_IGNORE_ENTITY_COLLISION_THIS_UPDATE(ballObj)
+	SET_ENTITY_VISIBLE(ballObj, settings.ballVisibility == 0 ? true : false)
+	setFov:trigger(settings.ballFov)
+	invisibility:setState(settings.pedVisibility == 1 ? (not levitation.value ? "Enabled" : (levitation.value and stealthLevitation ? "Locally Visible" : "Disabled")) : "Disabled")
+
+    local inputDirection = -GET_CONTROL_NORMAL(2, 31)
+    local inputSide = GET_CONTROL_NORMAL(2, 30)
+    
+    local camRot = GET_GAMEPLAY_CAM_ROT(2)
+    local camHeadingDirection = -camRot.z / 180 * math.pi
+    local camHeadingSide = camHeadingDirection + math.pi / 2
+
+    local moveDirection = v3(math.sin(camHeadingDirection), math.cos(camHeadingDirection), 0) -- thanks to aaron for doing all this god awful math for me <3
+    local moveSide = v3(math.sin(camHeadingSide), math.cos(camHeadingSide), 0)
+	local moveAltitude = IS_CONTROL_PRESSED(0, 102) ? settings.bounceStrength : (IS_CONTROL_PRESSED(0, 36) ? -settings.dropVelocity : 0.0)
+	local height = GET_ENTITY_HEIGHT_ABOVE_GROUND(ballObj)
+	local force = height < settings.minDistance and IS_CONTROL_PRESSED(0, 21) ? (settings.ballSpeed * settings.ballSprintMult) : height > settings.minDistance and IS_CONTROL_PRESSED(0, 21) ? (settings.ballSpeed * settings.inAirBallSprintMult) : inputDirection
+
+	moveDirection:mul(force)
+	moveSide:mul(inputSide)
+	moveDirection:add(moveSide)
+	moveDirection:mul(settings.ballSpeed)
+	
+	if height > 3.0 then
+		moveDirection.z = -settings.snappingForce
+		APPLY_FORCE_TO_ENTITY(ballObj, 3, moveDirection, 0, 0, 0, 0, false, false, true, false, true)
+	end
+
+	moveDirection.z = moveAltitude
+	APPLY_FORCE_TO_ENTITY(ballObj, 3, moveDirection, 0, 0, 0, 0, false, false, true, false, true)
+end, function()
+	if ballObj != nil then
+		entities.delete(ballObj)
+	end
+	SET_ENTITY_ROTATION(players.user_ped(), pedRot, 2)
+	CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
+	SET_ENTITY_VISIBLE(players.user_ped(), true)
+	setFov:trigger(cachedFov)
+	invisibility:setState("Disabled")
 end)
+
+epicBall:list_select("模型", {"ballmodel"}, "", deezBalls, deezBalls[1][1], function(mdlHash)
+	settings.ballHash = mdlHash
+end)
+
+epicBall:divider("地面运动")
+epicBall:slider_float("速度值", {"movementspeed"}, "", 10, 1000, 50, 10, function(value)
+	settings.ballSpeed = value/100
+end)
+
+epicBall:slider_float("冲刺值", {"sprintmultiplier"}, "", 100, 10000, 250, 10, function(value)
+	settings.ballSprintMult = value/100
+end)
+
+epicBall:divider("空中运动")
+epicBall:slider_float("跳跃值", {"mindistance"}, "将激活冲刺倍增器的距地面的最小距离。", 100, 10000, 1000, 10, function(value)
+	settings.minDistance = value/100
+end)
+
+epicBall:slider_float("冲刺值", {"airsprintmultiplier"}, "键盘上的左Shift或手柄上的A", 100, 10000, 500, 10, function(value)
+	settings.inAirBallSprintMult = value/100
+end)
+
+epicBall:divider("助力")
+epicBall:slider_float("弹起值", {"upwardforce"}, "控制球弹跳的高度\n键盘上的空格键或手柄上的RB", 100, 1000, 300, 10, function(value)
+	settings.bounceStrength = value/100
+end)
+
+epicBall:slider_float("落下值", {"downwardforce"}, "控制球下落的速度\n键盘上的左控制键和手柄上的左摇杆", 100, 1000, 150, 10, function(value)
+	settings.dropVelocity = value/100
+end)
+
+
+epicBall:slider_float("控制值", {"snappingforce"}, "", 0, 250, 50, 10, function(value)
+	settings.snappingForce = value/100
+end)
+
+
+epicBall:divider("透明度")
+epicBall:slider("视野值", {"ballfov"}, "", 50, 130, 70, 1, function(value)
+	settings.ballFov = value
+end)
+
+epicBall:toggle_loop("禁抖动", {}, "", function()
+	STOP_GAMEPLAY_CAM_SHAKING(true)
+end)
+
+ballVisibilitySlider = epicBall:slider("透明度", {"ballinvisibility"}, "球透明度", 0, 1, 0, 1, function(value) -- I dont like list selects for stuff like this, cry about it.
+	settings.ballVisibility = value
+end)
+menu.add_value_replacement(ballVisibilitySlider, 0, "可见")
+menu.add_value_replacement(ballVisibilitySlider, 1, "隐形")
+
+pedVisibilitySlider = epicBall:slider("透明度", {"pedinvisibility"}, "人物透明度 这将使你在其他人的雷达上隐形", 0, 1, 0, 1, function(value) -- cry about it more
+	settings.pedVisibility = value
+end)
+menu.add_value_replacement(pedVisibilitySlider, 0, "可见")
+menu.add_value_replacement(pedVisibilitySlider, 1, "隐形")
+
 
 local ninjaJump = funfeatures:list("翻腾")
 local flipsPerSecond = 1.0
@@ -3415,7 +3338,7 @@ end)
 
 
 local movementType = funfeatures:list("姿势")
-movementType:toggle_loop("爬行", {"crawl"}, "以第一人称视角会让你走得更快 很有趣", function(toggled)
+movementType:toggle_loop("爬行", {"crawl"}, "注意 进入第一人称视角会让你移动得更快 这相当有趣", function(toggled)
 	requestAnimDict("missfbi3_sniping")
 	local dict = "move_crawl"
 	local forwards = "onfront_fwd"
@@ -3423,7 +3346,7 @@ movementType:toggle_loop("爬行", {"crawl"}, "以第一人称视角会让你走
 	requestAnimDict(dict)
 	if IS_CONTROL_PRESSED(0, 32) and not IS_ENTITY_PLAYING_ANIM(players.user_ped(), dict, forwards, 3) then
 		TASK_PLAY_ANIM(players.user_ped(), dict, forwards, 2.5, 2.5, -1, 1|32, 1.0, false, false, false)
-	elseif IS_CONTROL_PRESSED(0, 33) and not IS_ENTITY_PLAYdNG_ANIM(players.user_ped(), dict, backwards, 3) then
+	elseif IS_CONTROL_PRESSED(0, 33) and not IS_ENTITY_PLAYING_ANIM(players.user_ped(), dict, backwards, 3) then
 		TASK_PLAY_ANIM(players.user_ped(), dict, backwards, 2.5, 2.5, -1, 1|32, 1.0, false, false, false)
 	elseif IS_PED_ARMED(players.user_ped(), 6) and not IS_ENTITY_PLAYING_ANIM(players.user_ped(), "missfbi3_sniping", "prone_michael", 3) and not IS_CONTROL_PRESSED(0, 32) and not IS_CONTROL_PRESSED(0, 33) then
 		TASK_PLAY_ANIM(players.user_ped(), "missfbi3_sniping", "prone_michael", 2.5, 2.5, -1, 1|32, 1.0, false, false, false)
@@ -3566,9 +3489,9 @@ end)
 
 headlamp:toggle_loop("打开", {"headlamp"}, "", function()
 	local head_pos = GET_PED_BONE_COORDS(players.user_ped(), 31086, 0.0, 1.0, 0.0)
-	local cam_rot = players.get_cam_rot(players.user())
+	local camRot = players.get_cam_rot(players.user())
 	if not IS_PED_IN_ANY_VEHICLE(players.user_ped()) then
-		DRAW_SHADOWED_SPOT_LIGHT(head_pos, cam_rot:toDir(), math.floor(headlampColor.r * 255), math.floor(headlampColor.g * 255), math.floor(headlampColor.b * 255), headlampDistance * 1.5, brightness, 0.0, light_radius, headlampDistance, 0)
+		DRAW_SHADOWED_SPOT_LIGHT(head_pos, camRot:toDir(), math.floor(headlampColor.r * 255), math.floor(headlampColor.g * 255), math.floor(headlampColor.b * 255), headlampDistance * 1.5, brightness, 0.0, light_radius, headlampDistance, 0)
 	end
 end)
 
@@ -3579,7 +3502,7 @@ end)
 funfeatures:toggle("断电", {"enableblackout"}, "", function(toggled)
 	menu.trigger_commands(toggled ? "time 0" : "syncclock")
 	SET_ARTIFICIAL_LIGHTS_STATE(toggled)
-	SET_TIMECYCLE_MODIFIER(toggled ? "dlc_island_vault" : "默认")
+	SET_TIMECYCLE_MODIFIER(toggled ? "dlc_island_vault" : "DEFAULT")
 end)
 
 local fingerGun = funfeatures:list("指枪", {}, "按B射击 无伤害")
@@ -3602,20 +3525,25 @@ for id, data in weapon_stuff do
 end
 
 local petJinx = funfeatures:list("宠物")
-petJinx:toggle_loop("宠物", {}, "Jinx", function()
-	if not jinxPed or not DOES_ENTITY_EXIST(jinxPed) then
+local jinxPed = {}
+petJinx:toggle("宠物", {}, "Jinx", function(toggled)
+	if toggled then
 		local jinx = joaat("a_c_cat_01")
 		util.request_model(jinx)
 		local pos = players.get_position(players.user())
-		jinxPed = entities.create_ped(28, jinx, pos, 0)
-		entities.set_can_migrate(jinxPed, false)
-		SET_PED_COMPONENT_VARIATION(jinxPed, 0, 0, 1, 0)
-		SET_ENTITY_INVINCIBLE(jinxPed, true)
+		for i = 1, 1 do -- todo: add spawn amount thingy
+			jinxPed[i] = entities.create_ped(28, jinx, pos, 0)
+			entities.set_can_migrate(jinxPed[i], false)
+			SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(jinxPed[i], true)
+			SET_PED_COMPONENT_VARIATION(jinxPed[i], 0, 0, 1, 0)
+			SET_ENTITY_INVINCIBLE(jinxPed[i], true)
+			TASK_FOLLOW_TO_OFFSET_OF_ENTITY(jinxPed[i], players.user_ped(), 0, -0.3, 0, 10.0, -1, 100.0, true)
+		end
+	else
+		for jinxPed as jinxPeds do
+			entities.delete(jinxPeds)
+		end
 	end
-	NETWORK_REQUEST_CONTROL_OF_ENTITY(jinxPed)
-	TASK_FOLLOW_TO_OFFSET_OF_ENTITY(jinxPed, players.user_ped(), 0, -0.3, 0, 7.0, -1, 1.5, true)
-end, function()
-	entities.delete(jinxPed)
 end)
 
 petJinx:action("寻找", {}, "Jinx", function()
@@ -3627,11 +3555,11 @@ petJinx:action("寻找", {}, "Jinx", function()
 	end
 end)
 
-misc:toggle("调试模式", {"debugmode"}, "启用额外信息以查明某功能未按预期工作的原因或调试通知", function(toggled)
-	IS_DEBUG_BUILD = toggled
+local isDebugMode = false
+misc:toggle("调试模式", {"debugmode"}, "启用有关功能为何未按预期工作或调试通知的额外信息", function(toggled)
+	isDebugMode = toggled
 end)
 menu.apply_command_states()
-
 
 local function player(playerID) 
 	local name = players.get_name(playerID)
@@ -3647,7 +3575,7 @@ local function player(playerID)
 	antigodmode = main:list("无敌", {}, "")
 	tpPlayer = main:list("传送")
 	miscPlayer = main:list("其他")
-	local trollingRoot = menu.ref_by_rel_path(menu.player_root(playerID), "Trolling")
+	trollingRoot = menu.ref_by_rel_path(menu.player_root(playerID), "Trolling")
 	trollingRoot:getChildren()[1]:attachBefore(trollingRoot:link(main):detach())
 
 	friendly:toggle_loop("宠物小猫", {}, "Jinx", function()
@@ -3658,10 +3586,11 @@ local function player(playerID)
 			local pos = players.get_position(playerID)
 			petJinxPlyr = entities.create_ped(28, jinx, pos, 0)
 			entities.set_can_migrate(petJinxPlyr, false)
+      SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(petJinxPlyr, true)
 			SET_PED_COMPONENT_VARIATION(petJinxPlyr, 0, 0, 1, 0)
 			SET_ENTITY_INVINCIBLE(petJinxPlyr, true)
+      TASK_FOLLOW_TO_OFFSET_OF_ENTITY(petJinxPlyr, ped, 0, -0.3, 0, 7.0, -1, 1.5, true)
 		end
-		TASK_FOLLOW_TO_OFFSET_OF_ENTITY(petJinxPlyr, ped, 0, -0.3, 0, 7.0, -1, 1.5, true)
 	end, function()
 		entities.delete(petJinxPlyr)
 	end)
@@ -3928,7 +3857,7 @@ local function player(playerID)
 		SET_PED_CONFIG_FLAG(randomPed, 366, true)
 		while not GET_IS_TASK_ACTIVE(randomPed, 160) do
 			if util.current_time_millis() > timer then
-				if IS_DEBUG_BUILD then
+				if isDebugMode then
 					toast("无法将任务指派给行人 :/")
 				else
 					toast($"踢出失败 {players.get_name(playerID)} 从载具上 :/")
@@ -4060,7 +3989,7 @@ local function player(playerID)
 		TASK_ENTER_VEHICLE(randomPed, vehicle, 1000, -1, 1.0, ECF_WARP_ENTRY_POINT | ECF_DONT_WAIT_FOR_VEHICLE_TO_STOP | ECF_JACK_ANYONE | ECF_WARP_PED | ECF_WARP_IF_DOOR_IS_BLOCKED, 0, false)
 		while not GET_IS_TASK_ACTIVE(randomPed, 160) do
 			if util.current_time_millis() > timer then
-				if IS_DEBUG_BUILD then
+				if isDebugMode then
 					toast("无法将任务指派给行人 :/")
 				else
 					toast("劫持失败 :/")
@@ -4099,7 +4028,7 @@ local function player(playerID)
 			if not IS_PED_IN_ANY_VEHICLE(randomPed) then
 				repeat
 					if util.current_time_millis() > timer then
-						if IS_DEBUG_BUILD then
+						if isDebugMode then
 							toast("无法将任务指派给行人 :/")
 						else
 							toast("劫持失败 :/")
@@ -4358,6 +4287,73 @@ local function player(playerID)
 		end
 	end)
 
+	griefing:action("送入医院", {"hospitalize"}, "", function()
+		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+		local ping = ROUND(NETWORK_GET_AVERAGE_PING(playerID))
+		local timer = (ping > 300) ? (util.current_time_millis() + 5000) : (util.current_time_millis() + 3000)
+		local pPed =  entities.handle_to_pointer(ped)
+		local pedPtr = entities.handle_to_pointer(players.user_ped())
+		if IS_PLAYER_DEAD(playerID) then return end
+		if not DOES_ENTITY_EXIST(ped) then
+            toast($"{players.get_name(playerID)} 人物尚未被克隆 :/")
+            return
+        end
+		setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+		yield(1000)
+		repeat
+			util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, joaat("weapon_pistol"), 500.0, 0, 0, DF_IsAccurate | DF_IgnorePedFlags | DF_SuppressImpactAudio | DF_IgnoreRemoteDistCheck, 0, 0, 0, 0, 0, 0, 0, 0.0)
+			if util.current_time_millis() > timer then
+				toast($"击杀失败 {players.get_name(playerID)}. :/")
+				clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+				timer = util.current_time_millis() + 3000
+				return
+			end
+			yield()
+		until IS_PED_DEAD_OR_DYING(ped)
+		yield(1000)
+		timer = util.current_time_millis() + 3000
+		clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+    end)
+
+	local isOrbActive = false
+	griefing:action("天基打击", {"orb"}, "天基炮打击目标", function()
+		local timer = util.current_time_millis() + 3000
+		if playerID == players.user() then 
+			toast(lang.get_localised(CMDOTH))
+			return
+		end
+		if isOrbActive then 
+			toast(lang.get_localised(TOOFAST))
+			return 
+		end
+		if IS_PLAYER_DEAD(playerID) or not isNetPlayerOk(playerID) then 
+			return 
+		end
+		local timer = util.current_time_millis() + 5000
+        local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+		isOrbActive = true
+        setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+		yield(1000) -- yielding a second because its a bit iffy on high(ish) ping players (150ms+)
+		local pos = players.get_position(playerID)
+		ADD_OWNED_EXPLOSION(players.user_ped(), pos, 59, 1.0, true, false, 1.0)
+		USE_PARTICLE_FX_ASSET("scr_xm_orbital")
+		START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", pos, v3(), 1.0, false, false, false, true)
+		PLAY_SOUND_FROM_COORD(0, "DLC_XM_Explosions_Orbital_Cannon", pos, 0, true, 0, false) -- hardcoding sound id because GET_SOUND_ID doesnt work sometimes
+		yield(1000)
+		clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+		repeat
+			if util.current_time_millis() > timer and not IS_PED_DEAD_OR_DYING(ped) then
+				toast($"Failed to orbital strike {players.get_name(playerID)}. :/")
+				timer = util.current_time_millis() + 3000
+				return
+			end
+			yield()
+		until not IS_PED_DEAD_OR_DYING(ped)
+		STOP_SOUND(0)
+		isOrbActive = false
+		timer = util.current_time_millis() + 3000
+    end)
+
 	griefing:toggle_loop("发射玩家", {"launch"}, "适用于大多数菜单", function()
 		local muleMdl = joaat("mule5")
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
@@ -4527,9 +4523,9 @@ local function player(playerID)
 	local arcadeGames = {
 		[229] = "街头狂飙",
 		[230] = "荒地复仇",
-		[231] = "毁灭巫师",
+		[231] = "断袖诅咒",
 		[235] = "太空猴",
-		[236] = "Qub3d",
+		[236] = "QUB3D",
 		[237] = "猎头",
 	}
 	
@@ -4623,19 +4619,80 @@ local function player(playerID)
 		entities.delete(hamburger)
 	end)
 
-	local isPlayerGod = false
-	local removeGodmode
-	removeGodmode = antigodmode:toggle_loop("移除无敌", {}, lang.get_localised(-748077967), function()
-		if not isPlayerGodmode(playerID) then 
-			toast($"{players.get_name(playerID)} 非无敌 :/")
-			removeGodmode.value = false
-		end
+	antigodmode:toggle_loop("移除无敌", {}, lang.get_localised(-748077967), function()
 		util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
 	end)
 
 	antigodmode:action("击杀无敌", {"killgod", "modkill"}, lang.get_localised(-748077967), function()
         local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-		if IS_PED_DEAD_OR_DYING(ped) then return end
+		if IS_PLAYER_DEAD(playerID) then return end
+		if not DOES_ENTITY_EXIST(ped) then
+            toast($"{players.get_name(playerID)} 人物尚未被克隆 :/")
+            return
+        end
+
+        if not isPlayerGodmode(playerID) then 
+            toast($"{players.get_name(playerID)} 不是无敌或正在使用反检测 :/")
+            return 
+        end
+		godKill(playerID)
+    end)
+
+	local isGodmodeRemovable = {}
+	antigodmode:action("天基打击", {"orbgod"}, lang.get_localised(-748077967), function()
+		local timer = util.current_time_millis() + 3500
+        local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+		local vehicle = GET_VEHICLE_PED_IS_USING(ped)
+		if IS_PLAYER_DEAD(playerID) then return end
+		if not DOES_ENTITY_EXIST(ped) then
+            toast($"{players.get_name(playerID)} 人物尚未被克隆 :/")
+            return
+        end
+
+        if not isPlayerGodmode(playerID) then 
+            toast($"{players.get_name(playerID)} 不是无敌或正在使用反检测 :/")
+            return 
+        end
+		
+		repeat
+			toast("删除无敌...")
+			if util.current_time_millis() > timer then
+				toast($"删除失败 {players.get_name(playerID)} 无敌 :/")
+				return
+			end
+			util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
+			yield()
+		until not players.is_godmode(playerID)
+		isGodmodeRemovable[playerID] = true
+
+		if isGodmodeRemovable[playerID] then
+			toast("天基打击...")
+			if isPlayerInAnyVehicle(playerID) and entities.is_invulnerable(vehicle) then
+				entities.request_control(vehicle, 2500)
+				SET_ENTITY_CAN_BE_DAMAGED(vehicle, true)
+				SET_ENTITY_INVINCIBLE(vehicle, false)
+				SET_ENTITY_PROOFS(vehicle, false, false, false, false, false, false, false, false)
+			end
+
+			setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+			yield(500) -- yielding so their game realizes I'm using the orb
+			local pos = players.get_position(playerID)
+			ADD_OWNED_EXPLOSION(players.user_ped(), pos, 59, 1.0, true, false, 1.0)
+			USE_PARTICLE_FX_ASSET("scr_xm_orbital")
+			START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", pos, v3(), 1.0, false, false, false, true)
+			PLAY_SOUND_FROM_COORD(0, "DLC_XM_Explosions_Orbital_Cannon", pos, 0, true, 0, false) -- hardcoding sound id because GET_SOUND_ID doesnt work sometimes
+			godKill(playerID)
+			yield(1000) -- yielding here isnt needed but it gives yourself the notification that you orbed them
+			clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+			yield(3000)
+			STOP_SOUND(0)
+			isGodmodeRemovable[playerID] = false
+		end
+    end)
+
+	antigodmode:action("送入医院", {"hospitalizegod"}, $"假装是天基炮并将他们传送到医院 {lang.get_localised(-748077967)}", function()
+        local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
+		if IS_PLAYER_DEAD(playerID) then return end
 		if not DOES_ENTITY_EXIST(ped) then
             toast($"{players.get_name(playerID)} 人物尚未被克隆 :/")
             return
@@ -4646,28 +4703,16 @@ local function player(playerID)
             return 
         end
         
-        local timer = util.current_time_millis() + 3000
-        local pPed =  entities.handle_to_pointer(ped)
-        local pedPtr = entities.handle_to_pointer(players.user_ped())
-        repeat
-            util.trigger_script_event(1 << playerID, {800157557, players.user(), 225624744, math.random(0, 9999)})
-            util.call_foreign_function(CWeaponDamageEventTrigger, pedPtr, pPed, pPed + 0x90, 0, 1, joaat("weapon_pistol"), 500.0, 0, 0, DF_IsAccurate | DF_IgnorePedFlags | DF_SuppressImpactAudio | DF_IgnoreRemoteDistCheck, 0, 0, 0, 0, 0, 0, 0, 0.0)
-            if util.current_time_millis() > timer then
-                toast($"{players.get_name(playerID)} 无敌无法移除 :/")
-				timer = util.current_time_millis() + 3000
-                return
-            end
-            yield()
-            yield()
-        until IS_PED_DEAD_OR_DYING(ped)
-		timer = util.current_time_millis() + 3000
+		setBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
+		godKill(playerID)
+		clearBit(memory.script_global(GlobalplayerBD + 1 + (players.user() * 463) + 424), 0)
     end)
 
 	antigodmode:action("压扁杀", {"squish"}, "对部分菜单有效且没开启不可摔倒", function()
 		local khanjali = joaat("khanjali")
 		local ped = GET_PLAYER_PED_SCRIPT_INDEX(playerID)
-		local pos = players.get_position(playerID)
 		local heading =  GET_ENTITY_HEADING(ped)
+		local pos = players.get_position(playerID)
 		util.request_model(khanjali)
 		distance = IS_PED_STILL(ped) ? 0.0 : 2.5
 
@@ -4731,6 +4776,14 @@ local function player(playerID)
 		end
 	end)
 
+	local missionWarp = tpPlayer:list("任务传送", {}, lang.get_localised(-748077967))
+	for missionType, warpName in freemodeMissionWarps do
+		missionWarp:action(warpName, {}, "", function()
+			util.trigger_script_event(1 << playerID, {1450115979, players.user(), missionType, -1})
+		end)
+	end
+
+
 	local interiorTP = tpPlayer:list("室内传送", {}, lang.get_localised(-748077967))
 	for id, interior in interiorTpList do
 		interiorTP:action(interior, {}, "", function()
@@ -4738,8 +4791,8 @@ local function player(playerID)
 		end)
 	end
 
-	local missionEndTP = tpPlayer:list("其他传送", {}, lang.get_localised(-748077967))
-	for id, location in pairs(missionEndTeleports) do
+	local missionEndTP = tpPlayer:list("地点传送", {}, lang.get_localised(-748077967))
+	for id, location in missionEndTeleports do
 		missionEndTP:action(location, {}, "", function()
 			local handle = NETWORK_HASH_FROM_PLAYER_HANDLE(playerID)
 			util.trigger_script_event(1 << playerID, {-1604421397, players.user(), id, 4, handle, 0, 0, 0, 1, 1})
@@ -4761,7 +4814,7 @@ local function player(playerID)
 	tpPlayer:action("佩里科岛", {}, "上岛动画", function()
 		triggerDistanceBasedTeleport(playerID, {1669592503, players.user(), 0, 0, 5, 1})
 	end)
-
+	
 	local aimbor
 	aimbor = miscPlayer:toggle_loop("自瞄射击", {"aimbot"}, "", function()
 		if playerID == players.user() then 
@@ -4775,6 +4828,7 @@ local function player(playerID)
 		local pedPtr = entities.handle_to_pointer(players.user_ped())
 		local wpn = GET_SELECTED_PED_WEAPON(players.user_ped())
 		local dmg = GET_WEAPON_DAMAGE(wpn, 0)
+		local bones = {31086, 24816, 40269, 45509, 0, 51826, 58271}
 		if IS_PLAYER_FREE_AIMING_AT_ENTITY(players.user(), ped) and IS_PED_SHOOTING(players.user_ped()) and not IS_ENTITY_A_GHOST(ped) then
 			boneIndex = bones[math.random(#bones)]
 			local boneCoords = GET_PED_BONE_COORDS(ped, boneIndex, 0.0, 0.0, 0.0)
@@ -4794,11 +4848,12 @@ local function player(playerID)
 		local shotDelay = GET_WEAPON_TIME_BETWEEN_SHOTS(wpn)
 		local wpnEnt = GET_CURRENT_PED_WEAPON_ENTITY_INDEX(players.user_ped(), false)
 		local wpnCoords = GET_ENTITY_BONE_POSTION(wpnEnt, GET_ENTITY_BONE_INDEX_BY_NAME(wpnEnt, "gun_muzzle"))
+		local bones = {31086, 24816, 40269, 45509, 0, 51826, 58271}
 		if GET_ENTITY_ALPHA(ped) < 255 then return end
 		if IS_PLAYER_FREE_AIMING_AT_ENTITY(players.user(), ped) and not IS_PED_RELOADING(players.user_ped()) then
 			boneIndex = bones[math.random(#bones)]
 			local pos = GET_PED_BONE_COORDS(ped, boneIndex, 0.0, 0.0, 0.0)
-			SHOOT_SINGLE_BULLET_BETWEEN_COORDS(wpnCoords, pos, dmg, true, wpn, players.user_ped(), true, false)
+			SHOOT_SINGLE_BULLET_BETWEEN_COORDS(wpnCoords, pos, dmg, true, wpn, players.user_ped(), true, false, 10000.0)
 			SET_CONTROL_VALUE_NEXT_FRAME(0, 24, 1.0) -- shooting manually after so it has the effect of you shooting to seem more legit despite there being nothing legit about this
 			yield(shotDelay * 1000)
 		end
@@ -4826,15 +4881,19 @@ local function player(playerID)
 		end
 
 		if getTeamID(playerID) == nil or getInstanceID(playerID) == nil then 
+			NETWORK_END_TUTORIAL_SESSION()
 			toast($"{players.get_name(playerID)} 不在任何指导战局 :/")
 			miscTutorialSession.value = false
 			return 
 		end
 		
-		while getTeamID(players.user()) != getTeamID(playerID) or getInstanceID(players.user()) != getInstanceID(playerID) do
+		if not NETWORK_ARE_PLAYERS_IN_SAME_TUTORIAL_SESSION(players.user(), playerID) then
 			NETWORK_ALLOW_GANG_TO_JOIN_TUTORIAL_SESSION(getTeamID(playerID), getInstanceID(playerID))
-			yield()
+			repeat
+				yield()
+			until getTeamID(playerID) == nil or getInstanceID(playerID) == nil
 		end
+		
 	end, function()
 		if NETWORK_IS_IN_TUTORIAL_SESSION() then
 			NETWORK_END_TUTORIAL_SESSION()

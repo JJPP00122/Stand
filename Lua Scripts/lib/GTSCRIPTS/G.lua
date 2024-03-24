@@ -118,7 +118,7 @@ util.create_tick_handler(function()
 end)
 
 function restartscript() 
-    package.loaded["lib.GTSCRIPTS.Q2"] = nil
+    package.loaded["lib.GTSCRIPTS.Q"] = nil
     package.loaded["lib.GTSCRIPTS.GTC.logo.GLogo"] = nil 
     package.loaded["lib.GTSCRIPTS.V"] = nil
     wait()
@@ -153,7 +153,7 @@ Heist_Control = GT(G, ">>任务选项", {}, "")
 Musiness_Banager = GT(G, ">>自动资产")
 Constructor_Lua = GT(G, ">>模组选项")
 other_options = GT(G, ">>设置选项")
-bbttt = GTH(G, ">>GTVIP四群[下载脚本]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=8qYUvJSLb2BVHZrM5Ztu_EyvZxfO5RvE&authKey=tViPuocQN00a41qIKcrWbk7VeYeJfMFPBOFLfrLx1mZdDnt9UjkHjkpC6DALzMHj&noverify=0&group_code=655413793", "")
+bbttt = GTH(G, ">>GTVIP五群[下载脚本]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=oaXbT9ji8V5GbTYGAMLyvcWu0wmsL9rY&authKey=nmvivn0c1f1NX7r3HMD7Hzz45LUmab6seEnbpSMTK5ud%2BfJcdYaRX9e43orCIOZV&noverify=0&group_code=933822463", "")
 --显示UI
 GTD(players_root, "[玩家选项]")
 GTD(selflist, "[自我选项]")
@@ -168,11 +168,10 @@ GTD(FY, "[聊天选项]")
 GTD(lobbyFeats, "[世界选项]")
 GTD(Musiness_Banager, "[自动资产] 版本:808cedc")
 GTD(Constructor_Lua, "[模组选项]")
-GTD(other_options, "[其他选项]")
+GTD(other_options, "[设置选项]")
 
 local configFile <const> = filesystem.scripts_dir() .. '\\GTLuaScript\\'.. "config.ini"
 dofile(filesystem.scripts_dir().."\\lib\\GTSCRIPTS\\Q.lua")
-
 function log(content)
     if verbose then
         util.log("[GTluaScript] " .. content)
@@ -182,8 +181,9 @@ end
 if SCRIPT_MANUAL_START then
     menu.trigger_commands("gtluascript")
 end
-gtoast("Don't tell me why 当我闭上双眼 看见了你")
-gtoast("GTLua 为开源代码 请勿相信任何所谓的破解版")
+
+gtoast("GTLua 为开源代码 不要相信任何“破解版”\n以及包括所有Stand脚本,全部为开源代码\n不要相信一些大雅之堂的小丑,比如尊*")
+gtoast("Everywhere We Go, 我有一路 清楚找我有幅图")
 
 if players.get_name(players.user()) == "SmallGodGirlo3o" then
     gtoast("欢迎回来，美丽的丢丢~")
@@ -253,8 +253,28 @@ font_size = 0.40
 GTLuaScript = menu
 util.keep_running()
 
-off_hb = false
+--[[Accessibility = GT(other_options, "辅助功能", {}, "本选项皆在帮助一些存在困难的用户\n以帮助他们自适应游戏功能和条件")
 
+Filter = GT(Accessibility, "色彩滤镜模式", {}, "帮助一些存在颜色盲辩的用户能自适应游戏颜色色彩")
+
+GTLP(Filter, "红/绿滤镜(红色盲)", {}, "", function ()
+
+end)
+
+
+GTLP(Filter, "绿/红滤镜(绿色盲)", {}, "", function ()
+
+end)
+
+GTLP(Filter, "蓝/黄滤镜(蓝色盲)", {}, "", function ()
+
+end)
+
+GTLP(Filter, "自定义色调", {}, "", function ()
+
+end)]]
+
+off_hb = false
 hb_off = GTTG(other_options, "关闭自我皇榜横幅", {}, "可点击F8保存,开启后下一次启动脚本时候将不会展示自身横幅\n不会影响其他人显示出你的皇榜横幅", function (on)
     if on then
         off_hb = true
@@ -469,6 +489,39 @@ end)
 
 menu.trigger_commands("sxcheck on")
 menu.set_visible(sxo, false)
+
+function lerp(start, destination, speed)
+    return start + ((destination - start) * speed)
+end
+
+textX = 0
+textEndPosition = 0.80 -- 文本最终停靠的X轴位置
+speed = 0.0075
+
+--星探
+notified_mid = {}
+mio = GTTG(players_root, "MIO", {"miocheck"}, "", function(f)
+    spgt = f
+    while spgt do
+        for pid = 0, 32 do
+            mid = players.get_name(pid)
+            for _,id in ipairs(masterid) do
+                if mid == id.mid and not notified_mid[id.mid] then
+                    if pid then
+                        --menu.set_value(xty, true)
+                        gtoast("GTLua VIP 星探级会员 "..mid.." 正在该战局")
+                        mastergt(f)
+                        notified_mid[id.mid] = true
+                    end
+                end
+            end
+        end
+        wait(2000)
+    end
+end)
+
+menu.trigger_commands("miocheck on")
+menu.set_visible(mio, false)
 --
 menu.link(players_root, menu.ref_by_path("Online>Rockstar ID Tools"), true)
 cs2 = menu.link(players_root, menu.ref_by_path("Online>Quick Progress>Casino"), true)
@@ -686,6 +739,29 @@ local function gameplay_camera(distance)
     }
     return destination
 end
+
+GTTG(players_root, '虚假无敌', {}, '', function(wudi)
+    wd = wudi
+    while wd do
+        util.yield()
+        pidp = players.user_ped()
+        PED.SET_PED_MAX_HEALTH(pidp, 55487)
+        ENTITY.SET_ENTITY_HEALTH(pidp, 55487)
+        PLAYER.SET_PLAYER_MAX_ARMOUR(pidp, 55487)
+        PED.SET_PED_ARMOUR(pidp, 55487)
+        ENTITY.SET_ENTITY_INVINCIBLE(pidp, true)
+        PED.CLEAR_PED_BLOOD_DAMAGE(pidp)
+        ENTITY.SET_ENTITY_PROOFS(pidp, false, false, false, false, false, false, 1, false)
+    end
+    pidp = players.user_ped()
+    PED.SET_PED_MAX_HEALTH(pidp, 328)
+    ENTITY.SET_ENTITY_HEALTH(pidp, 328)
+    PLAYER.SET_PLAYER_MAX_ARMOUR(pidp, 328)
+    PED.SET_PED_ARMOUR(pidp, 328)
+    ENTITY.SET_ENTITY_INVINCIBLE(pidp, false)
+    ENTITY.SET_ENTITY_PROOFS(pidp, true, true, true, true, true, true, 1, true)
+end)
+
 
 local cur_rot = 0
 local cur_clone = 0
@@ -2321,6 +2397,55 @@ function paoku1()
 end
 
 -- 新型娱乐
+local entity_held_ped = 0
+GTLP(newfunc, '虐杀原形', {}, '按E抓取和扔出', function()
+    if PAD.IS_CONTROL_JUST_RELEASED(38, 38) then
+        if entity_held_ped == 0 then
+            local ped = pick_up_ped()
+            if ped then
+                entity_held_ped = ped
+            end
+        else
+            throw_ped(entity_held_ped)
+            entity_held_ped = 0
+        end
+    end
+end)
+
+GTLP(newfunc, '我的跟班', {}, '靠近你指定的NPC,按E成为你选择的跟班,按X删除跟班.', function()
+    local closest = get_closest_ped_index(ENTITY.GET_ENTITY_COORDS(players.user_ped()))
+    local ped = closest[1]
+    local dist = closest[2]
+    if dist <= 5 then
+        local pedpos = ENTITY.GET_ENTITY_COORDS(ped)
+        GRAPHICS.DRAW_LINE(ENTITY.GET_ENTITY_COORDS(players.user_ped()).x,
+            ENTITY.GET_ENTITY_COORDS(players.user_ped()).y, ENTITY.GET_ENTITY_COORDS(players.user_ped()).z, pedpos.x,
+            pedpos.y, pedpos.z, 255, 201, 212, 255)
+        GRAPHICS.DRAW_MARKER(0, pedpos.x, pedpos.y, pedpos.z + 1.5, 0, 180, 0, 0, 0, 0, .5, .5, .4, 255, 201, 212, 255,
+            true, true, 0, 0, 0, 0, false)
+        GRAPHICS.DRAW_MARKER(25, pedpos.x, pedpos.y, pedpos.z - 0.85, 0, 180, 0, 0, 180, 0, 1, 1, 1, 255, 201, 212, 255,
+            true, true, 0, 0, 0, 0, false)
+        if util.is_key_down(0x45) then
+            PED.SET_PED_AS_GROUP_MEMBER(ped, PLAYER.GET_PLAYER_GROUP(players.user()))
+            PED.SET_PED_AS_GROUP_MEMBER(ped, PLAYER.GET_PLAYER_GROUP(players.user()))
+            PED.SET_PED_NEVER_LEAVES_GROUP(ped, true)
+            PED.SET_GROUP_SEPARATION_RANGE(PLAYER.GET_PLAYER_GROUP(players.user()), 99999)
+        end
+        if util.is_key_down(0x58) then
+            util.yield(50)
+            entities.delete_by_handle(ped)
+        end
+    end
+end)
+
+GTLP(newfunc, '手搓冲击波',{""},'按E使用',function()
+    shockwavetick2()
+end)
+
+GTLP(newfunc, '汽车瞬杀门',{""},'按G激活功能\n数字键盘左键开启左门\n数字键盘右键开启右门',function()
+    InstantKillDoortick()
+end)
+
 GTTG(newfunc, "跑酷", {""}, "奔跑时(Shift+W)按住空格(0.5秒-1秒)起跳\n跳跃的高度取决于按住空格的时长", function(f)
     local state = false
     on = f
@@ -6518,7 +6643,7 @@ end)
 magfunc = GTTG(players_root, "Mag的王座", {"magic"}, "定制级功能:)", function(on)
 
     if WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Mag7777V"
-    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Magicwordstar" 
+    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Magicswordstar" 
     or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "RhymeBear" then
 
         if on then
@@ -6526,13 +6651,13 @@ magfunc = GTTG(players_root, "Mag的王座", {"magic"}, "定制级功能:)", fun
             menu.trigger_commands("jiajia2 on")
             menu.trigger_commands("lens on")
             --menu.trigger_commands("lightk on")
-            menu.trigger_commands("sans on")
+            --menu.trigger_commands("sans on")
         else
             menu.trigger_commands("jiajia1 off")
             menu.trigger_commands("jiajia2 off")
             menu.trigger_commands("lens off")
             --menu.trigger_commands("lightk off")
-            menu.trigger_commands("sans off")
+            --menu.trigger_commands("sans off")
         end
     else
         gtoast("不可使用")
@@ -13767,6 +13892,21 @@ function deluxomode(veh, ratio)
     native_invoker.end_call_2(0xD138FA15C9776837)
 end
 
+GTAC(funfeatures_veh, '陆地火车', {}, '', function()
+    spawnAndCustomizeEntity(1030400667)
+    setmenoinvisible()
+end)
+
+GTAC(funfeatures_veh, '陆地飞机', {}, '', function()
+    spawnAndCustomizeEntity(-1214505995)
+    setmenoinvisible()
+end)
+
+GTAC(funfeatures_veh, '陆地船只', {}, '', function()
+    spawnAndCustomizeEntity(-1043459709)
+    setmenoinvisible()
+end)
+
 GTTG(funfeatures_veh, '漏油', {}, '', function (f)
 feat = f
     local vehicles
@@ -15460,13 +15600,39 @@ end)
 
 visual_setting()
 
-GTAC(custselc, "所有人标记为傻逼", {}, "", function()
+GTTG(custselc, "全局控制无敌", {}, "若有防护性的外挂则可能不起作用", function (w)
+    on = w
+    while on do
+        for pid = 0, 31 do
+            util.yield()
+            pidp = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            PED.SET_PED_MAX_HEALTH(pidp, 10999999)
+            ENTITY.SET_ENTITY_HEALTH(pidp, 10999999)
+            PLAYER.SET_PLAYER_MAX_ARMOUR(pidp, 10999999)
+            PED.SET_PED_ARMOUR(pidp, 10999999)
+            ENTITY.SET_ENTITY_INVINCIBLE(pidp, true)
+            PED.CLEAR_PED_BLOOD_DAMAGE(pidp)
+            ENTITY.SET_ENTITY_PROOFS(pidp, false, false, false, false, false, false, 1, false)
+        end
+    end
+    for pid = 0, 31 do
+        pidp = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        PED.SET_PED_MAX_HEALTH(pidp, 328)
+        ENTITY.SET_ENTITY_HEALTH(pidp, 328)
+        PLAYER.SET_PLAYER_MAX_ARMOUR(pidp, 328)
+        PED.SET_PED_ARMOUR(pidp, 328)
+        ENTITY.SET_ENTITY_INVINCIBLE(pidp, false)
+        ENTITY.SET_ENTITY_PROOFS(pidp, true, true, true, true, true, true, 1, true)
+    end
+end)
+
+GTAC(custselc, "全局标记傻逼", {}, "", function()
     for pid = 0,31 do
         local pedp  = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         gametag = WIRI_HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
     end
 end)
-    
+
 local allcrash = GT(custselc, "全局崩溃", {}, "魔怔选项,请您慎重!", function(); end)
 
 local allguyssound = GT(custselc, "全局声音", {}, "", function(); end)
@@ -20443,110 +20609,58 @@ GTluaScript.rainbow(GTluaScript.colour(colouroverlyasd   , '设置覆盖颜色',
     colourOverlay = colour
 end))
 
-local trainsasd = GT(lobbyFeats, '火车选项', {''}, '')
+ps_train = GT(lobbyFeats, "火车选项", {}, "控制火车行为")
 
-local get_control_of_entity = function(h, t)
-    if not h then
-        return
-    end
-    if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(h) then
-        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(h)
-        local time = util.current_time_millis() + t
-        while ENTITY.IS_AN_ENTITY(h) and not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(h) and time > util.current_time_millis() do
-            wait(5)
+spawned_train = nil
+GTAC(ps_train, '生成火车', {}, '会在你附近范围生成', function()
+    local train_models = {
+        0x3D6AAA9B,
+        0x0AFD22A6,
+        0x264D9262,
+        0x36DCFF98,
+        0x0E512E79,
+        0xD1ABB666
+    }
+    for _, model in ipairs(train_models) do
+        STREAMING.REQUEST_MODEL(model)
+        while not STREAMING.HAS_MODEL_LOADED(model) do
+            util.yield(0)
         end
     end
-    return NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(h)
-end
+    local coords = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+    local veh = VEHICLE.CREATE_MISSION_TRAIN(15, coords.x, coords.y, coords.z, true, 0, 0)
+    spawned_train = veh
+end)
 
-    function is_player_driving_train(pid)
-        if PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED(pid), true) and
-            int_to_uint(ENTITY.GET_ENTITY_MODEL(veh)) == 1030400667 or
-            int_to_uint(ENTITY.GET_ENTITY_MODEL(veh)) then
-            return true
-        else
-            return false
-        end
+menu.click_slider(ps_train, "火车:", {""}, "1 = 进入, 2 = 离开 3 = 删除", 1, 3, 1, 1, function(selectedOption)
+    if selectedOption == 1 then
+        PED.SET_PED_INTO_VEHICLE(players.user_ped(), spawned_train, -1)
+    elseif selectedOption == 2 then
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
+    elseif selectedOption == 3 then
+        entities.delete_by_handle(spawned_train)
     end
+end)
 
-    traincontrol = GT(trainsasd,"火车控制", {}, '')
+GTAC(ps_train,'毁坏火车',  {''}, '', function()
+    local coords = ENTITY.GET_ENTITY_COORDS(spawned_train)
+    VEHICLE.SET_VEHICLE_UNDRIVEABLE(spawned_train, true)
+    VEHICLE.SET_VEHICLE_ENGINE_HEALTH(spawned_train, 0)
+    VEHICLE.SET_VEHICLE_PETROL_TANK_HEALTH(spawned_train, 0)
+    FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 1, 100.0, true, false, 3.0, false)
+    VEHICLE.SET_RENDER_TRAIN_AS_DERAILED(spawned_train, true)
+    ENTITY.SET_ENTITY_RENDER_SCORCHED(spawned_train, true)
+    VEHICLE.SET_TRAIN_CRUISE_SPEED(spawned_train, 0)
+    VEHICLE.SET_TRAIN_SPEED(spawned_train, 0)
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spawned_train, coords.x, coords.y, coords.z + 1)
+end)
 
-    getintotrain = GTAC(traincontrol,"进入火车/电车", {}, '', function(k)
-        pedmy = players.user_ped(players.user())
-        veh = entities.get_all_vehicles_as_handles()
-        for i = 1, #veh do
-            get_control_of_entity(veh[i], 300)
-            entityhash = return int_to_uint(ENTITY.GET_ENTITY_MODEL(veh[i]))
-            if entityhash == 868868440 then
-                PED.SET_PED_INTO_VEHICLE(pedmy, veh[i], -1)
-            else
-                util.toast("附加没有电车")
-            end
-            wait(1)
-            if entityhash == 1030400667 then
-                PED.SET_PED_INTO_VEHICLE(pedmy, veh[i], -1)
-            else
-                util.toast("附加没有火车")
-            end
-        end
-    end)
-
-    GTTG(traincontrol,"火车控制器", {}, '', function(f)
-        if f then
-            local TrainSpeed = 10.0
-            while f do
-                wait(10)
-                if is_player_driving_train(players.user()) then
-                    local New_Request = false
-                    if PAD.IS_DISABLED_CONTROL_PRESSED(2, 32) then
-                        TrainSpeed = TrainSpeed + 1.0
-                        New_Request = true
-                    end
-                    if PAD.IS_DISABLED_CONTROL_PRESSED(2, 33) then
-                        TrainSpeed = TrainSpeed - 1.0
-                        New_Request = true
-                    end
-                    if New_Request then
-                        VEHICLE.SET_TRAIN_SPEED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()),TrainSpeed)
-                        VEHICLE.SET_TRAIN_CRUISE_SPEED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()),TrainSpeed)
-                    end
-                end
-            end
-        end
-    end)
-
-    GTTG(traincontrol,"停止火车", {}, '', function(f)
-        while f do
-            wait(0)
-            if is_player_driving_train(players.user()) then
-                VEHICLE.SET_TRAIN_SPEED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()), 0.0)
-                VEHICLE.SET_TRAIN_CRUISE_SPEED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()), 0.0)
-            end
-        end
-    end)
-
-    GTAC(traincontrol,"强制离开火车", {}, '', function(f)
-        if is_player_driving_train(players.user()) then
-            TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped(players.user()))
-        end
-    end)
-
-    GTAC(traincontrol,"删除所有火车", {},'', function(f)
-        VEHICLE.DELETE_ALL_TRAINS()
-    end)
-
-    GTAC(traincontrol,"火车脱轨",{},'', function(f)
-        if is_player_driving_train(players.user()) then
-            if f then
-                VEHICLE.SET_RENDER_TRAIN_AS_DERAILED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()), true)
-            end
-            if not f then
-                VEHICLE.SET_RENDER_TRAIN_AS_DERAILED(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED()), false)
-            end
-        end
-    end)
-
-
+GTAC(ps_train, '超音速火车', {}, '', function()
+    local train_speed_native = ENTITY.GET_ENTITY_SPEED(spawned_train)
+    local train_speed = train_speed_native TrainSpeed_new = train_speed + 200.0
+    VEHICLE.SET_TRAIN_CRUISE_SPEED(spawned_train, TrainSpeed_new)
+    VEHICLE.SET_TRAIN_SPEED(spawned_train, TrainSpeed_new)
+end)
 
 fireworks_root = GT(lobbyFeats, "烟花选项", {}, "")
 tianqi = GT(lobbyFeats, "天气更改", {}, "")
@@ -20722,6 +20836,28 @@ MISC.FORCE_LIGHTNING_FLASH()
 end)
 
 world_lol = GT(lobbyFeats, '世界玩乐', {}, '')
+
+GTTG(world_lol, '劈海', {}, '靠近海水生效', function(Split)
+    sp = Split
+    while sp do
+    local coords = players.get_position(players.user())
+    WATER.MODIFY_WATER(coords.x, coords.y, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 2, coords.y, -10, 10)
+    WATER.MODIFY_WATER(coords.x, coords.y + 2, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 2, coords.y + 2, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 4, coords.y, -10, 10)
+    WATER.MODIFY_WATER(coords.x, coords.y + 4, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 4, coords.y + 4, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 6, coords.y, -10, 10)
+    WATER.MODIFY_WATER(coords.x, coords.y + 6, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 6, coords.y + 6, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 8, coords.y, -10, 10)
+    WATER.MODIFY_WATER(coords.x, coords.y + 8, -10, 10)
+    WATER.MODIFY_WATER(coords.x + 8, coords.y + 8, -10, 10)
+    util.yield(1)
+    end
+    sp = false
+end)
 
 GTAC(world_lol, '冻结所有载具和实体', {}, '', function (f)
 allobj = entities.get_all_objects_as_handles()
@@ -21619,7 +21755,8 @@ util.create_thread(function ()
     end
 end)
 
-hblink = GTAC(G, ">>"..authvalue, {}, authinfo, function ()
+hblink = GTLP(G, ">>"..authvalue, {}, authinfo, function ()
+    drawnotify(authinfo)
 end)
 
 restartgt = GTAC(G, ">>重新启动", {}, "", function ()
@@ -21927,7 +22064,7 @@ zjxlbc = GTLP(zjxlid, "主机序列", {}, "", function(zhuji)
         myspeed1e = math.ceil(speedcalce)
         local speede2 = ENTITY.GET_ENTITY_SPEED(ente)
         local speedcalce2 = speede2 * 2.236936
-        myspeed1e2 = Round(speedcalce2, 1)
+        --myspeed1e2 = Round(speedcalce2, 1)
     end
     inviciamountintt = inviciamountint
 
@@ -21944,8 +22081,7 @@ zjxlbc = GTLP(zjxlid, "主机序列", {}, "", function(zhuji)
     
     draw_string(string.format("~h~~r~延迟: ~w~%dms", delay), zhuji_x + 0.047, zhuji_y + 0.003, zhuji_dx, zhuji_dx)
     draw_string(string.format("~h~~p~帧率: ~w~" .. fps), zhuji_x, zhuji_y + 0.003, zhuji_dx, zhuji_dx)
-    draw_string(string.format("~h~~w~" .. myspeed1e .. " ~q~公~g~里~f~/时" .. "~H~~w~  " .. myspeed1e2 ..
-                                  " ~y~英~p~里~q~/时"), zhuji_x, zhuji_y + 0.028, zhuji_dx, zhuji_dx)
+    draw_string(string.format("~h~~w~" .. myspeed1e .. " ~q~公~g~里~f~/每小时 每秒速度"), zhuji_x, zhuji_y + 0.028, zhuji_dx, zhuji_dx)
     draw_string(string.format('~h~~f~' .. "~h~~p~现实:~h~~w~" .. os.date("%X") .. "  ~h~~y~游戏:~h~~w~" ..
                                   CLOCK.GET_CLOCK_HOURS() .. ":" .. CLOCK.GET_CLOCK_MINUTES()), zhuji_x,
         zhuji_y + 0.057, zhuji_dx, zhuji_dx)
@@ -23562,9 +23698,10 @@ end)
 GTH(other_options, "GTVIP一群[满]", "https://jq.qq.com/?_wv=1027&k=wo92Nl0a", "")
 GTH(other_options, "GTVIP二群[满]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=fecyAfmh_yGqElM5ABguu9YIVIuIiNqh&authKey=Nt%2FvK%2B2K6lEnVl3%2Bz3ZyRtoEEXXX%2FpZjLrrgPpvsXVXHsWCS2kKV%2Bir5P1Xg7f6F&noverify=0&group_code=642072208", "")
 GTH(other_options, "GTVIP三群[满]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=oza9NK13Ql0LJDjvFg6x71QKAu5cDFYj&authKey=mKgjAapXxRtPTKUrwoLi%2FX%2FRovM4ufPDjh9nBhnQ6dFACL%2Fa%2Bqu7QkFTd55ipnEO&noverify=0&group_code=651502721", "")
-GTH(other_options, "GTVIP四群[加入]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=8qYUvJSLb2BVHZrM5Ztu_EyvZxfO5RvE&authKey=tViPuocQN00a41qIKcrWbk7VeYeJfMFPBOFLfrLx1mZdDnt9UjkHjkpC6DALzMHj&noverify=0&group_code=655413793", "")
-GTH(other_options, "GTVIP聊天群[加入]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=s_TXl5bUz7qNHUDHJV9p4gcAsBwqNnmq&authKey=%2FlvMHJriXIPU%2FzftUdGe3nd7JTF9JdwgJ6lfS61V1NzlZRriXxxY9vx14BsgKwJV&noverify=0&group_code=716431566", "脚本获取渠道属禁言状态\n仅提供用户获取脚本:)\n聊天交流请加入此群:)")
-
+GTH(other_options, "GTVIP四群[满]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=8qYUvJSLb2BVHZrM5Ztu_EyvZxfO5RvE&authKey=tViPuocQN00a41qIKcrWbk7VeYeJfMFPBOFLfrLx1mZdDnt9UjkHjkpC6DALzMHj&noverify=0&group_code=655413793", "")
+GTH(other_options, "GTVIP五群[加入]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=oaXbT9ji8V5GbTYGAMLyvcWu0wmsL9rY&authKey=nmvivn0c1f1NX7r3HMD7Hzz45LUmab6seEnbpSMTK5ud%2BfJcdYaRX9e43orCIOZV&noverify=0&group_code=933822463")
+GTH(other_options, "GTVIP聊天一群[无法加入]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=s_TXl5bUz7qNHUDHJV9p4gcAsBwqNnmq&authKey=%2FlvMHJriXIPU%2FzftUdGe3nd7JTF9JdwgJ6lfS61V1NzlZRriXxxY9vx14BsgKwJV&noverify=0&group_code=716431566")
+GTH(other_options, "GTVIP聊天二群[立刻加入]", "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=bVV36LnHp5WtE_b4z0NES6AtML6vWJu3&authKey=Q9azpxnisaisyX%2FAEmEesFC3HK3c6dhpP9JAGEyGSPRkpcYf3%2B03T4BcZ9wz1rdw&noverify=0&group_code=311525640")
 GTH(other_options, "加入Discord", "https://discord.gg/nJjB8FtxdN", "加入Discord服务器\n言论自由免受QQ限制\n服务器中不定时发布福利~\n欢迎您的加入喔:)")
 
 require "lib.GTSCRIPTS.GTW.real"
