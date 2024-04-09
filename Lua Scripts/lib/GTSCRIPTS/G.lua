@@ -6,8 +6,8 @@
 ╚██████╔╝██║  ██║██║  ██║██║ ╚████║██████╔╝   ██║   ╚██████╔╝╚██████╔╝██║  ██║██║██║ ╚████║╚██████╔╝ ╚████╔╝ ██║██║     
  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝    ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝      
 GRANDTOURINGVIP™ Copyright© 2024 All rights reserved.]] 
---require "lib.GTSCRIPTS.V"
-
+_G.native_v = native_invoker.unified_void
+_G.native_b = native_invoker.unified_bool
 function loadgt() 
 --if async_http.have_access() then
 memory.alloc_int()
@@ -64,7 +64,7 @@ util.create_thread(function()
         deleteframe = true
         GTluaScript.set_menu_name(connection, "请关闭禁用访问互联网(无法连接)")
         util.log("\n无法连接到服务器，目前网络框架处于测试状态\n允许在您禁止互联网连接时仍然可以正常使用GTLua")
-        wait(3000)
+        wait(4000)
         menu.delete(connection)
     else
         wait(math.random(2000, 8000))
@@ -118,7 +118,7 @@ util.create_tick_handler(function()
 end)
 
 function restartscript() 
-    package.loaded["lib.GTSCRIPTS.Q"] = nil
+    --package.loaded["lib.GTSCRIPTS.Q"] = nil
     package.loaded["lib.GTSCRIPTS.GTC.logo.GLogo"] = nil 
     package.loaded["lib.GTSCRIPTS.V"] = nil
     wait()
@@ -130,6 +130,11 @@ GTAC(menu.my_root(), ">>点击进入GTLua", {}, "",function () menu.trigger_comm
 GTAC(menu.my_root(), ">>重新启动GTLua", {}, "", function () restartscript() end) 
 
 Web_Http = GTH(G, ">>GTLua 官方网站", "http://gtlua.cn", "欢迎前来访问GTLua官方网站\n您需要了解的一切内容都在这里")
+
+
+mastervip = GT(G, ">>Ultra级会员功能")
+func388()
+
 enable_options = GTTG(G, ">>快捷入口", {}, "", function (on) 
     Quick_Enable(on) 
 end)
@@ -140,7 +145,6 @@ players_root = GT(G, ">>玩家选项", {}, "")
 frendlist = GT(G, ">>好友选项", {""}, "", function(); end)
 selflist = GT(G, ">>自我选项", {}, "", function(); end)
 weapon_options = GT(G, ">>武器选项", {}, "")
-pvphelp = GT(G, ">>自瞄选项", {""}, "")
 carfly = GT(G, ">>载具选项", {}, "", function(); end)
 custselc = GT(G, ">>战局选项", {}, "", function(); end)
 onlinemode = GT(G, '>>线上选项', {''}, '')
@@ -183,7 +187,7 @@ if SCRIPT_MANUAL_START then
 end
 
 gtoast("GTLua 为开源代码 不要相信任何“破解版”\n以及包括所有Stand脚本,全部为开源代码\n不要相信一些大雅之堂的小丑,比如尊*")
-gtoast("Everywhere We Go, 我有一路 清楚找我有幅图")
+gtoast("让我安静的望着你\n望着最遥远的距离")
 
 if players.get_name(players.user()) == "SmallGodGirlo3o" then
     gtoast("欢迎回来，美丽的丢丢~")
@@ -191,15 +195,16 @@ if players.get_name(players.user()) == "SmallGodGirlo3o" then
 end
 
 local function newnotify(title, subtitle, msg, iconname, intcolor)
-    WIRI_HUD.BEGIN_TEXT_COMMAND_THEFEED_POST("STRING")
-    WIRI_HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(msg)
-    WIRI_HUD.END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT(iconname, iconname, false, 0, title, subtitle)
-    WIRI_HUD.THEFEED_SET_BACKGROUND_COLOR_FOR_NEXT_POST(intcolor)
-    WIRI_HUD.END_TEXT_COMMAND_THEFEED_POST_TICKER(true, true)
+    HUD.BEGIN_TEXT_COMMAND_THEFEED_POST("STRING")
+    HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(msg)
+    HUD.END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT(iconname, iconname, false, 0, title, subtitle)
+    HUD.THEFEED_SET_BACKGROUND_COLOR_FOR_NEXT_POST(intcolor)
+    HUD.END_TEXT_COMMAND_THEFEED_POST_TICKER(true, true)
 end
+
 local notification = b_notifications.new()
 function notification(message, color)
-    C_HUD._THEFEED_SET_NEXT_POST_BACKGROUND_COLOR(0, color)
+    HUD._THEFEED_SET_NEXT_POST_BACKGROUND_COLOR(0, color)
     local picture = "CHAR_CHOP"
     GRAPHICS.REQUEST_STREAMED_TEXTURE_DICT(picture, 0)
     while not GRAPHICS.HAS_STREAMED_TEXTURE_DICT_LOADED(picture) do
@@ -284,7 +289,7 @@ hb_off = GTTG(other_options, "关闭自我皇榜横幅", {}, "可点击F8保存,
 end)
 menu.set_value(hb_off, hboff)
 
-local name = PLAYER.GET_PLAYER_NAME(players.user())
+--local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(players.user())
 show_hb_off = false
 for _, id in ipairs(spid) do
     if name == id.playerid then
@@ -381,6 +386,12 @@ notified_devs = {}
 dev = GTTG(players_root, "DEV", {"devcheck"}, "", function(f)
     devgt = f
     while devgt do
+        wait()
+
+        if players.get_name(players.user()) ~= SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(players.user()) then
+            notified_devs[players.get_name(players.user())] = true
+        end
+
         for pid = 0, 32 do
             playerrid = players.get_name(pid)
             for _, id in ipairs(devid) do
@@ -388,7 +399,7 @@ dev = GTTG(players_root, "DEV", {"devcheck"}, "", function(f)
                     if pid then
                         util.show_corner_help("~h~~q~GRANDTOURINGVIP 温馨提示 ~r~开发人员 ".. playerrid .."\n目前正在此战局中")
                         gtoast("GTVIP开发人员目前正在你的战局中")
-                        devhengfu(f)
+                        devhengfu(f, playerrid)
                         wait(1000)
                         notified_devs[id.playerrid] = true
                     end
@@ -398,25 +409,56 @@ dev = GTTG(players_root, "DEV", {"devcheck"}, "", function(f)
         wait(1000)
     end
 end)
+dev.value = true
+dev.visible = false
 
-menu.trigger_commands("devcheck on")
-menu.set_visible(dev, false)
+resetdev = GTTG(players_root, "RESETDEV", {}, "", function (f)
+    if f then
+        players.on_join(function(pid)
+            playerrid = players.get_name(pid)
+            
+            for _,id in ipairs(devid) do
+                if playerrid == id.playerrid then 
+                    notified_devs[id.playerrid] = false
+                end
+            end
+        end)
+    end
+end)
+resetdev.value = true
+resetdev.visible = false 
+--
+function lerp(start, destination, speed)
+    return start + ((destination - start) * speed)
+end
+
+textX = 0
+textEndPosition = 0.80 -- 文本最终停靠的X轴位置
+speed = 0.0075
+
+idle_sp = false
 
 --皇榜
 require "lib.GTSCRIPTS.GTA.list"
 notified_sp = {}
-spo = GTTG(players_root, "SPO", {"spcheck"}, "", function(f)
+spo = GTTG(players_root, "SPO", {""}, "", function(f)
     spgt = f
     while spgt do
+        wait()
+
+        if players.get_name(players.user()) ~= SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(players.user()) then
+            notified_sp[players.get_name(players.user())] = true
+        end
+
         for pid = 0, 32 do
             playerid = players.get_name(pid)
-            
-            for _,idx in ipairs(sxid) do
+
+            for _, idx in ipairs(sxid) do
                 if playerid == idx.playeridx then
                     for _, id in ipairs(spid) do
                         if playerid == id.playerid then
                             notified_sp[id.playerid] = true
-                        end 
+                        end
                     end
                 end
             end
@@ -424,23 +466,26 @@ spo = GTTG(players_root, "SPO", {"spcheck"}, "", function(f)
             for _, id in ipairs(spid) do
                 if playerid == id.playerid and not notified_sp[id.playerid] then
 
-                        if pid then
-                            if off_hb ~= true then
-                                util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n".. playerid .."\n~p~当前正在该战局")
-                                gtoast("GTVIP皇榜人员 ".. playerid .." 当前正在该战局")
-                                hengfugt(f)
+                    if pid then
+                        if off_hb ~= true then
+                            util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n" .. playerid ..
+                                                      "\n~p~当前正在该战局")
+                            gtoast("GTVIP皇榜人员 " .. playerid .. " 当前正在该战局")
+                            hengfugt(f, playerid)
+                            wait(1000)
+                            notified_sp[id.playerid] = true
+                        elseif off_hb == true then
+                            if pid ~= players.user() then
+                                util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n" .. playerid ..
+                                                          "\n~p~当前正在该战局")
+                                gtoast("GTVIP皇榜人员 " .. playerid .. " 当前正在该战局")
+                                hengfugt(f, playerid)
                                 wait(1000)
                                 notified_sp[id.playerid] = true
-                            elseif off_hb == true then
-                                if pid ~= players.user() then 
-                                    util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~p~皇榜人员\n".. playerid .."\n~p~当前正在该战局")
-                                    gtoast("GTVIP皇榜人员 ".. playerid .." 当前正在该战局")
-                                    hengfugt(f)
-                                    wait(1000)
-                                    notified_sp[id.playerid] = true 
-                                end
-                            end   
+                            end
                         end
+
+                    end
 
                 end
             end
@@ -449,32 +494,57 @@ spo = GTTG(players_root, "SPO", {"spcheck"}, "", function(f)
         wait(1000)
     end
 end)
+spo.value = true
+spo.visible = false
 
-menu.trigger_commands("spcheck on")
-menu.set_visible(spo, false)
+resetsp = GTTG(players_root, "RESETSP", {}, "", function (f)
+    if f then
+        players.on_join(function(pid) -- 玩家重新加入
+            playerid = players.get_name(pid)
+
+            for _, id in ipairs(spid) do 
+                if playerid == id.playerid then
+                    notified_sp[playerid] = false --消除已检测
+                end
+            end
+
+        end)
+
+    end
+end)
+resetsp.value = true 
+resetsp.visible = false
 
 --至臻
 require "lib.GTSCRIPTS.GTA.list"
 notified_sx = {}
-sxo = GTTG(players_root, "SXO", {"sxcheck"}, "", function(f)
+sxo = GTTG(players_root, "SXO", {""}, "", function(f)
     spgt = f
     while spgt do
+        wait()
+
+        if players.get_name(players.user()) ~= SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(players.user()) then
+            notified_sx[players.get_name(players.user())] = true
+        end
+
         for pid = 0, 32 do
             playeridx = players.get_name(pid)
             for _, id in ipairs(sxid) do
                 if playeridx == id.playeridx and not notified_sx[id.playeridx] then
                     if pid then
                         if off_hb ~= true then
-                            util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n".. playeridx .."\n~y~当前正在该战局")
-                            gtoast("GTVIP至臻皇榜 ".. playeridx .." 当前正在该战局")
-                            sxgt(f)
+                            util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n" .. playeridx ..
+                                                      "\n~y~当前正在该战局")
+                            gtoast("GTVIP至臻皇榜 " .. playeridx .. " 当前正在该战局")
+                            mastergt(f, playeridx)
                             wait(1000)
                             notified_sx[id.playeridx] = true
                         elseif off_hb == true then
                             if pid ~= players.user() then
-                                util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n".. playeridx .."\n~y~当前正在该战局")
-                                gtoast("GTVIP至臻皇榜 ".. playeridx .." 当前正在该战局")
-                                sxgt(f)
+                                util.show_corner_help("~h~~q~GRANDTOURINGVIP\n~y~至臻皇榜\n" .. playeridx ..
+                                                          "\n~y~当前正在该战局")
+                                gtoast("GTVIP至臻皇榜 " .. playeridx .. " 当前正在该战局")
+                                mastergt(f, playeridx)
                                 wait(1000)
                                 notified_sx[id.playeridx] = true
                             end
@@ -484,21 +554,32 @@ sxo = GTTG(players_root, "SXO", {"sxcheck"}, "", function(f)
             end
         end
         wait(1000)
+
     end
 end)
+sxo.value = true
+sxo.visible = false
 
-menu.trigger_commands("sxcheck on")
-menu.set_visible(sxo, false)
 
-function lerp(start, destination, speed)
-    return start + ((destination - start) * speed)
-end
+resetsx = GTTG(players_root, "RESETSX", {}, "", function (f)
+    if f then
+        players.on_join(function(pid) -- 玩家重新加入
+            playeridx = players.get_name(pid)
 
-textX = 0
-textEndPosition = 0.80 -- 文本最终停靠的X轴位置
-speed = 0.0075
+            for _, idx in ipairs(sxid) do 
+                if playeridx == idx.playeridx then
+                    notified_sx[playeridx] = false -- 消除已检测
+                end
+            end
 
---星探
+        end)
+
+    end
+end)
+resetsx.value = true 
+resetsx.visible = false
+
+--[[星探
 notified_mid = {}
 mio = GTTG(players_root, "MIO", {"miocheck"}, "", function(f)
     spgt = f
@@ -508,7 +589,6 @@ mio = GTTG(players_root, "MIO", {"miocheck"}, "", function(f)
             for _,id in ipairs(masterid) do
                 if mid == id.mid and not notified_mid[id.mid] then
                     if pid then
-                        --menu.set_value(xty, true)
                         gtoast("GTLua VIP 星探级会员 "..mid.." 正在该战局")
                         mastergt(f)
                         notified_mid[id.mid] = true
@@ -521,7 +601,7 @@ mio = GTTG(players_root, "MIO", {"miocheck"}, "", function(f)
 end)
 
 menu.trigger_commands("miocheck on")
-menu.set_visible(mio, false)
+menu.set_visible(mio, false)]]
 --
 menu.link(players_root, menu.ref_by_path("Online>Rockstar ID Tools"), true)
 cs2 = menu.link(players_root, menu.ref_by_path("Online>Quick Progress>Casino"), true)
@@ -1075,24 +1155,46 @@ GTTG(players_root, "自身血条", {""}, "", function(on)
     gt = false
 end)
 
-GTTG(players_root,"游戏暂停",{},"", function(zt)
+GTTG(players_root, "游戏暂停", {}, "", function(zt)
     gtb = zt
-       if gtb then
-          util.toast("世界停止")
-          MISC.SET_GAME_PAUSED(true)
-       else
-          util.toast("世界恢复")
-          MISC.SET_GAME_PAUSED(false)
-       end
- end)
- 
+    if gtb then
+        util.toast("世界停止")
+        MISC.SET_GAME_PAUSED(true)
+    else
+        util.toast("世界恢复")
+        MISC.SET_GAME_PAUSED(false)
+    end
+end)
+
+
+GTTG(players_root, "复活归位", {}, "", function(AA)
+    ab2 = AA
+    while ab2 do
+        wait(0)
+        local me = players.user()
+        local my_ped = players.user_ped(me)
+        if ENTITY.GET_ENTITY_HEALTH(my_ped) == 0 then
+            local lastpos = players.get_position(me)
+            while true do
+                wait(0)
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(my_ped, lastpos.x, lastpos.y, lastpos.z)
+                if PAD.IS_CONTROL_PRESSED(0, 32) or PAD.IS_CONTROL_PRESSED(0, 34) or PAD.IS_CONTROL_PRESSED(0, 33) or
+                    PAD.IS_CONTROL_PRESSED(0, 35) or PAD.IS_CONTROL_PRESSED(0, 21) or PAD.IS_CONTROL_PRESSED(0, 114) or
+                    PAD.IS_CONTROL_PRESSED(0, 142) or PAD.IS_CONTROL_PRESSED(0, 143) then
+                    break
+                end
+            end
+        end
+    end
+end)
+
 GTAC(players_root, "出其不意的传送", {""}, "", function()
     if not HUD.IS_WAYPOINT_ACTIVE(true) then
         util.toast("你需要设置一个标记点")
         return
     end
     local waypoint = HUD.GET_BLIP_INFO_ID_COORD(HUD.GET_FIRST_BLIP_INFO_ID(HUD.GET_WAYPOINT_BLIP_ENUM_ID()))
-    local vehicle = WIRI_PED.GET_VEHICLE_PED_IS_USING(players.user_ped())
+    local vehicle = PED.GET_VEHICLE_PED_IS_USING(players.user_ped())
     local ground = false
     repeat
         ground, waypoint.z = util.get_ground_z(waypoint.x, waypoint.y)
@@ -1100,7 +1202,7 @@ GTAC(players_root, "出其不意的传送", {""}, "", function()
     until ground
     --menu.trigger_commands("invisibility on")
     if vehicle != 0 then
-        WIRI_ENTITY.SET_ENTITY_VISIBLE(vehicle, false)
+        ENTITY.SET_ENTITY_VISIBLE(vehicle, false)
     end
     STREAMING.SWITCH_TO_MULTI_FIRSTPART(players.user_ped(), 8, 1)
     HUD.BEGIN_TEXT_COMMAND_BUSYSPINNER_ON("PM_WAIT")
@@ -1109,10 +1211,10 @@ GTAC(players_root, "出其不意的传送", {""}, "", function()
         util.yield()
     until STREAMING.IS_SWITCH_TO_MULTI_FIRSTPART_FINISHED()
     if vehicle == 0 then
-        Jinx.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), waypoint, false, false, false)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), waypoint.x, waypoint.y, waypoint.z, false, false, false)
     else
-        WIRI_ENTITY.SET_ENTITY_VISIBLE(vehicle, false)
-        WIRI_ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehicle, waypoint, false, false, false)
+        ENTITY.SET_ENTITY_VISIBLE(vehicle, false)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehicle, waypoint.x, waypoint.y, waypoint.z, false, false, false)
     end
     STREAMING.SWITCH_TO_MULTI_SECONDPART(players.user_ped())
     STREAMING.ALLOW_PLAYER_SWITCH_OUTRO() 
@@ -1127,7 +1229,7 @@ GTAC(players_root, "出其不意的传送", {""}, "", function()
         ENTITY.SET_ENTITY_VISIBLE(vehicle, true)
     end
     --menu.trigger_commands("invisibility off")
-    WIRI_HUD.BUSYSPINNER_OFF()
+    HUD.BUSYSPINNER_OFF()
 end)
 
 GTAC(players_root,"Freemode自救", {}, "如果卡freemode提示就点这个\n把你送到云上几秒在下来,如果你是主机,请放心你下来以后还是主机", function ()
@@ -1387,10 +1489,166 @@ GTLP(aura_list,("弹射光环"), {}, "", function()
         end
 	end
 end)
---
---require "lib.GTSCRIPTS.GTA.wd3"
+
+pvphelp = GT(weapon_options, "自瞄选项", {""}, "")
+
+HitEffect = {colorCanChange = false}
+HitEffect.__index = HitEffect
+setmetatable(HitEffect, Effect)
+
+function HitEffect.new(asset, name, colorCanChange)
+	local inst = setmetatable({}, HitEffect)
+	inst.name = name
+	inst.asset = asset
+	inst.colorCanChange = colorCanChange or false
+	return inst
+end
+hitEffects = {
+	HitEffect.new("scr_rcbarry2", "scr_exp_clown"),
+	HitEffect.new("scr_rcbarry2", "scr_clown_appears"),
+	HitEffect.new("scr_rcpaparazzo1", "scr_mich4_firework_trailburst_spawn", true),
+	HitEffect.new("scr_indep_fireworks", "scr_indep_firework_starburst", true),
+	HitEffect.new("scr_indep_fireworks", "scr_indep_firework_fountain", true),
+	HitEffect.new("scr_rcbarry1", "scr_alien_disintegrate"),
+	HitEffect.new("scr_rcbarry2", "scr_clown_bul"),
+	HitEffect.new("proj_indep_firework", "scr_indep_firework_grd_burst"),
+	HitEffect.new("scr_rcbarry2", "muz_clown"),
+}
+options = {
+	{"猛女子弹"},
+	{"小丑出现"},
+	{"开拓者"},
+	{"星爆"},
+	{"喷泉"},
+	{"外星解体"},
+	{"小丑花"},
+	{"地面冲击波"},
+	{"小丑木兹"},
+    {"毒气"},
+    {"旋风子弹"},
+    {"战火子弹"},
+    {"烟雾子弹"},
+    {"星星子弹"},
+    {"电光子弹"}
+}
+
+effectColour = {r = 0.5, g = 0.0, b = 0.5, a = 1.0}
+selectedOpt = 1
+name =  "彩虹模式"
+helpText = "仅适用于部分特效"
+SetEffectColour = function(colour) effectColour = colour end
+
+WPTFX = weapon_options:list("武器特效", {}, "")
+GTLP(WPTFX, "特效武器开启",{}, '',function()
+	local effect = hitEffects[selectedOpt]
+	if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(effect.asset) then
+		return STREAMING.REQUEST_NAMED_PTFX_ASSET(effect.asset)
+	end
+
+	local hitCoords = v3.new()
+	if WEAPON.GET_PED_LAST_WEAPON_IMPACT_COORD(players.user_ped(), hitCoords) then
+		local raycastResult = get_raycast_result(1000.0)
+		local rot = raycastResult.surfaceNormal:toRot()
+		GRAPHICS.USE_PARTICLE_FX_ASSET(effect.asset)
+
+		if effect.colorCanChange then
+			local colour = effectColour
+			GRAPHICS.SET_PARTICLE_FX_NON_LOOPED_COLOUR(colour.r, colour.g, colour.b)
+		end
+		GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
+			effect.name,
+			hitCoords.x, hitCoords.y, hitCoords.z,
+			rot.x - 90.0, rot.y, rot.z,
+			1.0, 
+			false, false, false, false
+		)
+	end
+end)
+
+WPTFX:list_select("设置特效", {}, "", options, 1, function (opt)
+	selectedOpt = opt
+end)
+
+menuColour =
+menu.colour(WPTFX, name, {"effectcolour"}, helpText, effectColour, false, SetEffectColour)
+menu.rainbow(menuColour)
 --
 newweapon = GT(weapon_options, "新枪械玩法")
+
+GTTG(newweapon,'武器准度',{},'子弹射击不会抖动,而达到百分百精准射击点位.',function(on)
+    if on then
+        PED.SET_PED_ACCURACY(players.user_ped(),100)
+    else
+        PED.SET_PED_ACCURACY(players.user_ped(),0)
+    end
+end)
+
+
+last_health = 0
+damage_timer = nil
+damage_timer_countdown = 0
+
+GTTG(newweapon, '伤害显示',{},'',function(he)
+    hh = he
+    local r, g, b = 1, 0, 0 
+    while hh do wait()
+        if PED.IS_PED_SHOOTING(players.user_ped()) then
+            local aiment = get_entity_player_is_aiming_at(players.user())
+            local vehheal = ENTITY.GET_ENTITY_HEALTH(aiment)
+            if last_health ~= 0 then
+                local damage = last_health - vehheal
+                last_health = vehheal
+                if damage > 0 then
+                    local Coords = ENTITY.GET_ENTITY_COORDS(aiment)
+                    local v2 = memory.alloc(8)
+                    util.create_thread(function()
+                        local a = 1
+                        while a <= 20 do wait()
+                            if util.get_screen_coord_from_world_coord_no_adjustment(
+                                Coords.x, Coords.y, Coords.z, v2, v2 + 4) then
+                                directx.draw_text(memory.read_float(v2),
+                                memory.read_float(v2 + 4), "-"..damage, 0, 1, r, g, b, 1, true)
+                                damage_timer = os.clock() + 2
+                                damage_timer_countdown = 20 
+                                a += 1
+                                r = math.max(0, r - 0.05)
+                                g = math.min(1, g + 0.025) 
+                                b = math.min(1, b + 0.025)
+                            end
+                        end
+                    end)
+                end
+            end
+            last_health = vehheal
+        end
+        if damage_timer ~= nil then
+            if damage_timer_countdown > 0 then
+                damage_timer_countdown = damage_timer_countdown - 1
+            else
+                damage_timer = nil
+            end
+        end
+    end
+end)
+
+GTTG(newweapon,'恕瑞玛飞升枪', {}, '射击的对象会以直升机形式飞升.', function(cr)
+    qg = cr
+    while qg do
+        wait()
+        if PED.IS_PED_SHOOTING(players.user_ped(players.user())) then
+            local aiment = ent_func.get_entity_player_is_aiming_at(players.user())
+            if PED.IS_PED_A_PLAYER(aiment) or ENTITY.IS_ENTITY_A_PED(aiment) or ENTITY.IS_ENTITY_AN_OBJECT(aiment) or
+                ENTITY.IS_ENTITY_A_VEHICLE(aiment) then
+                local aimpos = ENTITY.GET_ENTITY_COORDS(aiment)
+                requestControlLoop(aiment)
+                startExplosionEffect(aiment, aimpos)
+                rotateAndMoveEntity(aiment)
+            end
+        end
+    end
+    qg = false
+end)
+
 
 GTTG(newweapon, "乱射空袭", {""}, "手持武器射击使用\n乱炸打击点", function(lsq)
     local luanshe = lsq
@@ -1403,7 +1661,7 @@ GTTG(newweapon, "乱射空袭", {""}, "手持武器射击使用\n乱炸打击点
             local pos = raycastResult.endCoords
             util.create_thread(function()
                 for i = 1, 20 do
-                    WIRI_MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x + math.random(-10, 10),
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x + math.random(-10, 10),
                         pos.y + math.random(-10, 10), pos.z + 35.0 + math.random(-10, 10), pos.x + math.random(-10, 10),
                         pos.y + math.random(-10, 10), pos.z + math.random(-10, 10), 1000, true, hash,
                         players.user_ped(), true, false, 250)
@@ -1578,7 +1836,7 @@ GTTG(bullet_reactions_list, "车辆进入枪", {}, "瞄准车辆后按F进入", 
 end)
 --
 GTLP(players_root, "屏蔽错误警告", {"accepterrorstr"}, "", function()
-    mess_hash = C_CCHUD.GET_WARNING_SCREEN_MESSAGE_HASH()
+    mess_hash = HUD.GET_WARNING_SCREEN_MESSAGE_HASH()
     if mess_hash == -896436592 then
         util.toast("This player left the session.")
         PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1)
@@ -1864,13 +2122,24 @@ all_female_sex_voicenames = {
     "S_F_Y_HOOKER_03_BLACK_FULL_01",
     "S_F_Y_HOOKER_03_BLACK_FULL_03",
 }
- female_speeches = {
+female_speeches = {
     "SEX_GENERIC_FEM",
     "SEX_HJ",
     "SEX_ORAL_FEM",
     "SEX_CLIMAX",
     "SEX_GENERIC"
 }
+
+local mousetype = 1
+GTLP(helperingame, '显示鼠标', {}, '', function()
+    native_v(0xAAE7CE1D63167423, "")
+    native_v(mousetype, 0x8DB8CFFD58B62552, "i")
+    native_v(true, 0x98215325A695E78A, "b")
+end)
+
+menu.slider(helperingame,'鼠标样式 :', {} , '',1, 12, 1, 1, function(mtype)
+    mousetype = mtype
+end)
 
 interior_noclip = GT(helperingame, "室内悬浮速度")
 noclip_speed = 0.10
@@ -1905,7 +2174,7 @@ end)
 
 phone = GT(helperingame,"手机选项",{},"")
 zhanju_qiehuan = {"第一", "第二", "第三", "第四", "第五"}
-GTLuaScript.slider_text(phone, "手机类型", {}, "", zhanju_qiehuan, function(a, b, c)
+GTLuaScript.textslider(phone, "手机类型", {}, "", zhanju_qiehuan, function(a, b, c)
 switch a do
 case 1:
 MOBILE.CREATE_MOBILE_PHONE(0)
@@ -2369,6 +2638,7 @@ GTLP(aimkrma, "爆炸", {}, "", function()
 end)
 
 newfunc = GT(funfeatures_self, "新型娱乐")
+lightning = GT(funfeatures_self, "电网")
 Xbone = GT(funfeatures_self, "坤弹")
 rppms=GT(funfeatures_self, "软趴趴疾跑", {}, "")
 sessionfun = GT(funfeatures_self, "战局玩乐", {}, "我们将大部分娱乐功能分类此列表中,如果您想寻找更多玩乐,请点击进入~", function(); end)
@@ -2393,10 +2663,159 @@ function paoku1()
     end
     ENTITY.SET_ENTITY_INVINCIBLE(players.user_ped(), true);
     PED.SET_PED_TO_RAGDOLL(players.user_ped(), 6, 20, 20, true, true, true);
-    WIRI_MISC.SET_GRAVITY_LEVEL(2.5);
+    MISC.SET_GRAVITY_LEVEL(2.5);
 end
 
+GridNumber = 1
+GridSize = 100
+GridIntensity = 100
+Gridr = 255
+Gridg = 255
+Gridb = 255
+GTTG(lightning, '电网',{},'',function(YY31)
+y31 = YY31
+    while y31 do
+        GRAPHICS.TERRAINGRID_ACTIVATE(true)
+        GRAPHICS.TERRAINGRID_SET_PARAMS(players.get_position(players.user()).x,players.get_position(players.user()).y,players.get_position(players.user()).z, 0.0, GridNumber, 0.0, GridSize, GridSize, 0.0, GridSize, GridIntensity, 0.0, 0.0)
+        GRAPHICS.TERRAINGRID_SET_COLOURS(Gridr, Gridg, Gridb, Gridr, Gridg, Gridb, Gridr, Gridg, Gridb, Gridr, Gridg, Gridb,255)
+        wait()
+    end
+    if not y31 then
+        GRAPHICS.TERRAINGRID_ACTIVATE(false)
+    end
+end)
+
+lightning:slider('电网粗细', {}, 'lightningline', 1, 1000, 1, 1, function(change)
+    GridNumber = change
+end)
+
+lightning:slider('电网大小', {}, 'lightningsize', 0, 30000, 100, 1, function(changes)
+    GridSize = changes
+end)
+
+lightning:slider('电网强度', {}, 'lightningpower', 0, 1000, 100, 1, function(changess)
+    GridIntensity = changess
+end)
+
+lightning:slider('红色数值', {}, '',0, 255, 255, 10, function(gvalr)
+    Gridr = valr
+end)
+
+lightning:slider('绿色数值', {}, '',0, 255, 255, 10, function(gvalg)
+    Gridg = gvalg
+end)
+
+lightning:slider('蓝色数值', {}, '',0, 255, 255, 10, function(gvalb)
+    Gridb = gvalb
+end)
+
 -- 新型娱乐
+GTTG(newfunc, '移动的棺材',{},'WSAD移动,空格加速,shift升高,ctrl下降,E键发射炮弹',function(YY5)
+    YYF = YY5
+        while YYF do wait()
+        moving_tube()
+        draw_centered_box()
+    end
+if not YYF then
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(localmyPed)
+	    entities.delete_by_handle(loadobject)
+	Boolean = 0
+    end
+end)
+
+GTTG(newfunc, "蓄意轰拳",{}, "按住右键蓄力，按左键释放", function(AA)
+    ab1 = AA
+    while ab1 do
+        local max_time = 20
+        wait(0)
+        if not PED.IS_PED_IN_ANY_VEHICLE(players.user(), false) then
+            local pWeapon = memory.alloc_int()
+            WEAPON.GET_CURRENT_PED_WEAPON(players.user_ped(), pWeapon, 1)
+            local weaponHash = memory.read_int(pWeapon)
+            if WEAPON.IS_PED_ARMED(players.user_ped(), 1) or weaponHash == joaat("weapon_unarmed") then
+                if PAD.GET_CONTROL_NORMAL(0, 142) == 1.0 and xuli_time ~= 0 then
+                    for i = 1, xuli_time do
+                        local pos = players.get_position(players.user())
+                        local pos = players.get_position(players.user())
+                        local rot = ENTITY.GET_ENTITY_ROTATION(player_ped, 0)
+                        local dir = rot
+                        local dir = v3.toDir(CAM.GET_GAMEPLAY_CAM_ROT(0))
+                        dir = dir
+                        for c = 9, 15, 0.1 do
+                            FIRE.ADD_EXPLOSION(pos.x + dir.x * c, pos.y + dir.y * c, pos.z + dir.z * c, 29, 1.0, true,
+                                false, 0.0, false)
+                        end
+                    end
+                    xuli_time = 0
+                    wait(1000)
+                elseif PAD.GET_CONTROL_NORMAL(0, 114) == 1.0 and PAD.GET_CONTROL_NORMAL(0, 143) == 0.0 then
+                    if xuli_time == max_time - 1 then
+                        FIRE.ADD_EXPLOSION(players.get_position(players.user()).x,
+                            players.get_position(players.user()).y, players.get_position(players.user()).z - 2, 38, 0,
+                            false, false, 0.0, false)
+                        xuli_time = xuli_time + 1
+                        wait(100 - (20 - xuli_time) * 50)
+                    elseif xuli_time < max_time then
+                        FIRE.ADD_EXPLOSION(players.get_position(players.user()).x,
+                            players.get_position(players.user()).y, players.get_position(players.user()).z - 5, 24, 0,
+                            false, false, 0.0, false)
+                        xuli_time = xuli_time + 1
+                        wait(100 - (20 - xuli_time) * 50)
+                    end
+                elseif PAD.GET_CONTROL_NORMAL(0, 114) == 1.0 then
+                    return
+                else
+                    xuli_time = 0
+                end
+                HUD.SHOW_HUD_COMPONENT_THIS_FRAME(14)
+            end
+        end
+    end
+end)
+
+isWater= false
+GTLP(newfunc, '水遁之术',{}, '按E开启或者关闭,靠近海水生效', function(sd)
+    if native_b(38, 38, 0x50F940259D3841E6, "ii") then
+        isWater = not isWater
+        if isWater then
+            while not native_b("rcmbarry", 0xD031A9162D01088C, "s") do 
+                native_v("rcmbarry", 0xD3BD40951412FEF6, "s")
+                wait()
+            end
+            native_v(players.user_ped(), "rcmbarry", 
+            "bar_1_attack_idle_aln", 5, 10, -1, 51, 5, false, false, false, 0xEA47FE3719165B94, "issffiifbbb")
+            util.create_tick_handler(function()
+                native_v(2000, 0xB96B00E976BE977F, "f")
+                native_v(2000, 0xB96B00E976BE977F, "f")
+            end)
+        else
+            native_v(players.user_ped(), 0xAAA34F8A7CB32098, "i")
+            util.create_tick_handler(function()
+                native_v(1, 0xB96B00E976BE977F, "f")
+            end)
+        end
+    end
+end,function()
+    native_v(1, 0xB96B00E976BE977F, "f")
+end)
+
+GTTG(newfunc, '帅批', {''}, '', function(Neck)
+    local nk<const> = Neck
+    local usd = players.user_ped()
+    if nk then 
+        local morph1 = {2, 7, 11, 17, 15, 14, 18}
+        local morph2 = {-10, 5, 5, 5, 5, 3, 2}
+        for i, param in ipairs(morph1) do
+            native_invoker.unified_void(usd, param, morph2[i], 0x71A5C1DBA060049E, "iif")
+        end
+    else
+        local morph1 = {2, 7, 11, 17, 15, 14, 18}
+        for _, param in ipairs(morph1) do
+            native_invoker.unified_void(usd, param, 0, 0x71A5C1DBA060049E, "iif")
+        end
+    end
+end)
+
 local entity_held_ped = 0
 GTLP(newfunc, '虐杀原形', {}, '按E抓取和扔出', function()
     if PAD.IS_CONTROL_JUST_RELEASED(38, 38) then
@@ -3059,7 +3478,7 @@ Flypos = GTLP(newfunc,'位置调整', {"Flycs"}, '', function(on)
             if lateral then 
                 ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(support_ent, 0, lateral*Flypos_speed, 0, 0.0, false, true, true, true)
             end
-            WIRI_CAM.HARD_ATTACH_CAM_TO_ENTITY(camera, players.user_ped(), 0.0, 0.0, 0.0, 0.0, -5.0, .0, true)
+            CAM.HARD_ATTACH_CAM_TO_ENTITY(camera, players.user_ped(), 0.0, 0.0, 0.0, 0.0, -5.0, .0, true)
         else
             request_model(util.joaat('IG_RoosterMcCraw'), 2000)
             support_ent = entities.create_object(util.joaat('IG_RoosterMcCraw'), cr, ENTITY.GET_ENTITY_HEADING(players.user_ped()))
@@ -3386,15 +3805,15 @@ end)
 
 GTTG(funfeatures_self, '两仪静止', {}, '', function(on)
     if on then
-        WIRI_MISC.SET_TIME_SCALE(0)
+        MISC.SET_TIME_SCALE(0)
     else
-        WIRI_MISC.SET_TIME_SCALE(1.0)
+        MISC.SET_TIME_SCALE(1.0)
     end
 end)
 
 GTluaScript.slider(funfeatures_self, '神奇的水坑', {}, '', 0, 10, 0, 1, function(g)
     shuik = g * 1
-    WIRI_MISC.SET_RAIN(shuik)
+    MISC.SET_RAIN(shuik)
 end)
 
 GTTG(funfeatures_self, '彩虹头发', {}, '', function(f)
@@ -3482,7 +3901,7 @@ GTAC(funfeatures_self, "清除小叮当", {}, "", function()
     end
 end)
 
-GTLuaScript.slider_text(funfeatures_self, "获取鸡巴", {}, "请选择你的鸡巴", opt_pp,
+GTLuaScript.textslider(funfeatures_self, "获取鸡巴", {}, "请选择你的鸡巴", opt_pp,
     function(index, value, click_type)
         getbigjb(index, value, click_type)
     end)
@@ -3525,27 +3944,23 @@ GTTG(funfeatures_self, "强奸妓女", {}, "", function(f)
 end)
 
 chuansong = {"向前传送", "向后传送", "向左传送", "向右传送", "向上传送", "向下传送"}
-GTLuaScript.slider_text(funfeatures_self, "快捷传送", {}, "", chuansong, function(a, b, c)
-switch a do
-case 1:
+GTLuaScript.textslider(funfeatures_self, "快捷传送", {}, "", chuansong, function(a)
+if a == 1 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, 5, 0)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z,true, false, false)
-break
-case 2:
+elseif a == 2 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, -5, 0)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z,true, false, false)
-break
- case 3:
+elseif a == 3 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), -5, 0, 0)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z,true, false, false)
-break
-case 4:
+elseif a == 4 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 5, 0, 0)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z,true, false, false)
-case 5:
+elseif a == 5 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, 0, 5)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z+5,true, false, false)
-case 6:
+elseif a == 6 then
 local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, 0, -5)
 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x,pos.y,pos.z,true, false, false)
 end
@@ -3641,7 +4056,7 @@ GTLP(funfeatures_self, "次元空间", {""}, "", function(f)
         colorgg2.b = math.random(0, 255)
         counter2 = 0
     end
-    WIRI_GRAPHICS.DRAW_MARKER(1, c.x, c.y, c.z-0.90, 0, 0, 0, 0, 0, 0, 2, 2, 8, colorgg2.r, colorgg2.b, colorgg2.g, colorgg2.a, false, true, 2, 2, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(1, c.x, c.y, c.z-0.90, 0, 0, 0, 0, 0, 0, 2, 2, 8, colorgg2.r, colorgg2.b, colorgg2.g, colorgg2.a, false, true, 2, 2, 0, 0, false)
     end
 end)
 
@@ -3658,7 +4073,7 @@ GTLP(funfeatures_self, "次元空间2", {""}, "", function(f)
             colorgg.b = math.random(0, 255)
         counter = 0
         end
-        WIRI_GRAPHICS.DRAW_MARKER(43, c.x, c.y, c.z-0.90, 0, 0, 0, 0, 0, 0, 2, 2, 8, colorgg.r, colorgg.b, colorgg.g, colorgg.a, false, true, 2, 0, 0, 0, false)
+        GRAPHICS.DRAW_MARKER(43, c.x, c.y, c.z-0.90, 0, 0, 0, 0, 0, 0, 2, 2, 8, colorgg.r, colorgg.b, colorgg.g, colorgg.a, false, true, 2, 0, 0, 0, false)
     end
 end)
 
@@ -3670,7 +4085,7 @@ if PED.IS_PED_A_PLAYER(players.user_ped()) then
             theta = math.pi*i/8
             x = 2*math.sin(theta)
             y = 2*math.cos(theta)
-            WIRI_GRAPHICS.DRAW_MARKER(28, c.x+x, c.y+y, c.z+0.5, 0, 0, 0, 90, 90, 0, 0.3, 0.3, 0.3, 255, 255, 0, 255, true, true, 2, 0, 0, 0, false)
+            GRAPHICS.DRAW_MARKER(28, c.x+x, c.y+y, c.z+0.5, 0, 0, 0, 90, 90, 0, 0.3, 0.3, 0.3, 255, 255, 0, 255, true, true, 2, 0, 0, 0, false)
         end
     end
 end)
@@ -4078,7 +4493,7 @@ GTTG(appearance, "隐藏开启", {"disguise"}, "", function(state)
     end
 end)
 
-disguise_object_slider = GTLuaScript.slider_text(
+disguise_object_slider = GTLuaScript.textslider(
     appearance, "隐藏选择", {"disguiseobject"}, "", disguise_names, function()end
 )
 --
@@ -4690,7 +5105,7 @@ GTLuaScript.click_slider(collectibles, "拉机能量高空跳伞", {""}, "", 0, 
 end)
 
 zhanju_qiehuan = {"公开单人", "非公开邀请", "单人", "公开战局", "新的公开战局", "退回线下"}
-GTLuaScript.slider_text(helperingame, "战局切换", {}, "", zhanju_qiehuan, function(a, b, c)
+GTLuaScript.textslider(helperingame, "战局切换", {}, "", zhanju_qiehuan, function(a, b, c)
 switch a do
 case 1:
 GTLuaScript.trigger_commands("go solopublic")
@@ -4796,12 +5211,12 @@ npcdisable = off
 menu.toggle(helperingame, "禁止NPC造成伤害", {}, "", function(on)
     npcdisable = on
     while npcdisable do
-        WIRI_PED.SET_AI_WEAPON_DAMAGE_MODIFIER(0)
-        WIRI_PED.SET_AI_MELEE_WEAPON_DAMAGE_MODIFIER(0)
+        PED.SET_AI_WEAPON_DAMAGE_MODIFIER(0)
+        PED.SET_AI_MELEE_WEAPON_DAMAGE_MODIFIER(0)
         wait()
     end
-        WIRI_PED.SET_AI_WEAPON_DAMAGE_MODIFIER(1)
-        WIRI_PED.SET_AI_MELEE_WEAPON_DAMAGE_MODIFIER(1)
+        PED.SET_AI_WEAPON_DAMAGE_MODIFIER(1)
+        PED.SET_AI_MELEE_WEAPON_DAMAGE_MODIFIER(1)
 end)
 
 GTLP(helperingame, "不会被帮派骚扰", {}, "防止身处含有帮派区域被帮派成员攻击骚扰", function()
@@ -4822,7 +5237,7 @@ GTLP(helperingame, "自动接受并加入游戏", {}, "将自动接受游戏邀�
 end)
 
 GTTG(helperingame, "自动切换战局", {""}, "加入战局失败时自动切换战局", function(state)
-    local message_hash = C_CCHUD.GET_WARNING_SCREEN_MESSAGE_HASH()
+    local message_hash = HUD.GET_WARNING_SCREEN_MESSAGE_HASH()
     local my_player_id = players.user_ped()
     local playerstatus = {0, 1} 
     local message_hashes = {15890625, -398982408, -587688989} 
@@ -5168,19 +5583,19 @@ end)
 
 PEDEVENT = GT(helperingame, "NPC管控", {}, "")
 GTLP(PEDEVENT, "新生成的NPC携带零食", {}, "", function()
-    WIRI_PED.SET_HEALTH_SNACKS_CARRIED_BY_ALL_NEW_PEDS(1.0, 99)
+    PED.SET_HEALTH_SNACKS_CARRIED_BY_ALL_NEW_PEDS(1.0, 99)
 end)
 GTLP(PEDEVENT, "周围NPC死亡时掉钱", {},
     "设置NPC在被杀时是否会掉落金钱。这在自由模式中默认关闭.", function()
-    WIRI_PED.SET_AMBIENT_PEDS_DROP_MONEY(true)
+    PED.SET_AMBIENT_PEDS_DROP_MONEY(true)
 end)
 GTLP(PEDEVENT, "阻止周围NPC临时事件", {},
     "阻止此环境中环境NPC的临时事件。\n不包括执法人员，比如警察", function()
-    WIRI_PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS_FOR_AMBIENT_PEDS_THIS_FRAME(true)
+    PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS_FOR_AMBIENT_PEDS_THIS_FRAME(true)
 end)
 GTLP(PEDEVENT, "周围执法NPC降低精准度", {},
     "让执法的NPC射击准心偏差，比如警察，这只会在自由模式生效", function()
-    WIRI_PED.SET_AMBIENT_LAW_PED_ACCURACY_MODIFIER(0.0)
+    PED.SET_AMBIENT_LAW_PED_ACCURACY_MODIFIER(0.0)
 end)
   
 muplyid = players.user()
@@ -5305,7 +5720,7 @@ end)
 local modifier = 1.00
 GTLuaScript.slider_float(helperingame, "近战伤害修改", {"meleedamage"}, "", 100, 1000, 100, 10, function(value)
     modifier = value / 100
-    PLAYERJINX.SET_PLAYER_MELEE_WEAPON_DAMAGE_MODIFIER(players.user(), modifier)
+    PLAYER.SET_PLAYER_MELEE_WEAPON_DAMAGE_MODIFIER(players.user(), modifier)
 end)
 	
 local language_codes_by_enum = {
@@ -5554,8 +5969,8 @@ jl_v = jl
     while jl_v do
 
         wait()
-        WIRI_CAM.SET_THIRD_PERSON_CAM_ORBIT_DISTANCE_LIMITS_THIS_UPDATE(0.0, Camera_value)
-        WIRI_CAM.SET_FIRST_PERSON_AIM_CAM_ZOOM_FACTOR_LIMITS_THIS_UPDATE(0.0, Camera_value)
+        CAM.SET_THIRD_PERSON_CAM_ORBIT_DISTANCE_LIMITS_THIS_UPDATE(0.0, Camera_value)
+        CAM.SET_FIRST_PERSON_AIM_CAM_ZOOM_FACTOR_LIMITS_THIS_UPDATE(0.0, Camera_value)
     end
 end)
 
@@ -5674,7 +6089,7 @@ local activepet = GT(myroot, "管理宠物", {}, "这些是你生成的宠物")
                 entities.delete_by_handle(v)
             end
         end)
-GTACR =  GTluaScript.action_slider     
+GTACR = GTluaScript.action_slider     
 GTACR(myroot, "生成一只宠物", {}, "生成一个忠诚的同伴,它将跟随并保护你.", dogs, function(opt, breeds)
     local hash = util.joaat("A_C_" .. breeds)
     STREAMING.REQUEST_MODEL(hash)
@@ -5834,13 +6249,33 @@ end, function()
     entities.delete_by_handle(custom_pet)
     custom_pet = nil
 end)
+
 --超人模式
 Superman_Setting = CONFIG_DIR .. "Superman.txt"
 Current_settings = {}
-superman = {multi = nil, running = nil, friction = nil, fspeed = 3.0, height = 0.6, crosshair = true,
-exp = false, bull = 'WEAPON_TACTICALRIFLE', godmode = nil, breath = 1, nodam = true, vehicle = true}
-xray = {npcs = true, players = true, fov = 3, targetveh = true, espline = true, espbox = false,
-espbones = true}
+superman = {
+    multi = 0,
+    running = 0,
+    friction = 0,
+    fspeed = 3.0,
+    height = 0.6,
+    crosshair = 1,
+    exp = 0,
+    bull = 'WEAPON_TACTICALRIFLE',
+    godmode = 0,
+    breath = 1,
+    nodam = 1,
+    vehicle = 1
+}
+xray = {
+    npcs = 1,
+    players = 1,
+    fov = 3,
+    targetveh = 1,
+    espline = 1,
+    espbox = 0,
+    espbones = 1
+}
 fricref = menu.ref_by_path('Self>Movement>Increased Friction')
 runref = menu.ref_by_path('Self>Movement>Walk And Run Speed')
 multiref = menu.ref_by_path('Self>Weapons>Damage Multiplier')
@@ -5863,168 +6298,164 @@ SuperESPcolor = {
 }
 
 GTLP(super_xrays,'超人模式', {'superman'}, '拥有超人的能力', function (on)
-scope_scaleform2 = GRAPHICS.REQUEST_SCALEFORM_MOVIE('SUBMARINE_MISSILES')
-GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scope_scaleform2, 'SUBMARINE_MISSILES')
-GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scope_scaleform2, 255, 255, 255, 255, 0)
-GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
-HUD.SET_TEXT_SCALE(1.0,0.5)
-HUD.SET_TEXT_FONT(0)
-HUD.SET_TEXT_CENTRE(1)
-HUD.SET_TEXT_OUTLINE(0)
-HUD.SET_TEXT_COLOUR(60, 255, 255, 255)
-util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("提示!!E透视,X原力,Q降落,S加速飞,空格+W向下飞,右键激光眼,空格向上飞")
-HUD.END_TEXT_COMMAND_DISPLAY_TEXT(0.4999,0.8798,0)
-if superman.multi == nil  then
-    superman.multi = multiref.value
-else
-end
-if superman.running == nil then
-    superman.running = runref.value
-else
-end
-if superman.friction == nil then
-    superman.friction = fricref.value
-else
-end
-if superman.godmode == nil then
-    superman.godmode = immorref.value
-else
-end
+    scope_scaleform2 = GRAPHICS.REQUEST_SCALEFORM_MOVIE('SUBMARINE_MISSILES')
+    GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(scope_scaleform2, 'SUBMARINE_MISSILES')
+    GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scope_scaleform2, 255, 255, 255, 255, 0)
+    GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
+    HUD.SET_TEXT_SCALE(1.0,0.5)
+    HUD.SET_TEXT_FONT(0)
+    HUD.SET_TEXT_CENTRE(1)
+    HUD.SET_TEXT_OUTLINE(0)
+    HUD.SET_TEXT_COLOUR(60, 255, 255, 255)
+    util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("提示!!E透视,X原力,Q降落,S加速飞,空格+W向下飞,右键激光眼,空格向上飞")
+    HUD.END_TEXT_COMMAND_DISPLAY_TEXT(0.4999,0.8798,0)
+    if superman.multi == 0 then
+        superman.multi = multiref.value
+    else
+    end
+    if superman.running == 0 then
+        superman.running = runref.value
+    else
+    end
+    if superman.friction == 0 then
+        superman.friction = fricref.value
+    else
+    end
+    if superman.godmode == 0 then
+        superman.godmode = immorref.value
+    else
+    end
 
-Current_settings = {
-    ['Immortality'] = superman.godmode,
-    ['Damage Multiplier'] = superman.multi,
-    ['Walk And Run Speed'] = superman.running,
-    ['Increased Friction'] = superman.friction,
-}
+    Current_settings = {
+        ['Immortality'] = superman.godmode,
+        ['Damage Multiplier'] = superman.multi,
+        ['Walk And Run Speed'] = superman.running,
+        ['Increased Friction'] = superman.friction,
+    }
 
-if not filesystem.is_regular_file(Superman_Setting) then
-    util.write_colons_file(Superman_Setting, Current_settings)
-end
+    if not filesystem.is_regular_file(Superman_Setting) then
+        util.write_colons_file(Superman_Setting, Current_settings)
+    end
 
-if set.scale then
-    SFsuper()
-end
-multiref.value = 10000000
-runref.value = Runspeedref.value
-fricref.value = true
-immorref.value = true
+    if set.scale then
+        SFsuper()
+    end
+    multiref.value = 10000000
+    runref.value = Runspeedref.value
+    fricref.value = 1
+    immorref.value = 1
+
     if PAD.IS_CONTROL_PRESSED(0, 22) then
-    cam_pos = CAM.GET_GAMEPLAY_CAM_ROT(0)
-    ENTITY.SET_ENTITY_ROTATION(players.user_ped(), cam_pos.x, cam_pos.y, cam_pos.z, 1, true)
-    local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, 0.5, 0.1)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(),pos.x,pos.y,pos.z,true, false, false)
+        cam_pos = CAM.GET_GAMEPLAY_CAM_ROT(0)
+        ENTITY.SET_ENTITY_ROTATION(players.user_ped(), cam_pos.x, cam_pos.y, cam_pos.z, 1, true)
+        local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0, 0.5, 0.1)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos.x, pos.y, pos.z, true, false, false)
     end
-if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 22) then
-    if PAD.IS_CONTROL_PRESSED(0, 32) then
-        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(players.user_ped(), 1, 0.0, superman.fspeed, superman.height, 0, 0, 0, 0, true, true, true, true)
-    elseif PAD.IS_CONTROL_PRESSED(0, 33) then
-        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(players.user_ped(), 1, 0.0, superman.fspeed, 0.0, 0, 0, 0, 0, true, true, true, true)
-    end
-end
-
-if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 44) then
-    local groundz = memory.alloc(4)
-    local flycoor = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-    MISC.GET_GROUND_Z_FOR_3D_COORD(flycoor.x, flycoor.y, flycoor.z, groundz, 0, 0)
-    if memory.read_float(groundz) != 0 then
-        SEC(players.user_ped(), flycoor.x, flycoor.y, memory.read_float(groundz), false, true, true, false)
-        TASK.CLEAR_PED_TASKS(players.user_ped())
-    else
-        if set.alert then
-            ACutil(Str_trans('Too high go lower to land'))
+    if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 22) then
+        if PAD.IS_CONTROL_PRESSED(0, 32) then
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(players.user_ped(), 1, 0.0, superman.fspeed, superman.height, 0, 0,
+                0, 0, true, true, true, true)
+        elseif PAD.IS_CONTROL_PRESSED(0, 33) then
+            ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(players.user_ped(), 1, 0.0, superman.fspeed, 0.0, 0, 0, 0, 0, true,
+                true, true, true)
         end
     end
 
-
-
-end
-
-if superman.crosshair then
-    HUD.DISPLAY_SNIPER_SCOPE_THIS_FRAME()
-end
-
-local weap = util.joaat(superman.bull)
-local camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
-REQUEST_WEAPON_ASSET(weap)
-local impact = v3.new()
-if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 68) and PAD.IS_CONTROL_PRESSED(0, 69) and superman.vehicle then
-    Super_Breath(superman)
-    ENTITY.SET_ENTITY_ROTATION(entities.get_user_vehicle_as_handle(), 0, 0, camrot.z, 2, true)
-elseif not PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 73) then
-    if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 73) then
-        TASK.CLEAR_PED_TASKS(players.user_ped())
-        while not ENTITY.HAS_ENTITY_ANIM_FINISHED(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop", 3) and PAD.IS_CONTROL_PRESSED(0, 73) do
-            ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
-            camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
-            local impact = v3.new()
-            Super_Breath(superman)
-            Streamanim('rcmme_amanda1')
-            Runanim(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop")
-            wait()
+    if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 44) then
+        local groundz = memory.alloc(4)
+        local flycoor = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+        MISC.GET_GROUND_Z_FOR_3D_COORD(flycoor.x, flycoor.y, flycoor.z, groundz, 0, 0)
+        if memory.read_float(groundz) != 0 then
+            SEC(players.user_ped(), flycoor.x, flycoor.y, memory.read_float(groundz), false, true, true, false)
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+        else
+            if set.alert then
+                ACutil(Str_trans('Too high go lower to land'))
+            end
         end
-    else
-        TASK.CLEAR_PED_TASKS(players.user_ped())
-        ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
+    end
+
+    if superman.crosshair then
+        HUD.DISPLAY_SNIPER_SCOPE_THIS_FRAME()
+    end
+
+    local weap = util.joaat(superman.bull)
+    local camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
+    REQUEST_WEAPON_ASSET(weap)
+    local impact = v3.new()
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 68) and PAD.IS_CONTROL_PRESSED(0, 69) and superman.vehicle then
         Super_Breath(superman)
-    end
-
-
-elseif PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 68) and superman.vehicle then
-    Leyes(superman, impact, camrot, weap)
-    ENTITY.SET_ENTITY_ROTATION(entities.get_user_vehicle_as_handle(), 0, 0, camrot.z, 2, true)
-elseif not PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 25) then
-    if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 25) then
-        TASK.CLEAR_PED_TASKS(players.user_ped())
-        while not ENTITY.HAS_ENTITY_ANIM_FINISHED(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop", 3) and PAD.IS_CONTROL_PRESSED(0, 25) do
-            ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
-            camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
-            local impact = v3.new()
-            Supereyes(superman, impact, camrot, weap)
-            Streamanim('rcmme_amanda1')
-            Runanim(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop")
-            wait()
+        ENTITY.SET_ENTITY_ROTATION(entities.get_user_vehicle_as_handle(), 0, 0, camrot.z, 2, true)
+    elseif not PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 73) then
+        if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 73) then
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            while not ENTITY.HAS_ENTITY_ANIM_FINISHED(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop", 3) and PAD.IS_CONTROL_PRESSED(0, 73) do
+                ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
+                camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
+                local impact = v3.new()
+                Super_Breath(superman)
+                Streamanim('rcmme_amanda1')
+                Runanim(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop")
+                wait()
+            end
+        else
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
+            Super_Breath(superman)
+        end
+    elseif PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 68) and superman.vehicle then
+        Leyes(superman, impact, camrot, weap)
+        ENTITY.SET_ENTITY_ROTATION(entities.get_user_vehicle_as_handle(), 0, 0, camrot.z, 2, true)
+    elseif not PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 25) then
+        if ENTITY.IS_ENTITY_IN_AIR(players.user_ped()) and PAD.IS_CONTROL_PRESSED(0, 25) then
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            while not ENTITY.HAS_ENTITY_ANIM_FINISHED(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop", 3) and PAD.IS_CONTROL_PRESSED(0, 25) do
+                ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
+                camrot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
+                local impact = v3.new()
+                Supereyes(superman, impact, camrot, weap)
+                Streamanim('rcmme_amanda1')
+                Runanim(players.user_ped(), 'rcmme_amanda1', "stand_loop_cop")
+                wait()
+            end
+        else
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
+            Leyes(superman, impact, camrot, weap)
         end
     else
-        TASK.CLEAR_PED_TASKS(players.user_ped())
         ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
-        Leyes(superman, impact, camrot, weap)
+    end
+    if PAD.IS_CONTROL_PRESSED(0, 119) then
+        Xrayvision(xray)
     end
 
-else
-    ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
-end
-if PAD.IS_CONTROL_PRESSED(0, 119) then
-    Xrayvision(xray)
-end
-
-
-return superman.multi, superman.running
-end, function ()
-TASK.CLEAR_PED_TASKS(players.user_ped())
-local settings = util.read_colons_and_tabs_file(Superman_Setting)
-for I, V in settings do
-    switch I do
-        case 'Damage Multiplier' :
-            multiref.value = V
-        break
-        case 'Walk And Run Speed' :
-            runref.value = V
-        break
-        case 'Increased Friction' :
-            menu.trigger_command(menu.ref_by_command_name('friction'), V)
-        break
-        case 'Immortality' :
-            menu.trigger_command(menu.ref_by_command_name('god'), V)
-        break
+    return superman.multi, superman.running
+    end, function ()
+    TASK.CLEAR_PED_TASKS(players.user_ped())
+    local settings = util.read_colons_and_tabs_file(Superman_Setting)
+    for I, V in settings do
+        switch I do
+            case 'Damage Multiplier' :
+                multiref.value = V
+            break
+            case 'Walk And Run Speed' :
+                runref.value = V
+            break
+            case 'Increased Friction' :
+                menu.trigger_command(menu.ref_by_command_name('friction'), V)
+            break
+            case 'Immortality' :
+                menu.trigger_command(menu.ref_by_command_name('god'), V)
+            break
+        end
     end
-end
-wait(250)
-io.remove(Superman_Setting)
-superman.multi = nil
-superman.running = nil
-superman.friction = nil
-superman.godmode = nil 
+    wait(250)
+    io.remove(Superman_Setting)
+    superman.multi = 0
+    superman.running = 0
+    superman.friction = 0
+    superman.godmode = 0
 end)
 -------------------------------
 
@@ -6143,8 +6574,8 @@ GTLP(sessionfun, '钢铁侠', {'ironman'}, 'E-噶秋莎,左键-机炮,右键-原
         PED.GIVE_PED_HELMET(players.user_ped(), true, 4096, -1)
         gaveHelmet = true
     end
-    local context = CAM._GET_CAM_ACTIVE_VIEW_MODE_CONTEXT()
-    if startViewMode == nil then
+    local context = CAM.GET_CAM_ACTIVE_VIEW_MODE_CONTEXT()
+    if startViewMode == 0 then
         startViewMode = CAM.GET_CAM_VIEW_MODE_FOR_CONTEXT(context)
     end
     if CAM.GET_CAM_VIEW_MODE_FOR_CONTEXT(context) != 4 then
@@ -6159,7 +6590,7 @@ GTLP(sessionfun, '钢铁侠', {'ironman'}, 'E-噶秋莎,左键-机炮,右键-原
     GRAPHICS.DRAW_SCALEFORM_MOVIE_FULLSCREEN(scope_scaleform2, 255, 255, 255, 255, 0)
     GRAPHICS.END_SCALEFORM_MOVIE_METHOD()
     local barrageInput = 'INPUT_PICKUP'
-    if not PAD._IS_USING_KEYBOARD(0) then
+    if not PAD.IS_USING_KEYBOARD_AND_MOUSE(0) then
     barrageInput = 'INPUT_COVER'
     end
     memory.write_int(memory.script_global(1649593 + 1163), 1)
@@ -6215,15 +6646,15 @@ GTLP(sessionfun, '钢铁侠', {'ironman'}, 'E-噶秋莎,左键-机炮,右键-原
     PED.REMOVE_PED_HELMET(players.user_ped(), true)
     gaveHelmet = false
     end
-    HUD._HUD_WEAPON_WHEEL_IGNORE_CONTROL_INPUT(false)
+    HUD._HUD_WEAPON_WHEEL_GET_SELECTED_HASH(false)
     local pScaleform = memory.alloc_int()
     memory.write_int(pScaleform, scope_scaleform)
     GRAPHICS.SET_SCALEFORM_MOVIE_AS_NO_LONGER_NEEDED(pScaleform)
     GTLuaScript.trigger_command(levitationCommand, 'off')
     wait()
-    CAM.SET_CAM_VIEW_MODE_FOR_CONTEXT(CAM._GET_CAM_ACTIVE_VIEW_MODE_CONTEXT(), startViewMode)
-    startViewMode = nil
-    end)
+    CAM.SET_CAM_VIEW_MODE_FOR_CONTEXT(CAM.GET_CAM_ACTIVE_VIEW_MODE_CONTEXT(), startViewMode)
+    startViewMode = 0
+end)
 
 GTTG(sessionfun, "疯狗模式", {""}, "按e使用激光眼", function(state)
     GTLuaScript.trigger_commands("trails")
@@ -6642,9 +7073,9 @@ end)
 
 magfunc = GTTG(players_root, "Mag的王座", {"magic"}, "定制级功能:)", function(on)
 
-    if WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Mag7777V"
-    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Magicswordstar" 
-    or WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "RhymeBear" then
+    if SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Mag7777V"
+    or SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "Magicswordstar" 
+    or SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME(PLAYER.PLAYER_ID()) == "RhymeBear" then
 
         if on then
             menu.trigger_commands("jiajia1 on")
@@ -6833,7 +7264,7 @@ GTLP(sessionfun, "力场", {"sforcefield"}, "", function()
     end
 end)
 
-s_forcefield_direction_slider = GTLuaScript.slider_text(
+s_forcefield_direction_slider = GTLuaScript.textslider(
     sessionfun, "力场方向", {"sforcefieldirection"}, "", s_forcefield_names, function()end
 )
 util.create_tick_handler(function()
@@ -8437,9 +8868,9 @@ GTTG(sessionfun, "泳圈",{""}, "",function(on)
 end)
 
 GTLP(sessionfun, "镜子", {"mirror"}, "镜像人物视角", function()
-    if WIRI_GRAPHICS.UI3DSCENE_IS_AVAILABLE() then
-        if WIRI_GRAPHICS.UI3DSCENE_PUSH_PRESET("CELEBRATION_WINNER") then
-            WIRI_GRAPHICS.UI3DSCENE_ASSIGN_PED_TO_SLOT("CELEBRATION_WINNER", players.user_ped(), 0, 0.0, 0.0, 0.0);
+    if GRAPHICS.UI3DSCENE_IS_AVAILABLE() then
+        if GRAPHICS.UI3DSCENE_PUSH_PRESET("CELEBRATION_WINNER") then
+            GRAPHICS.UI3DSCENE_ASSIGN_PED_TO_SLOT("CELEBRATION_WINNER", players.user_ped(), 0, 0.0, 0.0, 0.0);
         end
     end
 end)
@@ -8545,7 +8976,7 @@ array = {"1","1","2"}
 GTAC(sessionfun,"生成恶灵摩托" ,{""}, "每次生成不一样的颜色", function(on)
   car = CreateVehicle(1491277511, ENTITY.GET_ENTITY_COORDS(players.user_ped(),false),0,true)
   local titlle = "scr_martin1"
-  WIRI.USE_PARTICLE_FX_ASSET(titlle)
+  GRAPHICS.USE_PARTICLE_FX_ASSET(titlle)
   while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(titlle) do
     STREAMING.REQUEST_NAMED_PTFX_ASSET(titlle)
     wait(0)
@@ -8572,7 +9003,7 @@ GTTG(sessionfun, "背藏武器", {}, "长按Tab选择武器后切回拳头", fun
 	if weaponback then
 		spawnweapon = 0
 	end
-	curweap = CCCC_HUD._HUD_WEAPON_WHEEL_GET_SELECTED_HASH(plyped())
+	curweap = HUD._HUD_WEAPON_WHEEL_GET_SELECTED_HASH(plyped())
 	if not (HUD._HUD_WEAPON_WHEEL_GET_SELECTED_HASH(plyped()) == -1569615261) and weaponback then
 		spawnweapon = WEAPON.CREATE_WEAPON_OBJECT(curweap, 1, pos.x, pos.y, pos.z, true, 1, 0)
 		attachweapon(spawnweapon)
@@ -8640,19 +9071,19 @@ GTLP(aimkarma, '发送脚本事件崩溃', {''}, '崩溃瞄准您的玩家', fun
     sendscriptcrash()
 end)
 
-GTLP(aimkarma, '无差别崩', {''}, '如果您被瞄准将崩溃全局玩家', function()
+--[[GTLP(aimkarma, '无差别崩', {''}, '如果您被瞄准将崩溃全局玩家', function()
     sendallplayercrash()
-end)
+end)]]
 
-GTLP(aimkarma, '射击', {'JSbulletAimKarma'}, '射击瞄准您的玩家', function()
+GTLP(aimkarma, '射击', {''}, '射击瞄准您的玩家', function()
     bulletaimkarma()
 end)
 
-GTLP(aimkarma, '爆炸', {'JSexpAimKarma'}, '爆炸瞄准您的玩家', function()
+GTLP(aimkarma, '爆炸', {''}, '爆炸瞄准您的玩家', function()
     expaimkarma()
 end)
 
-GTLP(aimkarma, '禁用无敌', {'JSgodAimKarma'}, '如果有人瞄准您将强制他们的游戏画面来禁用他们的无敌模式(对大部分菜单无效)', function()
+GTLP(aimkarma, '禁用无敌', {''}, '如果有人瞄准您将强制他们的游戏画面来禁用他们的无敌模式(对大部分菜单无效)', function()
     godaimkarma()
 end)
 
@@ -10803,7 +11234,7 @@ GTTG(texiao, "夜光灯",{""}, "",function(state)
 end)
 
 
-GTTG(texiao, "魂环缠绕",{""}, "",function(on)
+GTTG(texiao, "魂环缠绕", {""}, "", function(on)
     local six = "prop_mp_halo_lrg"
     local sixs = "prop_mp_halo_med"
     local sixss = "prop_mp_halo_point"
@@ -10812,15 +11243,15 @@ GTTG(texiao, "魂环缠绕",{""}, "",function(on)
     local sixsssss = "prop_mp_halo_rotate_lrg"
     local sixssssss = "prop_mp_halo_rotate_med"
     local sixsssssss = "prop_mp_halo_rotate_sm"
-    if on then     
-        attach_to_player(six, 2, 0.0, 0, -0.12, 0, 0,0)
-        attach_to_player(sixss, 2, 0, 0, -0.32, 0, 0,0)
-        attach_to_player(sixs, 2, 0, 0, 0, -0.22, 0,0)
-        attach_to_player(sixsss, 2, 0, 0, -0.02, 0, 0,0)
-        attach_to_player(sixssss, 2, 0, 0, -0.42, 0, 0,0)
-        attach_to_player(sixsssss, 2, 0, 0, -0.52, 0, 0,0)
-        attach_to_player(sixssssss, 2, 0, 0, -0.62, 0, 0,0)
-        attach_to_player(sixsssssss, 2, 0, 0, -0.72, 0, 0,0)
+    if on then
+        attach_to_player(six, 2, 0.0, 0, -0.12, 0, 0, 0)
+        attach_to_player(sixss, 2, 0, 0, -0.32, 0, 0, 0)
+        attach_to_player(sixs, 2, 0, 0, 0, -0.22, 0, 0)
+        attach_to_player(sixsss, 2, 0, 0, -0.02, 0, 0, 0)
+        attach_to_player(sixssss, 2, 0, 0, -0.42, 0, 0, 0)
+        attach_to_player(sixsssss, 2, 0, 0, -0.52, 0, 0, 0)
+        attach_to_player(sixssssss, 2, 0, 0, -0.62, 0, 0, 0)
+        attach_to_player(sixsssssss, 2, 0, 0, -0.72, 0, 0, 0)
     else
         delete_object(six)
         delete_object(sixss)
@@ -10833,644 +11264,753 @@ GTTG(texiao, "魂环缠绕",{""}, "",function(on)
     end
 end)
 
-GTTG(texiao, "怒发冲冠",{"cjfireman"}, "",function(state)
+GTTG(texiao, "怒发冲冠", {"cjfireman"}, "", function(state)
     if state then
-    for _, boneId in ipairs(bones) do
-    request_ptfx_asset("core")
-    GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("ent_ray_heli_aprtmnt_s_fire", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 2, false, false, false, 0, 0, 0, 0)
-    end
+        for _, boneId in ipairs(bones) do
+            request_ptfx_asset("core")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("ent_ray_heli_aprtmnt_s_fire",
+                players.user_ped(), 0, 0, 0, 0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 2, false,
+                false, false, 0, 0, 0, 0)
+        end
     else
-    GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
     end
-    end)
+end)
 
 GTLP(texiao, "元气弹", {""}, "", function()
     local player_pos = players.get_position(players.user())
     request_ptfx_asset("core")
     GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
-"ent_anim_paparazzi_flash", player_pos.x, player_pos.y, player_pos.z +2.5, 0, 0, 0, 20, false, false, false)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("ent_anim_paparazzi_flash", player_pos.x, player_pos.y,
+        player_pos.z + 2.5, 0, 0, 0, 20, false, false, false)
 end)
 
-GTTG(texiao, "雷神之锤",{""}, "",function(on)
+GTTG(texiao, "雷神之锤", {""}, "", function(on)
     local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID())
     local taidao = OBJECT.CREATE_OBJECT(util.joaat("xm3_prop_xm3_hammer_01"), pos.x, pos.y, pos.z, true, true, false)
     if on then
-    WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),1317494643,15,true,true)
-    WEAPON.SET_PED_CURRENT_WEAPON_VISIBLE(PLAYER.PLAYER_PED_ID(), not on, false, false, false)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(taidao, PLAYER.PLAYER_PED_ID(), PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 28422), 0.07, 0, 0, -100, -90, 100, true, true, true, true, 0, true)
+        WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), 1317494643, 15, true, true)
+        WEAPON.SET_PED_CURRENT_WEAPON_VISIBLE(PLAYER.PLAYER_PED_ID(), not on, false, false, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(taidao, PLAYER.PLAYER_PED_ID(),
+            PED.GET_PED_BONE_INDEX(PLAYER.PLAYER_PED_ID(), 28422), 0.07, 0, 0, -100, -90, 100, true, true, true, true,
+            0, true)
     else
-        WEAPON.REMOVE_WEAPON_FROM_PED(players.user_ped(),1317494643)
+        WEAPON.REMOVE_WEAPON_FROM_PED(players.user_ped(), 1317494643)
         local count = 0
-			for k,ent in pairs(entities.get_all_objects_as_handles()) do
-				ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
-				entities.delete_by_handle(ent)
-				count = count + 1
-				wait()
-			end
+        for k, ent in pairs(entities.get_all_objects_as_handles()) do
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+            entities.delete_by_handle(ent)
+            count = count + 1
+            wait()
+        end
     end
 end)
 
-        leishen = GT(texiao,"雷神",{},"")
-        GTTG(leishen, "雷神",{""}, "",function(state)
-            if state then
-                for _, boneId in ipairs(bones) do
-                request_ptfx_asset("core")
-                GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-                GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("ent_amb_elec_crackle", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 2, false, false, false, 0, 0, 0, 0)
-                end
-
-            else
-                GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
-            end
-        end)
-
-        GTLP(leishen, "雷神v2", {""}, "", function()
-            local player_pos = players.get_position(players.user())
+leishen = GT(texiao, "雷神", {}, "")
+GTTG(leishen, "雷神", {""}, "", function(state)
+    if state then
+        for _, boneId in ipairs(bones) do
             request_ptfx_asset("core")
             GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
-        "ent_dst_elec_fire_sp", player_pos.x, player_pos.y, player_pos.z, 0, 0, 0, 2.5, false, false, false)
-        end)
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("ent_amb_elec_crackle", players.user_ped(), 0, 0,
+                0, 0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 2, false, false, false, 0, 0, 0, 0)
+        end
+
+    else
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+    end
+end)
+
+GTLP(leishen, "雷神v2", {""}, "", function()
+    local player_pos = players.get_position(players.user())
+    request_ptfx_asset("core")
+    GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("ent_dst_elec_fire_sp", player_pos.x, player_pos.y,
+        player_pos.z, 0, 0, 0, 2.5, false, false, false)
+end)
 
 GTLP(newptfx, "枯枝败叶", {""}, "", function()
     local player_pos = players.get_position(players.user())
     request_ptfx_asset("core")
     GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("ent_col_palm_leaves", player_pos.x, player_pos.y, player_pos.z, 0, 0, 0, 2.5, false, false, false)
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("ent_col_palm_leaves", player_pos.x, player_pos.y,
+        player_pos.z, 0, 0, 0, 2.5, false, false, false)
 end)
 
-GTLP(newptfx,"尼斯湖水怪", {""}, "", function ()
-    local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-    local affect <const> = Effect.new("core", "ent_amb_trev1_trailer_sp_f")
+GTLP(newptfx, "尼斯湖水怪", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_amb_trev1_trailer_sp_f")
     if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-    STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-    return
-    end
-    if timer.elapsed() >= 1000 then
-    removeFxs(affects); affects = {}
-    timer.reset()
-    end
-    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-    local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-    local minimum, maximum = v3.new(), v3.new()
-    MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-    local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-    for _, offset in ipairs(offsets) do
-    GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-    local fx =
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-    GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-    table.insert(affects, fx)
-    end
-    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-    for _, boneId in ipairs(bones) do
-    GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-    local fx =
-    GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-    GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-    table.insert(affects, fx)
-    end
-    end
-    end, function ()
-    removeFxs(affects); affects = {}
-    end)
-
-    GTLP(newptfx,"雷霆火花", {""}, "", function ()
-        local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-        local affect <const> = Effect.new("core", "ent_ray_prologue_elec_crackle_sp")
-        if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
         STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
         return
-        end
-        if timer.elapsed() >= 1000 then
-        removeFxs(affects); affects = {}
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
         timer.reset()
-        end
-        if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
         local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
         local minimum, maximum = v3.new(), v3.new()
         MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-        local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
         for _, offset in ipairs(offsets) do
-        GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-        local fx =
-        GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-        table.insert(affects, fx)
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
         end
-        elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
         for _, boneId in ipairs(bones) do
-        GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-        local fx =
-        GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-        GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-        table.insert(affects, fx)
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
         end
-        end
-        end, function ()
-        removeFxs(affects); affects = {}
-        end)
-
-        GTLP(newptfx,"雷霆万钧", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("core", "ent_amb_foundry_arc_heat")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-        GTLP(newptfx,"火花四溅", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("core", "ent_brk_sparking_wires_sp")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-        GTLP(newptfx, "超级赛亚人", {""}, "", function()
-            local player_pos = players.get_position(players.user())
-            --request_ptfx_asset("core")
-            GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
-            "exp_grd_sub_large_spawn_sp", player_pos.x, player_pos.y, player_pos.z, 0, 0, 0, 2.5, false, false, false)
-            end)
-
-        GTLP(newptfx,"神奇糖果", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("core", "ent_dst_inflate_ball_clr")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-        GTLP(newptfx,"煽风点火", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("core", "exp_air_blimp2_sp")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-        GTLP(newptfx,"轰轰烈烈", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("scr_prologue", "scr_prologue_door_blast")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-        GTLP(newptfx,"金光闪耀", {""}, "", function ()
-            local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-            local affect <const> = Effect.new("scr_rcbarry1", "scr_alien_teleport")
-            if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-            STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-            return
-            end
-            if timer.elapsed() >= 1000 then
-            removeFxs(affects); affects = {}
-            timer.reset()
-            end
-            if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-            local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-            local minimum, maximum = v3.new(), v3.new()
-            MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-            local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-            for _, offset in ipairs(offsets) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-            for _, boneId in ipairs(bones) do
-            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-            local fx =
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-            table.insert(affects, fx)
-            end
-            end
-            end, function ()
-            removeFxs(affects); affects = {}
-            end)
-
-GTLP(sessionfun, "设置力场", {"forcefield"}, "", function()
-	forcefielddd()
+    end
 end, function()
-	set_explosion_proof(players.user_ped(), false)
+    removeFxs(affects);
+    affects = {}
 end)
 
+GTLP(newptfx, "雷霆火花", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_ray_prologue_elec_crackle_sp")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
 
-GTLuaScript.slider_text(sessionfun, "力场", {}, "", options_force, function(index)
-	forcefield_set(index)
+GTLP(newptfx, "雷霆万钧", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_amb_foundry_arc_heat")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(newptfx, "火花四溅", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_brk_sparking_wires_sp")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(newptfx, "超级赛亚人", {""}, "", function()
+    local player_pos = players.get_position(players.user())
+    -- request_ptfx_asset("core")
+    GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("exp_grd_sub_large_spawn_sp", player_pos.x, player_pos.y,
+        player_pos.z, 0, 0, 0, 2.5, false, false, false)
+end)
+
+GTLP(newptfx, "神奇糖果", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_dst_inflate_ball_clr")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(newptfx, "煽风点火", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "exp_air_blimp2_sp")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(newptfx, "轰轰烈烈", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("scr_prologue", "scr_prologue_door_blast")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(newptfx, "金光闪耀", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("scr_rcbarry1", "scr_alien_teleport")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
+end)
+
+GTLP(sessionfun, "设置力场", {"forcefield"}, "", function()
+    forcefielddd()
+end, function()
+    set_explosion_proof(players.user_ped(), false)
+end)
+
+GTLuaScript.textslider(sessionfun, "力场", {}, "", options_force, function(index)
+    forcefield_set(index)
 end)
 
 GTLP(sessionfun, "原力", {"jedimode"}, "开启后在载具附近长按滑鼠左键", function()
-	jedmode()
+    jedmode()
 end, function()
-	state = 0
+    state = 0
 end)
 
 GTLP(sessionfun, "修仙", {"carpetride"}, "", function()
     carpetridexx()
-end,function()
-TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
-	ENTITY.DETACH_ENTITY(players.user_ped(), true, false)
-	ENTITY.SET_ENTITY_VISIBLE(object, false, false)
-	entities.delete_by_handle(object)
-	state = 0
+end, function()
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
+    ENTITY.DETACH_ENTITY(players.user_ped(), true, false)
+    ENTITY.SET_ENTITY_VISIBLE(object, false, false)
+    entities.delete_by_handle(object)
+    state = 0
 end)
 
 local ls_driveonair
 walkonwater = false
-GTTG(sessionfun, "水上行走", {"walkonwater"}, "开启后即可在水域上漫步",  function(on)
+GTTG(sessionfun, "水上行走", {"walkonwater"}, "开启后即可在水域上漫步", function(on)
     walkonwater = on
     if on then
         GTLuaScript.set_value(ls_driveonair, false)
     end
 end)
-    
-GTLP(quantoutexiao,"火焰拳", {""}, "", function ()
-local colour = {r = 1.0, g = 0.0, b = 1.0, a = 1.0}
-local affect <const> = Effect.new("scr_sum2_hal", "scr_sum2_hal_bike_wheel_flame_orange")
-if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-return
-end
-if timer.elapsed() >= 1000 then
-removeFxs(affects); affects = {}
-timer.reset()
-end
-if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-local minimum, maximum = v3.new(), v3.new()
-MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-for _, offset in ipairs(offsets) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.0, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-for _, boneId in ipairs(bones) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-end
-end, function ()
-removeFxs(affects); affects = {}
+
+GTLP(quantoutexiao, "火焰拳", {""}, "", function()
+    local colour = {
+        r = 1.0,
+        g = 0.0,
+        b = 1.0,
+        a = 1.0
+    }
+    local affect<const> = Effect.new("scr_sum2_hal", "scr_sum2_hal_bike_wheel_flame_orange")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
 end)
 
-GTLP(quantoutexiao,"冰封拳", {""}, "", function ()
-local colour = {r = 0.0, g = 1.0, b = 0.0, a = 0.0}
-local affect <const> = Effect.new("scr_bike_adversary", "scr_adversary_weap_glow")
-if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-return
-end
-if timer.elapsed() >= 1000 then
-removeFxs(affects); affects = {}
-timer.reset()
-end
-if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-local minimum, maximum = v3.new(), v3.new()
-MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-for _, offset in ipairs(offsets) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.0, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-for _, boneId in ipairs(bones) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-end
-end, function ()
-removeFxs(affects); affects = {}
+
+GTLP(quantoutexiao, "冰封拳", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 0.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("scr_bike_adversary", "scr_adversary_weap_glow")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
 end)
 
-GTLP(quantoutexiao,"迷踪拳", {""}, "", function ()
-local colour = {r = 1.0, g = 1.0, b = 1.0, a = 0.0}
-local affect <const> = Effect.new("proj_indep_firework", "scr_indep_launcher_sparkle_spawn")
-if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-return
-end
-if timer.elapsed() >= 1000 then
-removeFxs(affects); affects = {}
-timer.reset()
-end
-if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-local minimum, maximum = v3.new(), v3.new()
-MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-for _, offset in ipairs(offsets) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.7, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-for _, boneId in ipairs(bones) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),0.7, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-end
-end, function ()
-removeFxs(affects); affects = {}
+GTLP(quantoutexiao, "迷踪拳", {""}, "", function()
+    local colour = {
+        r = 1.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("proj_indep_firework", "scr_indep_launcher_sparkle_spawn")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.7, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.7, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
 end)
 
-GTTG(quantoutexiao, "火拳艾斯",{""}, "",function(state)
-if state then
- for _, boneId in ipairs(bones) do
-request_ptfx_asset("core")
-GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("fire_wrecked_plane_cockpit", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0, 0, 0)
-end
-else
-GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
- end
-end)
-        
-GTTG(quantoutexiao, "雷电拳",{""}, "",function(state)
-if state then
-for _, boneId in ipairs(bones) do
-request_ptfx_asset("scr_reconstructionaccident")
-GRAPHICS.USE_PARTICLE_FX_ASSET("scr_reconstructionaccident")
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scr_sparking_generator", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 3, false, false, false, 0, 0, 0, 0)
-end
-else
-GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
-end
+GTTG(quantoutexiao, "火拳艾斯", {""}, "", function(state)
+    if state then
+        for _, boneId in ipairs(bones) do
+            request_ptfx_asset("core")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("fire_wrecked_plane_cockpit", players.user_ped(),
+                0, 0, 0, 0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0,
+                0, 0)
+        end
+    else
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+    end
 end)
 
-GTLP(quantoutexiao,"雷电拳v2", {""}, "", function ()
-local colour = {r = 0.0, g = 1.0, b = 1.0, a = 0.0}
-local affect <const> = Effect.new("core", "ent_amb_elec_crackle")
-if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
-STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
-return
-end
-if timer.elapsed() >= 1000 then
-removeFxs(affects); affects = {}
-timer.reset()
-end
-if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
-local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
-local minimum, maximum = v3.new(), v3.new()
-MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
-local offsets <const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
-for _, offset in ipairs(offsets) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name,vehicle,offset.x,offset.y,0.0,0.0,0.0,0.0,0.0, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
-for _, boneId in ipairs(bones) do
-GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
-local fx =
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name,players.user_ped(),0.0,0.0,0.0,0.0,0.0,0.0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId),1.3, false, false, false,0, 0, 0, 0)
-GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
-table.insert(affects, fx)
-end
-end
-end, function ()
-removeFxs(affects); affects = {}
+GTTG(quantoutexiao, "雷电拳", {""}, "", function(state)
+    if state then
+        for _, boneId in ipairs(bones) do
+            request_ptfx_asset("scr_reconstructionaccident")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("scr_reconstructionaccident")
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scr_sparking_generator", players.user_ped(), 0,
+                0, 0, 0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 3, false, false, false, 0, 0, 0, 0)
+        end
+    else
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+    end
 end)
-        
-GTTG(quantoutexiao, "血拳V1",{""}, "",function(state)
-if state then
-for _, boneId in ipairs(bones) do
-request_ptfx_asset("core")
-GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("blood_mist_prop", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0, 0, 0)
-end
-else
-GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
-end
+
+
+GTLP(quantoutexiao, "雷电拳v2", {""}, "", function()
+    local colour = {
+        r = 0.0,
+        g = 1.0,
+        b = 1.0,
+        a = 0.0
+    }
+    local affect<const> = Effect.new("core", "ent_amb_elec_crackle")
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(affect.asset) then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET(affect.asset)
+        return
+    end
+    if timer.elapsed() >= 1000 then
+        removeFxs(affects);
+        affects = {}
+        timer.reset()
+    end
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local minimum, maximum = v3.new(), v3.new()
+        MISC.GET_MODEL_DIMENSIONS(ENTITY.GET_ENTITY_MODEL(vehicle), minimum, maximum)
+        local offsets<const> = {v3(minimum.x, minimum.y, 0.0), v3(maximum.x, minimum.y, 0.0)}
+        for _, offset in ipairs(offsets) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY(affect.name, vehicle, offset.x, offset.y,
+                0.0, 0.0, 0.0, 0.0, 0.0, false, false, false, 0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    elseif ENTITY.DOES_ENTITY_EXIST(players.user_ped()) then
+        for _, boneId in ipairs(bones) do
+            GRAPHICS.USE_PARTICLE_FX_ASSET(affect.asset)
+            local fx = GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE(affect.name, players.user_ped(), 0.0,
+                0.0, 0.0, 0.0, 0.0, 0.0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 1.3, false, false, false,
+                0, 0, 0, 0)
+            GRAPHICS.SET_PARTICLE_FX_LOOPED_COLOUR(fx, colour.r, colour.g, colour.b, 0)
+            table.insert(affects, fx)
+        end
+    end
+end, function()
+    removeFxs(affects);
+    affects = {}
 end)
-        
-GTTG(quantoutexiao, "血拳V2",{""}, "",function(state)
-if state then
-for _, boneId in ipairs(bones) do
-request_ptfx_asset("core")
-GRAPHICS.USE_PARTICLE_FX_ASSET("core")
-GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scrape_blood_car", players.user_ped(), 0, 0, 0, 0, 0 , 0,PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0, 0, 0)
-end
-else
-GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
-end
+
+GTTG(quantoutexiao, "血拳V1", {""}, "", function(state)
+    if state then
+        for _, boneId in ipairs(bones) do
+            request_ptfx_asset("core")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("blood_mist_prop", players.user_ped(), 0, 0, 0,
+                0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0, 0, 0)
+        end
+    else
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+    end
 end)
+
+GTTG(quantoutexiao, "血拳V2", {""}, "", function(state)
+    if state then
+        for _, boneId in ipairs(bones) do
+            request_ptfx_asset("core")
+            GRAPHICS.USE_PARTICLE_FX_ASSET("core")
+            GRAPHICS.START_NETWORKED_PARTICLE_FX_LOOPED_ON_ENTITY_BONE("scrape_blood_car", players.user_ped(), 0, 0, 0,
+                0, 0, 0, PED.GET_PED_BONE_INDEX(players.user_ped(), boneId), 0.35, false, false, false, 0, 0, 0, 0)
+        end
+    else
+        GRAPHICS.REMOVE_PARTICLE_FX_FROM_ENTITY(players.user_ped())
+    end
+end)
+
 
 GTTG(sessionfun, "灵魂出窍", {""}, "", function(toggle)
-ghost = toggle 
-if ghost then
-all_peds = entities.get_all_peds_as_handles()
-user_ped = players.user_ped()
-clone = PED.CLONE_PED(user_ped,true, true, true)
-pos = ENTITY.GET_ENTITY_COORDS(clone, false)
-ENTITY.SET_ENTITY_COORDS(user_ped, pos.x-2, pos.y, pos.z)
-ENTITY.SET_ENTITY_ALPHA(players.user_ped(), 87, false)
-ENTITY.SET_ENTITY_INVINCIBLE(clone,true)
-menu.trigger_commands("invisibility remote")
-util.create_tick_handler(function()
-STREAMING.REQUEST_ANIM_DICT("move_crawl")
-PED.SET_PED_MOVEMENT_CLIPSET(clone, "move_crawl", -1)
-mod_uses("ped", if on then 1 else -1)
-PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(clone, true)
-TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(clone, true)
-return ghost
-end)
-else
-clonepedpos = ENTITY.GET_ENTITY_COORDS(clone, false)
-ENTITY.SET_ENTITY_COORDS(user_ped, clonepedpos.x,clonepedpos.y,clonepedpos.z, false, false)
-entities.delete_by_handle(clone)
-ENTITY.SET_ENTITY_ALPHA(user_ped, 255, false)
-menu.trigger_commands("invisibility off")
-end
+    ghost = toggle 
+    if ghost then
+        all_peds = entities.get_all_peds_as_handles()
+        user_ped = players.user_ped()
+        clone = PED.CLONE_PED(user_ped,true, true, true)
+        pos = ENTITY.GET_ENTITY_COORDS(clone, false)
+        ENTITY.SET_ENTITY_COORDS(user_ped, pos.x-2, pos.y, pos.z)
+        ENTITY.SET_ENTITY_ALPHA(players.user_ped(), 87, false)
+        ENTITY.SET_ENTITY_INVINCIBLE(clone,true)
+        menu.trigger_commands("invisibility remote")
+        util.create_tick_handler(function()
+            STREAMING.REQUEST_ANIM_DICT("move_crawl")
+            PED.SET_PED_MOVEMENT_CLIPSET(clone, "move_crawl", -1)
+            mod_uses("ped", if on then 1 else -1)
+            PED.SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(clone, true)
+            TASK.TASK_SET_BLOCKING_OF_NON_TEMPORARY_EVENTS(clone, true)
+            return ghost
+        end)
+    else
+        clonepedpos = ENTITY.GET_ENTITY_COORDS(clone, false)
+        ENTITY.SET_ENTITY_COORDS(user_ped, clonepedpos.x,clonepedpos.y,clonepedpos.z, false, false)
+        entities.delete_by_handle(clone)
+        ENTITY.SET_ENTITY_ALPHA(user_ped, 255, false)
+        menu.trigger_commands("invisibility off")
+    end
 end)
 
 GTLP(sessionfun, "一拳超人", {""}, "", function()
-supermanpersonl()
+    supermanpersonl()
 end)
 
 GTTG(other_self, "假装平民", {}, "让您无法拾取武器", function(toggle)
-PED.SET_ENABLE_HANDCUFFS(players.user_ped(), toggle)
+    PED.SET_ENABLE_HANDCUFFS(players.user_ped(), toggle)
 end)
 
 GTLP(sessionfun, "转圈圈", {""}, "不要动滑鼠,否则失效", function()
-bigpussy()
-end, function ()
-TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
-ENTITY.DETACH_ENTITY(PLAYER.PLAYER_PED_ID(), true, false)
-ENTITY.SET_ENTITY_VISIBLE(object, false)
-entities.delete_by_handle(object)
-state = 0
+    bigpussy()
+end, function()
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.PLAYER_PED_ID())
+    ENTITY.DETACH_ENTITY(PLAYER.PLAYER_PED_ID(), true, false)
+    ENTITY.SET_ENTITY_VISIBLE(object, false)
+    entities.delete_by_handle(object)
+    state = 0
 end)
-    
+
 GTTG(other_self, "空中游泳", {}, "", function(on)
     if on then
         menu.trigger_commands("swiminair on")
@@ -11478,7 +12018,6 @@ GTTG(other_self, "空中游泳", {}, "", function(on)
         menu.trigger_commands("swiminair off")
     end
 end)
-
 
 GTLP(other_self, "警察无视", {}, "警察不会对您产生敌意", function(toggle)
     PLAYER.SET_POLICE_IGNORE_PLAYER(PLAYER.PLAYER_ID(), toggle)
@@ -11494,17 +12033,17 @@ end)
 
 GTLP(sessionfun, "显示轴向", {}, "", function(toggle)
     local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x + 2, c.y, c.z, 255, 0, 0, 255) --x
-    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x, c.y + 2, c.z, 0, 255, 0, 255) --y
-    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x, c.y, c.z + 2, 0, 0, 255, 255) --z
+    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x + 2, c.y, c.z, 255, 0, 0, 255) -- x
+    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x, c.y + 2, c.z, 0, 255, 0, 255) -- y
+    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, c.x, c.y, c.z + 2, 0, 0, 255, 255) -- z
 end)
 
- GTLP(sessionfun, "线", {}, "连接玩家的线", function(toggle)
-        c = ENTITY.GET_ENTITY_COORDS(players.user_ped()) 
-        p = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        j = ENTITY.GET_ENTITY_COORDS(p) 
-        GRAPHICS.DRAW_LINE(c.x, c.y, c.z, j.x, j.y, j.z, 255, 255, 255, 255) 
-    end)
+GTLP(sessionfun, "线", {}, "连接玩家的线", function(toggle)
+    c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+    p = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    j = ENTITY.GET_ENTITY_COORDS(p)
+    GRAPHICS.DRAW_LINE(c.x, c.y, c.z, j.x, j.y, j.z, 255, 255, 255, 255)
+end)
 
 GTAC(sessionfun, "拉粑粑", {}, "拉臭臭", function()
     personlshit()
@@ -11514,92 +12053,57 @@ GTAC(sessionfun, "打飞机", {}, "我还需要解释这个吗", function()
     personlhitplane()
 end)
 
-
 nuke = GT(weapon_options, '核弹枪', {}, '超级壮观喔~')
 
 require "lib.GTSCRIPTS.GTW.nuke"
-GTLP(nuke, "核弹枪", {}, "如果想要开飞机扔核弹，你只需要打开此选项并且使用手枪向地面射击", function()
-	if PED.IS_PED_SHOOTING(players.user_ped()) then
-		local hash = util.joaat("prop_military_pickup_01")
-		ent_func.request_model(hash)
-		local player_pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 5.0, 3.0)
-		local dir = {}
-		local c2 = {}
-		c2 = ent_func.get_offset_from_gameplay_camera(1000)
-		dir.x = (c2.x - player_pos.x) * 1000
-		dir.y = (c2.y - player_pos.y) * 1000
-		dir.z = (c2.z - player_pos.z) * 1000
+GTLP(nuke, "核弹枪", {},
+    "如果想要开飞机扔核弹，你只需要打开此选项并且使用手枪向地面射击", function()
+        if PED.IS_PED_SHOOTING(players.user_ped()) then
+            local hash = util.joaat("prop_military_pickup_01")
+            ent_func.request_model(hash)
+            local player_pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 5.0, 3.0)
+            local dir = {}
+            local c2 = {}
+            c2 = ent_func.get_offset_from_gameplay_camera(1000)
+            dir.x = (c2.x - player_pos.x) * 1000
+            dir.y = (c2.y - player_pos.y) * 1000
+            dir.z = (c2.z - player_pos.z) * 1000
 
-		local nuke = OBJECT.CREATE_OBJECT_NO_OFFSET(hash, player_pos.x, player_pos.y, player_pos.z, true, false, false)
-		ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(nuke, players.user_ped(), false)
-		ENTITY.APPLY_FORCE_TO_ENTITY(nuke, 0, dir.x, dir.y, dir.z, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
-		ENTITY.SET_ENTITY_HAS_GRAVITY(nuke, true)
+            local nuke = OBJECT.CREATE_OBJECT_NO_OFFSET(hash, player_pos.x, player_pos.y, player_pos.z, true, false,
+                false)
+            ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(nuke, players.user_ped(), false)
+            ENTITY.APPLY_FORCE_TO_ENTITY(nuke, 0, dir.x, dir.y, dir.z, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
+            ENTITY.SET_ENTITY_HAS_GRAVITY(nuke, true)
 
-		while not ENTITY.HAS_ENTITY_COLLIDED_WITH_ANYTHING(nuke) and not ENTITY.IS_ENTITY_IN_WATER(nuke) do
-			wait(0)
-		end
-		local nukePos = ENTITY.GET_ENTITY_COORDS(nuke, true)
-		entities.delete_by_handle(nuke)
-        ent_func.create_nuke_explosion(nukePos)
-	end
-end)
+            while not ENTITY.HAS_ENTITY_COLLIDED_WITH_ANYTHING(nuke) and not ENTITY.IS_ENTITY_IN_WATER(nuke) do
+                wait(0)
+            end
+            local nukePos = ENTITY.GET_ENTITY_COORDS(nuke, true)
+            entities.delete_by_handle(nuke)
+            ent_func.create_nuke_explosion(nukePos)
+        end
+    end)
 
-GTLP(nuke,("轨道枪"), {}, "", function()
-	local last_hit_coords = v3.new()
-	if WEAPON.GET_PED_LAST_WEAPON_IMPACT_COORD(players.user_ped(), last_hit_coords) then
+GTLP(nuke, ("轨道枪"), {}, "", function()
+    local last_hit_coords = v3.new()
+    if WEAPON.GET_PED_LAST_WEAPON_IMPACT_COORD(players.user_ped(), last_hit_coords) then
         ent_func.use_fx_asset("scr_xm_orbital")
         GRAPHICS.USE_PARTICLE_FX_ASSET("scr_xm_orbital")
         FIRE.ADD_EXPLOSION(last_hit_coords.x, last_hit_coords.y, last_hit_coords.z, 59, 1, true, false, 1.0, false)
-        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", last_hit_coords.x, last_hit_coords.y, last_hit_coords.z, 0, 180, 0, 1.0, true, true, true)
+        GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", last_hit_coords.x,
+            last_hit_coords.y, last_hit_coords.z, 0, 180, 0, 1.0, true, true, true)
         for i = 1, 4 do
             PLAY_SOUND_FROM_ENTITY(-1, "DLC_XM_Explosions_Orbital_Cannon", players.user_ped(), 0, true, false)
         end
-	end
-end)
-
---[[custom_c4_list = GT(nuke, "C4枪")
-GTLP(custom_c4_list,("开启C4枪"), {}, "", function()
-	if PED.IS_PED_SHOOTING(players.user_ped()) and not DOES_ENTITY_EXIST(ent_func.request_model(hash)) then
-		local hash = util.joaat("prop_bomb_01_s")
-		ent_func.request_model(hash)
-        local player_pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.5, 0.5)
-		local dir = {}
-		local c2 = {}
-		c2 = ent_func.get_offset_from_gameplay_camera(50)
-		dir.x = (c2.x - player_pos.x) * 50
-		dir.y = (c2.y - player_pos.y) * 50
-		dir.z = (c2.z - player_pos.z) * 50
-
-		c4 = OBJECT.CREATE_OBJECT_NO_OFFSET(hash, player_pos.x, player_pos.y, player_pos.z, true, false, false)
-		ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(c4, players.user_ped(), false)
-		ENTITY.APPLY_FORCE_TO_ENTITY(c4, 0, dir.x, dir.y, dir.z, 0.0, 0.0, 0.0, 0, true, false, true, false, true)
-		ENTITY.SET_ENTITY_HAS_GRAVITY(c4, true)
-	end
-end)
-
-custom_c4_explosions = {("天基炮"), ("核弹")}
-GTLuaScript.textslider(custom_c4_list,("引爆C4"), {}, "", custom_c4_explosions, function(index, name)
-    if DOES_ENTITY_EXIST(ent_func.request_model(hash)) then
-        local c4_pos = ENTITY.GET_ENTITY_COORDS(c4)
-        entities.delete_by_handle(c4)
-	    if index == 1 then
-            ent_func.use_fx_asset("scr_xm_orbital")
-            FIRE.ADD_EXPLOSION(c4_pos.x, c4_pos.y, c4_pos.z, 59, 1, true, false, 1.0, false)
-            GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_xm_orbital_blast", c4_pos.x, c4_pos.y, c4_pos.z, 0, 180, 0, 1.0, true, true, true)
-        elseif index == 2 then
-	    	ent_func.create_nuke_explosion(c4_pos)
-        end
-        for i = 1, 4 do
-            AUDIO.PLAY_SOUND_FROM_ENTITY(-1, "DLC_XM_Explosions_Orbital_Cannon", players.user_ped(), 0, true, false)
-        end
     end
-end)]]
+end)
+
 
 local vehicleGun <const> = GT(weapon_options,"车辆枪", {}, "")
 finger_thing = GT(weapon_options, "手指枪", {}, "")
 fingergun()
 entityManipulation = GT(weapon_options, "实体操纵枪", {"emanipulation"}, "对玩家无效")
-Gun_Effect_Shooting_Hit = GT(weapon_options, "武器特效", {}, "")
+Gun_Effect_Shooting_Hit = GT(weapon_options, "子弹特效", {}, "")
 anti_aim_root = GT(weapon_options, "反瞄准", {"antiaim"}, "防止玩家瞄准射击您")
 damage_numbers_list = GT(weapon_options, "伤害数字")
 minecraftgun = GT(weapon_options, '我的世界枪', {}, '')
@@ -11638,108 +12142,108 @@ GTLuaScript.click_slider(triggerbot_root, "射击镜头之间的延迟", {}, "�
     triggerbot_delay = s
 end)
     
-    save_loadout = custom_weapon_save:action("保存武器", {}, "保存所有当前装备的武器及其附件，以便将来装载", function()
-        Save_Weapon_Profile()
-    end)
+save_loadout = custom_weapon_save:action("保存武器", {}, "保存所有当前装备的武器及其附件，以便将来装载", function()
+    Save_Weapon_Profile()
+end)
 
-    load_loadout = custom_weapon_save:action("加载上次保存武器", {"loadloadout"}, "装备上次保存的每一件武器", function()
-        Load_Out_Weapon()
-    end)
+load_loadout = custom_weapon_save:action("加载上次保存武器", {"loadloadout"}, "装备上次保存的每一件武器", function()
+    Load_Out_Weapon()
+end)
 
-    auto_load = custom_weapon_save:toggle("自动加载", {}, "加入新战局时，自动装备上次保存的每件武器", function(on)
-        Auto_Load_Out_Weapon(on)
-    end)
+auto_load = custom_weapon_save:toggle("自动加载", {}, "加入新战局时，自动装备上次保存的每件武器", function(on)
+    Auto_Load_Out_Weapon(on)
+end)
 
-    from_scratch = custom_weapon_save:action("从头开始", {}, "删除你当前的武器，这样你就可以按照你想要的方式构建你的装备",function()
-        Dele_All_Weapon()
-    end)
+from_scratch = custom_weapon_save:action("从头开始", {}, "删除你当前的武器，这样你就可以按照你想要的方式构建你的装备",function()
+    Dele_All_Weapon()
+end)
 
-    custom_weapon_save:divider("编辑武器")
+custom_weapon_save:divider("编辑武器")
 
-    Weapon_Check_Save()
+Weapon_Check_Save()
 
 
-    GTLP(weaponsetting, '无后坐力', {'JSnoRecoil'}, '使用武器射击时不会抖动游戏画面.', function()
-        gunpro()
-    end, function()
-        resetWeapons(modifiedRecoil)
-    end)
+GTLP(weaponsetting, '无后坐力', {'JSnoRecoil'}, '使用武器射击时不会抖动游戏画面.', function()
+    gunpro()
+end, function()
+    resetWeapons(modifiedRecoil)
+end)
 
-    GTLP(weaponsetting, '无限范围', {'JSinfiniteRange'}, '', function()
-        maxrange()
-    end, function()
-        for hash, _ in pairs(modifiedRange) do
-            memory.write_float(modifiedRange[hash].minAddress, modifiedRange[hash].originalMin)
-            memory.write_float(modifiedRange[hash].maxAddress, modifiedRange[hash].originalMax)
-            memory.write_float(modifiedRange[hash].rangeAddress, modifiedRange[hash].originalRange)
-            modifiedRange[hash] = nil
+GTLP(weaponsetting, '无限范围', {'JSinfiniteRange'}, '', function()
+    maxrange()
+end, function()
+    for hash, _ in pairs(modifiedRange) do
+        memory.write_float(modifiedRange[hash].minAddress, modifiedRange[hash].originalMin)
+        memory.write_float(modifiedRange[hash].maxAddress, modifiedRange[hash].originalMax)
+        memory.write_float(modifiedRange[hash].rangeAddress, modifiedRange[hash].originalRange)
+        modifiedRange[hash] = nil
+    end
+end)
+
+
+GTLP(weaponsetting, '无扩散', {'JSnoSpread'}, '', function()
+    nospread()
+end, function()
+    resetWeapons(modifiedSpread)
+end)
+
+GTLP(weaponsetting, '移除前摇', {'JSnoSpinUp'}, '移除加特林和寡妇制造者的前摇.', function()
+    nospinup()
+end, function()
+    for i = 1, #modifiedSpinup do
+        if modifiedSpinup[i].address then
+            memory.write_float(modifiedSpinup[i].address, 0.5)
         end
-    end)
+    end
+end)
 
+GTLP(weaponsetting, '子弹伤害修改', {'JSbulletForceMultiplier'}, '从正面射击载具时效果最佳.\n显示的值以百分比为单位.', function()
+    damagemoded()
+end, function()
+    resetWeapons(modifiedCarForce)
+    resetWeapons(modifiedHeliForce)
+    resetWeapons(modifiedPedForce)
+end)
 
-    GTLP(weaponsetting, '无扩散', {'JSnoSpread'}, '', function()
-        nospread()
-    end, function()
-        resetWeapons(modifiedSpread)
-    end)
+GTD(weaponsetting, '瞄准视野')
 
-    GTLP(weaponsetting, '移除前摇', {'JSnoSpinUp'}, '移除加特林和寡妇制造者的前摇.', function()
-        nospinup()
-    end, function()
-        for i = 1, #modifiedSpinup do
-            if modifiedSpinup[i].address then
-                memory.write_float(modifiedSpinup[i].address, 0.5)
-            end
-        end
-    end)
+GTLP(weaponsetting, '启用瞄准视野缩放', {'JSenableAimFov'}, '让您在瞄准时修改视野大小.', function()
+    gunzoom()
+end, function()
+    resetWeapons(modifiedAimFov)
+end)
 
-    GTLP(weaponsetting, '子弹伤害修改', {'JSbulletForceMultiplier'}, '从正面射击载具时效果最佳.\n显示的值以百分比为单位.', function()
-        damagemoded()
-    end, function()
-        resetWeapons(modifiedCarForce)
-        resetWeapons(modifiedHeliForce)
-        resetWeapons(modifiedPedForce)
-    end)
+GTD(weaponsetting, '放大瞄准视野')
 
-    GTD(weaponsetting, '瞄准视野')
+GTLP(weaponsetting, '启用放大瞄准视野缩放', {'JSenableZoomFov'}, '让您在瞄准放大时修改视野大小.', function()
+    enablezoomfov()
+end, function()
+    resetWeapons(modifiedZoomFov)
+end)
 
-    GTLP(weaponsetting, '启用瞄准视野缩放', {'JSenableAimFov'}, '让您在瞄准时修改视野大小.', function()
-        gunzoom()
-    end, function()
-        resetWeapons(modifiedAimFov)
-    end)
+GTLuaScript.slider_float(weaponsetting, '放大瞄准视野', {'JSzoomAimFov'}, '', 100, 9999999999, 100, 1, function(value)
+    zoomaimfov(value)
+end)
 
-    GTD(weaponsetting, '放大瞄准视野')
+GTLP(proxysticks, '粘弹自动爆炸', {'JSproxyStickys'}, '使您的粘弹在玩家或NPC附近时自动引爆.', function()
+    proxyStickys()
+end)
 
-    GTLP(weaponsetting, '启用放大瞄准视野缩放', {'JSenableZoomFov'}, '让您在瞄准放大时修改视野大小.', function()
-        enablezoomfov()
-    end, function()
-        resetWeapons(modifiedZoomFov)
-    end)
+GTTG(proxysticks, '引爆附近的玩家', {'JSProxyStickyPlayers'}, '如果您的粘性炸弹在玩家附近时自动引爆.', function(toggle)
+    proxyStickys_players(toggle)
+end, proxyStickySettings.players)
 
-    GTLuaScript.slider_float(weaponsetting, '放大瞄准视野', {'JSzoomAimFov'}, '', 100, 9999999999, 100, 1, function(value)
-        zoomaimfov(value)
-    end)
+GTTG(proxysticks, '引爆附近的NPC', {'JSProxyStickyNpcs'}, '如果您的粘性炸弹在NPC附近时自动引爆.', function(toggle)
+    proxystickys_npc(toggle)
+end, proxyStickySettings.npcs)
 
-    GTLP(proxysticks, '粘弹自动爆炸', {'JSproxyStickys'}, '使您的粘弹在玩家或NPC附近时自动引爆.', function()
-        proxyStickys()
-    end)
+GTluaScript.slider(proxysticks, '爆炸半径', {'JSstickyRadius'}, '粘性炸弹必须离目标多近才会引爆.', 1, 10, proxyStickySettings.radius, 1, function(value)
+    proxysticks_radius(value)
+end)
 
-    GTTG(proxysticks, '引爆附近的玩家', {'JSProxyStickyPlayers'}, '如果您的粘性炸弹在玩家附近时自动引爆.', function(toggle)
-        proxyStickys_players(toggle)
-    end, proxyStickySettings.players)
-
-    GTTG(proxysticks, '引爆附近的NPC', {'JSProxyStickyNpcs'}, '如果您的粘性炸弹在NPC附近时自动引爆.', function(toggle)
-        proxystickys_npc(toggle)
-    end, proxyStickySettings.npcs)
-
-    GTluaScript.slider(proxysticks, '爆炸半径', {'JSstickyRadius'}, '粘性炸弹必须离目标多近才会引爆.', 1, 10, proxyStickySettings.radius, 1, function(value)
-        proxysticks_radius(value)
-    end)
-
-    GTAC(proxysticks, '移除所有粘性炸弹', {'JSremoveStickys'}, '移除所有存在的粘性炸弹(不仅仅是你的).', function()
-        WEAPON.REMOVE_ALL_PROJECTILES_OF_TYPE(util.joaat('weapon_stickybomb'), false)
-    end)
+GTAC(proxysticks, '移除所有粘性炸弹', {'JSremoveStickys'}, '移除所有存在的粘性炸弹(不仅仅是你的).', function()
+    WEAPON.REMOVE_ALL_PROJECTILES_OF_TYPE(util.joaat('weapon_stickybomb'), false)
+end)
 
 entity_control = GT(weapon_options, "实体控制枪", {}, "控制你所瞄准的实体")
 
@@ -11838,7 +12342,6 @@ local distancePerc = 0.0
 local currentDistance = minDist
 local lastInput <const> = newTimer()
 
-
 function get_veh_distance()
 	if PAD.IS_CONTROL_JUST_PRESSED(2, 241) and distancePerc < 1.0 then
 		distancePerc = distancePerc + 0.25
@@ -11855,6 +12358,7 @@ function get_veh_distance()
 	end
 	return currentDistance
 end
+
 local Cargun = "车枪"
 GTLP(vehicleGun,Cargun, {}, "", function ()
 	request_model(modelHash)
@@ -11899,7 +12403,7 @@ end, function()
 end)
 
 function Instructional.add_control_group (index, name)
-	local button = CC_PAD.GET_CONTROL_GROUP_INSTRUCTIONAL_BUTTONS_STRING(2, index, true)
+	local button = PAD.GET_CONTROL_GROUP_INSTRUCTIONAL_BUTTONS_STRING(2, index, true)
     Instructional:add_data_slot(index, name, button)
 end
 
@@ -12121,10 +12625,10 @@ GTLP(wea_func, '3D方框瞄准', {'_3d_crosshair'}, '', function()
 end)
 
 GTLP(wea_func, "自动开枪", {"triggerbotall"}, "", function()
-    local wpn = WEAPON_SAVE_WEAPON.GET_SELECTED_PED_WEAPON(players.user_ped())
+    local wpn = WEAPON.GET_SELECTED_PED_WEAPON(players.user_ped())
     local dmg = SYSTEM.ROUND(WEAPON.GET_WEAPON_DAMAGE(wpn, 0))
-    local delay = WEAPON_SAVE_WEAPON.GET_WEAPON_TIME_BETWEEN_SHOTS(wpn)
-    local wpnEnt = WEAPON_SAVE_WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(PLAYER.PLAYER_PED_ID(), false)
+    local delay = WEAPON.GET_WEAPON_TIME_BETWEEN_SHOTS(wpn)
+    local wpnEnt = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(PLAYER.PLAYER_PED_ID(), false)
     local wpnCoords = ENTITY.GET_ENTITY_BONE_POSTION(wpnEnt, ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(wpnEnt, "gun_muzzle"))
     for _, pid in ipairs(players.list(false, true, true)) do
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -12143,7 +12647,7 @@ GTLP(Gun_Effect_Shooting_Hit, "开启", {"shootingfx"}, "", function ()
     shootingeffect()
 end)
 
-GTluaScript.slider_text(Gun_Effect_Shooting_Hit, "切换射击特效", {}, "", {"小丑木兹","小丑花"}, function (index)
+GTluaScript.textslider(Gun_Effect_Shooting_Hit, "切换射击特效", {}, "", {"小丑木兹","小丑花"}, function (index)
 	setshootingeffect(index)
 end)
 
@@ -12151,17 +12655,16 @@ GTLP(wea_func, '喷火器', {'JSflamethrower'}, '将加特林变成火焰喷射�
     flamegun()
 end)
 
-
 GTLP(wea_func, "锁定玩家", {}, "允许您使用武装载具上的制导导弹发射器锁定玩家.", function()
     for _, pid in ipairs(players.list(true, true, true)) do
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        PLAYERJINX.ADD_PLAYER_TARGETABLE_ENTITY(players.user(), ped)
+        PLAYER.ADD_PLAYER_TARGETABLE_ENTITY(players.user(), ped)
         ENTITY.SET_ENTITY_IS_TARGET_PRIORITY(ped, false, 400.0)    
     end
 end, function()
     for _, pid in ipairs(players.list(true, true, true)) do
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        PLAYERJINX.REMOVE_PLAYER_TARGETABLE_ENTITY(players.user(), ped)
+        PLAYER.REMOVE_PLAYER_TARGETABLE_ENTITY(players.user(), ped)
     end
 end)
 
@@ -12296,7 +12799,7 @@ GTLP(weapon_options, "磁铁枪", {"magnetgun"}, "很有趣喔~", function ()
     magnetgun()
 end)
 
-GTluaScript.slider_text(weapon_options, "设置磁铁枪", {}, "", {"平滑的", "混沌模式"}, function(index)
+GTluaScript.textslider(weapon_options, "设置磁铁枪", {}, "", {"平滑的", "混沌模式"}, function(index)
 	setmagnetgun(index)
 end)
 
@@ -12325,7 +12828,7 @@ GTLP(wea_func, "子弹分散", {"bulletchanger"}, "", function ()
     if PED.IS_PED_SHOOTING(players.user_ped(players.user())) then
 		local weapon = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(localPed, false)
 		local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(weapon, "gun_muzzle")
-		local bonePos = WIRI_ENTITY.GET_ENTITY_BONE_POSTION(weapon, bone)
+		local bonePos = ENTITY.GET_ENTITY_BONE_POSTION(weapon, bone)
 		local offset = get_offset_from_cam(30.0)
 		MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
 			bonePos.x, bonePos.y, bonePos.z,
@@ -12531,54 +13034,47 @@ end)
 
 isLog_entity_info = false
 GTLP(shitixinxi, "实体信息枪2.0", {}, "显示瞄准射击的实体信息", function()
-local ent = GetEntity_PlayerIsAimingAt(players.user())
-if ent ~= NULL and ENTITY.DOES_ENTITY_EXIST(ent) then
-local entity_info = "[GT]>>>实体信息<<<[GT]\n"
-local modelHash = ENTITY.GET_ENTITY_MODEL(ent)
-entity_info = entity_info .. "哈希: " .. modelHash
-if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
-entity_info = entity_info .. "\nIS A MISSION ENTITY"
-end
-local entity_types = { "没有实体", "人物", "载具", "实体" }
-local entity_type = ENTITY.GET_ENTITY_TYPE(ent)
-entity_info = entity_info .. "\n物体类型: " .. entity_types[entity_type + 1]
-local entity_pop_types = {
-"POPTYPE_UNKNOWN",
-"POPTYPE_RANDOM_PERMANENT",
-"POPTYPE_RANDOM_PARKED",
-"POPTYPE_RANDOM_PATROL",
-"POPTYPE_RANDOM_SCENARIO",
-"POPTYPE_RANDOM_AMBIENT",
-"POPTYPE_PERMANENT",
-"POPTYPE_MISSION",
-"POPTYPE_REPLAY",
-"POPTYPE_CACHE",
-"POPTYPE_TOOL" }
-local entity_pop_type = ENTITY.GET_ENTITY_POPULATION_TYPE(ent)
-entity_info = entity_info .. "\n类型: " .. entity_pop_types[entity_pop_type + 1]
-entity_info = entity_info .. "\n健康值: " .. ENTITY.GET_ENTITY_HEALTH(ent)
-if entity_type == 3 then
-if OBJECT.IS_OBJECT_A_PICKUP(ent) then
-entity_info = entity_info .. "\n\nIS A PICKUP"
-end
-if OBJECT.IS_OBJECT_A_PORTABLE_PICKUP(ent) then
-entity_info = entity_info .. "\nIS A PORTABLE PICKUP"
-end
-end
-if ENTITY.IS_ENTITY_ATTACHED(ent) then
-entity_info = entity_info .. "\n\nIS ENTITY ATTACHED"
-local attached_entity = ENTITY.GET_ENTITY_ATTACHED_TO(ent)
-entity_info = entity_info .. "\n附加实体模型哈希 :" .. ENTITY.GET_ENTITY_MODEL(attached_entity)
-end
-entity_info = entity_info .. "\n位置: " .. ENTITY.GET_ENTITY_HEADING(ent)
-local pos = ENTITY.GET_ENTITY_COORDS(ent)
-entity_info = entity_info .. "\nX : " .. pos.x .. "\nY : " .. pos.y .. "\nZ : " .. pos.z
-directx.draw_text(0, 0.0, entity_info, ALIGN_TOP_LEFT, 0.7, 1, 0, 1, 1, true)
-if isLog_entity_info then
-util.log(entity_info)
-end
-end
+    local ent = GetEntity_PlayerIsAimingAt(players.user())
+    if ent ~= NULL and ENTITY.DOES_ENTITY_EXIST(ent) then
+        local entity_info = "[GT]>>>实体信息<<<[GT]\n"
+        local modelHash = ENTITY.GET_ENTITY_MODEL(ent)
+        entity_info = entity_info .. "哈希: " .. modelHash
+        if ENTITY.IS_ENTITY_A_MISSION_ENTITY(ent) then
+            entity_info = entity_info .. "\nIS A MISSION ENTITY"
+        end
+        local entity_types = {"没有实体", "人物", "载具", "实体"}
+        local entity_type = ENTITY.GET_ENTITY_TYPE(ent)
+        entity_info = entity_info .. "\n物体类型: " .. entity_types[entity_type + 1]
+        local entity_pop_types = {"POPTYPE_UNKNOWN", "POPTYPE_RANDOM_PERMANENT", "POPTYPE_RANDOM_PARKED",
+                                  "POPTYPE_RANDOM_PATROL", "POPTYPE_RANDOM_SCENARIO", "POPTYPE_RANDOM_AMBIENT",
+                                  "POPTYPE_PERMANENT", "POPTYPE_MISSION", "POPTYPE_REPLAY", "POPTYPE_CACHE",
+                                  "POPTYPE_TOOL"}
+        local entity_pop_type = ENTITY.GET_ENTITY_POPULATION_TYPE(ent)
+        entity_info = entity_info .. "\n类型: " .. entity_pop_types[entity_pop_type + 1]
+        entity_info = entity_info .. "\n健康值: " .. ENTITY.GET_ENTITY_HEALTH(ent)
+        if entity_type == 3 then
+            if OBJECT.IS_OBJECT_A_PICKUP(ent) then
+                entity_info = entity_info .. "\n\nIS A PICKUP"
+            end
+            if OBJECT.IS_OBJECT_A_PORTABLE_PICKUP(ent) then
+                entity_info = entity_info .. "\nIS A PORTABLE PICKUP"
+            end
+        end
+        if ENTITY.IS_ENTITY_ATTACHED(ent) then
+            entity_info = entity_info .. "\n\nIS ENTITY ATTACHED"
+            local attached_entity = ENTITY.GET_ENTITY_ATTACHED_TO(ent)
+            entity_info = entity_info .. "\n附加实体模型哈希 :" .. ENTITY.GET_ENTITY_MODEL(attached_entity)
+        end
+        entity_info = entity_info .. "\n位置: " .. ENTITY.GET_ENTITY_HEADING(ent)
+        local pos = ENTITY.GET_ENTITY_COORDS(ent)
+        entity_info = entity_info .. "\nX : " .. pos.x .. "\nY : " .. pos.y .. "\nZ : " .. pos.z
+        directx.draw_text(0, 0.0, entity_info, ALIGN_TOP_LEFT, 0.7, 1, 0, 1, 1, true)
+        if isLog_entity_info then
+            util.log(entity_info)
+        end
+    end
 end)
+
 
 GTTG(shitixinxi, "记录到日志", {}, "将实体上传日志", function(toggle)
 isLog_entity_info = toggle
@@ -12601,24 +13097,8 @@ GTLuaScript.list_select(wea_func, "设置武器子弹", {}, "", {
 	{util.get_label_text("WT_RAYPISTOL")}, {util.get_label_text("WT_GL")},
 	{util.get_label_text("WT_MOLOTOV")}, {util.get_label_text("WT_SNWBALL")},
 	{util.get_label_text("WT_FLAREGUN")}, {util.get_label_text("WT_EMPL")},}, 1, function(opt)
-        bulletchanger_set(opt)
+    bulletchanger_set(opt)
 end)
-
-
-local hitEffectRoot <const> = GT(Gun_Effect_Shooting_Hit, "击打特效", {}, "")
-
-GTLP(hitEffectRoot, "开启", {"hiteffects"}, "", function()
-	hittingeffect()
-end)
-
-GTLuaScript.list_select(hitEffectRoot, "切换子弹特效", {}, "", hiteffectchinese, 1, function (opt)
-	sethiteffect(opt)
-end)
-
-local SetEffectColour = function(colour) effectColour = colour end
-
-local menuColour = GTluaScript.colour(hitEffectRoot, "颜色", {"effectcolour"}, "仅对某些效果有效", effectColour, false, SetEffectColour)
-GTluaScript.rainbow(menuColour)
 
 
 GTTG(wea_func, '友好枪', {'JSfriendlyFire'}, '使您射击NPC时让他们不会攻击您.', function(toggle)
@@ -12743,41 +13223,41 @@ GTD(aimbot_settings, "---额外功能---")
 GTluaScript.slider(aimbot_settings, "设定速度", {"silentspeed"}, "设置子弹的速度。 默认值为 -1。", -1, 2147483647, -1, 10, function (v) Silent_Aimbot.advanced.speed = v end)
 
 weaponm = GT(pvphelp, "自瞄3.0", {}, "")
-GTTG(weaponm, '开启自瞄', {"aimbot"}, '', function (on)
-if on then
-GTluaScript.trigger_commands("aimbot on")
-else
-GTluaScript.trigger_commands("aimbot off")
-end
+GTTG(weaponm, '开启自瞄', {"aimbot"}, '', function(on)
+    if on then
+        GTluaScript.trigger_commands("aimbot on")
+    else
+        GTluaScript.trigger_commands("aimbot off")
+    end
 end)
 weaponms = GT(weaponm, "目标", {}, ".")
-GTTG(weaponms, '排除好友', {"aimbotexcludfriends"}, '', function (on)
-if on then
-GTluaScript.trigger_commands("aimbotexcludfriends on")
-else
-GTluaScript.trigger_commands("aimbotexcludfriends off")
-end
+GTTG(weaponms, '排除好友', {"aimbotexcludfriends"}, '', function(on)
+    if on then
+        GTluaScript.trigger_commands("aimbotexcludfriends on")
+    else
+        GTluaScript.trigger_commands("aimbotexcludfriends off")
+    end
 end)
-GTTG(weaponms, '玩家', {"aimbotplayers"}, '', function (on)
-if on then
-GTluaScript.trigger_commands("aimbotplayers on")
-else
-GTluaScript.trigger_commands("aimbotplayers off")
-end
+GTTG(weaponms, '玩家', {"aimbotplayers"}, '', function(on)
+    if on then
+        GTluaScript.trigger_commands("aimbotplayers on")
+    else
+        GTluaScript.trigger_commands("aimbotplayers off")
+    end
 end)
-GTTG(weaponms, 'NPC', {"aimbotpeds"}, '', function (on)
-if on then
-GTluaScript.trigger_commands("aimbotpeds on")
-else
-GTluaScript.trigger_commands("aimbotpeds off")
-end
+GTTG(weaponms, 'NPC', {"aimbotpeds"}, '', function(on)
+    if on then
+        GTluaScript.trigger_commands("aimbotpeds on")
+    else
+        GTluaScript.trigger_commands("aimbotpeds off")
+    end
 end)
-GTTG(weaponms, '载具', {"aimbotvehicles"}, '', function (on)
-if on then
-GTluaScript.trigger_commands("aimbotvehicles on")
-else
-GTluaScript.trigger_commands("aimbotvehicles off")
-end
+GTTG(weaponms, '载具', {"aimbotvehicles"}, '', function(on)
+    if on then
+        GTluaScript.trigger_commands("aimbotvehicles on")
+    else
+        GTluaScript.trigger_commands("aimbotvehicles off")
+    end
 end)
 
 super_xray = GT(pvphelp, "自瞄4.0", {}, "", function(); end)
@@ -13141,162 +13621,182 @@ end)
 
 GTD(pvphelp, "RPG自动瞄准器")
 
-
-GTTG(pvphelp, "RPG自动瞄准器", {"rpgaim"}, "火箭炮自瞄: 针对大多数车辆\n可瞄准将与火箭设置列表中提供的火箭共同使用", function (on)
-    if on then
-        MISL_AIM = true
-        while MISL_AIM do
-            local localped = GetLocalPed()
-            local localcoords = ENTITY.GET_ENTITY_COORDS(GetLocalPed())
-            local forOffset = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(localped, 0, 5, 0)
-            RRocket = OBJECT.GET_CLOSEST_OBJECT_OF_TYPE(forOffset.x, forOffset.y, forOffset.z, 10, Chosen_Rocket_Hash, false, true, true, true)
-            local p
-            if missile_settings.multitarget then
-                if missile_settings.air_target then
-                    p = GetClosestPlayerWithRange_Whitelist_DisallowEntities(missile_settings.radius, MISSILE_ENTITY_TABLE, true)
-                else
-                    p = GetClosestPlayerWithRange_Whitelist_DisallowEntities(missile_settings.radius, MISSILE_ENTITY_TABLE, false)
-                end
-            elseif missile_settings.multiped then
-                if missile_settings.air_target then
-                    p = GetClosestNonPlayerPedWithRange_DisallowedEntities(missile_settings.radius, MISSILE_ENTITY_TABLE, true)
-                else
-                    p = GetClosestNonPlayerPedWithRange_DisallowedEntities(missile_settings.radius, MISSILE_ENTITY_TABLE, false)
-                end
-            elseif not missile_settings.multitarget then
-                if missile_settings.air_target then
-                    p = GetClosestPlayerWithRange_Whitelist(missile_settings.radius, true)
-                else
-                    p = GetClosestPlayerWithRange_Whitelist(missile_settings.radius, false)
-                end
-            end
-            local ppcoords = ENTITY.GET_ENTITY_COORDS(p)
-            if (RRocket ~= 0) and (p ~= nil) and (not PED.IS_PED_DEAD_OR_DYING(p)) and (not AIM_WHITELIST[NETWORK.NETWORK_GET_PLAYER_INDEX_FROM_PED(p)]) and (PED.IS_PED_SHOOTING(localped)) and (not players.is_in_interior(NETWORK.NETWORK_GET_PLAYER_INDEX_FROM_PED(p))) and (ppcoords.z > 1) then
-                util.create_thread(function ()
-                    local plocalized = p
-                    local msl = RRocket
-                    if missile_settings.multitarget then
-                        MISSILE_ENTITY_TABLE[#MISSILE_ENTITY_TABLE+1] = plocalized
+GTTG(pvphelp, "RPG自动瞄准器", {"rpgaim"},
+    "火箭炮自瞄: 针对大多数车辆\n可瞄准将与火箭设置列表中提供的火箭共同使用",
+    function(on)
+        if on then
+            MISL_AIM = true
+            while MISL_AIM do
+                local localped = GetLocalPed()
+                local localcoords = ENTITY.GET_ENTITY_COORDS(GetLocalPed())
+                local forOffset = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(localped, 0, 5, 0)
+                RRocket = OBJECT.GET_CLOSEST_OBJECT_OF_TYPE(forOffset.x, forOffset.y, forOffset.z, 10,
+                    Chosen_Rocket_Hash, false, true, true, true)
+                local p
+                if missile_settings.multitarget then
+                    if missile_settings.air_target then
+                        p = GetClosestPlayerWithRange_Whitelist_DisallowEntities(missile_settings.radius,
+                            MISSILE_ENTITY_TABLE, true)
+                    else
+                        p = GetClosestPlayerWithRange_Whitelist_DisallowEntities(missile_settings.radius,
+                            MISSILE_ENTITY_TABLE, false)
                     end
-                    if (ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(localped, plocalized, 17) and missile_settings.los) or not missile_settings.los or MISL_AIR then
-                        if SE_Notifications then
-                            util.toast("前兆完成！")
+                elseif missile_settings.multiped then
+                    if missile_settings.air_target then
+                        p = GetClosestNonPlayerPedWithRange_DisallowedEntities(missile_settings.radius,
+                            MISSILE_ENTITY_TABLE, true)
+                    else
+                        p = GetClosestNonPlayerPedWithRange_DisallowedEntities(missile_settings.radius,
+                            MISSILE_ENTITY_TABLE, false)
+                    end
+                elseif not missile_settings.multitarget then
+                    if missile_settings.air_target then
+                        p = GetClosestPlayerWithRange_Whitelist(missile_settings.radius, true)
+                    else
+                        p = GetClosestPlayerWithRange_Whitelist(missile_settings.radius, false)
+                    end
+                end
+                local ppcoords = ENTITY.GET_ENTITY_COORDS(p)
+                if (RRocket ~= 0) and (p ~= nil) and (not PED.IS_PED_DEAD_OR_DYING(p)) and
+                    (not AIM_WHITELIST[NETWORK.NETWORK_GET_PLAYER_INDEX_FROM_PED(p)]) and
+                    (PED.IS_PED_SHOOTING(localped)) and
+                    (not players.is_in_interior(NETWORK.NETWORK_GET_PLAYER_INDEX_FROM_PED(p))) and (ppcoords.z > 1) then
+                    util.create_thread(function()
+                        local plocalized = p
+                        local msl = RRocket
+                        if missile_settings.multitarget then
+                            MISSILE_ENTITY_TABLE[#MISSILE_ENTITY_TABLE + 1] = plocalized
                         end
-                        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(msl)
-                        if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(msl) then
-                            for i = 1, 10 do
-                                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(msl)
-                            end
-                        else
+                        if (ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(localped, plocalized, 17) and missile_settings.los) or
+                            not missile_settings.los or MISL_AIR then
                             if SE_Notifications then
-                                util.toast("有控制权")
+                                util.toast("前兆完成！")
                             end
-                        end
-                        local aircount = 1
-                        Missile_Camera = 0
+                            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(msl)
+                            if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(msl) then
+                                for i = 1, 10 do
+                                    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(msl)
+                                end
+                            else
+                                if SE_Notifications then
+                                    util.toast("有控制权")
+                                end
+                            end
+                            local aircount = 1
+                            Missile_Camera = 0
 
-                        STREAMING.REQUEST_NAMED_PTFX_ASSET(missile_particles.dictionary)
-                        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(missile_particles.dictionary) do
                             STREAMING.REQUEST_NAMED_PTFX_ASSET(missile_particles.dictionary)
-                            wait()
-                        end
-                        GRAPHICS.USE_PARTICLE_FX_ASSET(missile_particles.dictionary)
-                        while ENTITY.DOES_ENTITY_EXIST(msl) do
-                            if SE_Notifications then
-                                util.toast("rocket exists")
-                            end
-                            local pcoords2 = ENTITY.GET_ENTITY_COORDS(plocalized)
-                            local pcoords = GetTableFromV3Instance(pcoords2)
-                            local lc2 = ENTITY.GET_ENTITY_COORDS(msl)
-                            local lc = GetTableFromV3Instance(lc2)
-                            local look2 = v3.lookAt(lc2, pcoords2)
-                            local look = GetTableFromV3Instance(look2)
-                            local dir2 = v3.toDir(look2)
-                            local dir = GetTableFromV3Instance(dir2)
-                            if missile_settings.ptfx then
+                            while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(missile_particles.dictionary) do
                                 STREAMING.REQUEST_NAMED_PTFX_ASSET(missile_particles.dictionary)
-                                while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(missile_particles.dictionary) do
+                                wait()
+                            end
+                            GRAPHICS.USE_PARTICLE_FX_ASSET(missile_particles.dictionary)
+                            while ENTITY.DOES_ENTITY_EXIST(msl) do
+                                if SE_Notifications then
+                                    util.toast("rocket exists")
+                                end
+                                local pcoords2 = ENTITY.GET_ENTITY_COORDS(plocalized)
+                                local pcoords = GetTableFromV3Instance(pcoords2)
+                                local lc2 = ENTITY.GET_ENTITY_COORDS(msl)
+                                local lc = GetTableFromV3Instance(lc2)
+                                local look2 = v3.lookAt(lc2, pcoords2)
+                                local look = GetTableFromV3Instance(look2)
+                                local dir2 = v3.toDir(look2)
+                                local dir = GetTableFromV3Instance(dir2)
+                                if missile_settings.ptfx then
                                     STREAMING.REQUEST_NAMED_PTFX_ASSET(missile_particles.dictionary)
+                                    while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(missile_particles.dictionary) do
+                                        STREAMING.REQUEST_NAMED_PTFX_ASSET(missile_particles.dictionary)
+                                        wait()
+                                    end
+                                    GRAPHICS.USE_PARTICLE_FX_ASSET(missile_particles.dictionary)
+                                    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(missile_particles.name,
+                                        lc.x, lc.y, lc.z, 0, 0, 0, 0.4 * missile_settings.ptfx_scale, false, false,
+                                        false, true)
+                                end
+                                if aircount < 2 and MISL_AIR then
+                                    if ENTITY.DOES_ENTITY_EXIST(msl) then
+                                        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1, 0, 0, 2700, true, false,
+                                            true, true)
+                                        aircount = aircount + 1
+                                        wait(1100)
+                                    end
+                                end
+                                local lookCountD = 0
+                                if MISL_AIR then
+                                    if missile_settings.cam then
+                                        if not CAM.DOES_CAM_EXIST(Missile_Camera) then
+                                            if SE_Notifications then
+                                                util.toast("相机设置")
+                                            end
+                                            CAM.DESTROY_ALL_CAMS(true)
+                                            Missile_Camera = CAM.CREATE_CAM("DEFAULT_SCRIPTED_CAMERA", true)
+                                            CAM.SET_CAM_ACTIVE(Missile_Camera, true)
+                                            CAM.RENDER_SCRIPT_CAMS(true, false, 0, true, true, 0)
+                                        end
+                                    end
+                                    local distx = math.abs(lc.x - pcoords.x)
+                                    local disty = math.abs(lc.y - pcoords.y)
+                                    local distz = math.abs(lc.z - pcoords.z)
+                                    if missile_settings.cam then
+                                        local ddisst = SYSTEM.VDIST(pcoords.x, pcoords.y, pcoords.z, lc.x, lc.y, lc.z)
+                                        if ddisst > 50 then
+                                            local camcoordv3 = CAM.GET_CAM_COORD(Missile_Camera)
+                                            local look3 = v3.lookAt(camcoordv3, lc2)
+                                            local look4 = GetTableFromV3Instance(look3)
+                                            local backoffset =
+                                                ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(msl, 10, 10, -2)
+                                            CAM.SET_CAM_COORD(Missile_Camera, backoffset.x, backoffset.y, backoffset.z)
+                                            if lookCountD < 1 then
+                                                CAM.SET_CAM_ROT(Missile_Camera, look4.x, look4.y, look4.z, 2)
+                                                lookCountD = lookCountD + 1
+                                            end
+                                        else
+                                            local camcoordv3 = CAM.GET_CAM_COORD(Missile_Camera)
+                                            local look3 = v3.lookAt(camcoordv3, lc2)
+                                            local look4 = GetTableFromV3Instance(look3)
+                                            CAM.SET_CAM_ROT(Missile_Camera, look4.x, look4.y, look4.z, 2)
+                                        end
+                                    end
+                                    ENTITY.SET_ENTITY_ROTATION(msl, look.x, look.y, look.z, 2, true)
+                                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1,
+                                        dir.x * missile_settings.speed * distx, dir.y * missile_settings.speed * disty,
+                                        dir.z * missile_settings.speed * distz, true, false, true, true)
+                                    wait()
+                                else
+                                    ENTITY.SET_ENTITY_ROTATION(msl, look.x, look.y, look.z, 2, true)
+                                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1, dir.x * missile_settings.speed,
+                                        dir.y * missile_settings.speed, dir.z * missile_settings.speed, true, false,
+                                        true, true)
                                     wait()
                                 end
-                                GRAPHICS.USE_PARTICLE_FX_ASSET(missile_particles.dictionary)
-                                GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(missile_particles.name, lc.x, lc.y, lc.z, 0, 0, 0, 0.4 * missile_settings.ptfx_scale, false, false, false, true)
                             end
-                            if aircount < 2 and MISL_AIR then
-                                if ENTITY.DOES_ENTITY_EXIST(msl) then
-                                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1, 0, 0, 2700, true, false, true, true)
-                                    aircount = aircount + 1
-                                    wait(1100)
+                            if missile_settings.cam then
+                                wait(2000)
+                                if SE_Notifications then
+                                    util.toast("相机删除")
                                 end
-                            end
-                            local lookCountD = 0
-                            if MISL_AIR then
-                                if missile_settings.cam then
-                                    if not CAM.DOES_CAM_EXIST(Missile_Camera) then
-                                        if SE_Notifications then
-                                            util.toast("相机设置")
-                                        end
-                                        CAM.DESTROY_ALL_CAMS(true)
-                                        Missile_Camera = CAM.CREATE_CAM("DEFAULT_SCRIPTED_CAMERA", true)
-                                        CAM.SET_CAM_ACTIVE(Missile_Camera, true)
-                                        CAM.RENDER_SCRIPT_CAMS(true, false, 0, true, true, 0)
-                                    end
+                                CAM.RENDER_SCRIPT_CAMS(false, false, 0, true, true, 0)
+                                if CAM.IS_CAM_ACTIVE(Missile_Camera) then
+                                    CAM.SET_CAM_ACTIVE(Missile_Camera, false)
                                 end
-                                local distx = math.abs(lc.x - pcoords.x)
-                                local disty = math.abs(lc.y - pcoords.y)
-                                local distz = math.abs(lc.z - pcoords.z)
-                                if missile_settings.cam then
-                                    local ddisst = GENERIC_SYSTEM.VDIST(pcoords.x, pcoords.y, pcoords.z, lc.x, lc.y, lc.z)
-                                    if ddisst > 50 then
-                                        local camcoordv3 = CAM.GET_CAM_COORD(Missile_Camera)
-                                        local look3 = v3.lookAt(camcoordv3, lc2)
-                                        local look4 = GetTableFromV3Instance(look3)
-                                        local backoffset = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(msl, 10, 10, -2)
-                                        CAM.SET_CAM_COORD(Missile_Camera, backoffset.x, backoffset.y, backoffset.z)
-                                        if lookCountD < 1 then
-                                            CAM.SET_CAM_ROT(Missile_Camera, look4.x, look4.y, look4.z, 2)
-                                            lookCountD = lookCountD + 1
-                                        end
-                                    else
-                                        local camcoordv3 = CAM.GET_CAM_COORD(Missile_Camera)
-                                        local look3 = v3.lookAt(camcoordv3, lc2)
-                                        local look4 = GetTableFromV3Instance(look3)
-                                        CAM.SET_CAM_ROT(Missile_Camera, look4.x, look4.y, look4.z, 2)
-                                    end
-                                end
-                                ENTITY.SET_ENTITY_ROTATION(msl, look.x, look.y, look.z, 2, true)
-                                ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1, dir.x * missile_settings.speed * distx, dir.y * missile_settings.speed * disty, dir.z * missile_settings.speed * distz, true, false, true, true)
-                                wait()
-                            else
-                                ENTITY.SET_ENTITY_ROTATION(msl, look.x, look.y, look.z, 2, true)
-                                ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(msl, 1, dir.x * missile_settings.speed, dir.y * missile_settings.speed, dir.z * missile_settings.speed, true, false, true, true)
-                                wait()
+                                CAM.DESTROY_CAM(Missile_Camera, true)
                             end
                         end
-                        if missile_settings.cam then
-                            wait(2000)
-                            if SE_Notifications then
-                                util.toast("相机删除")
-                            end
-                            CAM.RENDER_SCRIPT_CAMS(false, false, 0, true, true, 0)
-                            if CAM.IS_CAM_ACTIVE(Missile_Camera) then
-                                CAM.SET_CAM_ACTIVE(Missile_Camera, false)
-                            end
-                            CAM.DESTROY_CAM(Missile_Camera, true)
+                        if missile_settings.multitarget then
+                            table.remove(MISSILE_ENTITY_TABLE, GetValueIndexFromTable(MISSILE_ENTITY_TABLE, plocalized))
+                            util.toast("Removed value " .. tostring(plocalized) .. " at index " ..
+                                           tostring(GetValueIndexFromTable(MISSILE_ENTITY_TABLE, p)))
                         end
-                    end
-                    if missile_settings.multitarget then
-                        table.remove(MISSILE_ENTITY_TABLE, GetValueIndexFromTable(MISSILE_ENTITY_TABLE, plocalized))
-                        util.toast("Removed value " .. tostring(plocalized) .. " at index " .. tostring(GetValueIndexFromTable(MISSILE_ENTITY_TABLE, p)))
-                    end
-                end)
+                    end)
+                end
+                wait()
             end
-            wait()
+        else
+            MISL_AIM = false
         end
-    else
-        MISL_AIM = false
-    end
-end)
+    end)
+
 
 local rpgrockets = GT(pvphelp, "火箭炮类型设置", {}, "")
 
@@ -13367,9 +13867,7 @@ GTluaScript.text_input(rpgsettings, "PTFX 字典", {"rpgdictionary"}, "使用 PT
     missile_particles.dictionary = text
 end, "core")
 
-
 GTD(pvphelp, "轨道标点")
-
 
 GTAC(pvphelp, "轨道打击标点", {"orbway", "orbwp"}, "请标记点位再进行使用\n轨道炮将自动瞄准射击您标记的点位", function ()
         if HUD.IS_WAYPOINT_ACTIVE() then
@@ -13396,7 +13894,6 @@ end)
 GTTG(pvphelp, "偷偷摸摸的爆炸", {}, "匿名击杀", function (on)
     ORB_Sneaky = on
 end)
-
 
 GTD(pvphelp, "汽车自杀")
 
@@ -13434,7 +13931,6 @@ end)
 GTTG(pvphelp, "偷偷摸摸的爆炸", {"carexplodesneaky"}, "设置爆炸为匿名击杀", function(on)
     CAR_S_sneaky = on
 end)
-
 
 GTD(pvphelp, "合法的快速射击")
 
@@ -13511,126 +14007,228 @@ GTTG(pvphelp, "调试通知", {""}, "", function(on)
     SE_Notifications = on
 end)
 
+weapon_veh = GT(carfly, "载具武器")
+GTLP(weapon_veh, '载具武器自瞄[玩家]', {}, '', function()
+    for _, pid in players.list(false, true, true) do
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+        local MyPos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+        local pidPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        local pidheal = entities.get_health(PLAYER.GET_PLAYER_PED(pid))
+        local pedDistance = v3.distance(MyPos, pidPos)
+        if pidheal > 0 and pedDistance < 250 then
+            local v2 = memory.alloc(8)
+            local v4 = memory.alloc(8)
+            if util.get_screen_coord_from_world_coord_no_adjustment(pidPos.x, pidPos.y, pidPos.z, v2, v2 + 4) then
+                directx.draw_text(memory.read_float(v2), memory.read_float(v2 + 4), "     警报!!\n达到瞄准范围",
+                    0, 0.8, 1, 0, 0, 1, true)
+                if util.get_screen_coord_from_world_coord_no_adjustment(MyPos.x, MyPos.y, MyPos.z, v4, v4 + 4) then
+                    directx.draw_line(memory.read_float(v2), memory.read_float(v2 + 4), memory.read_float(v4),
+                        memory.read_float(v4 + 4), 1, 0, 0, 1)
+                end
+            end
+            draw_bounding_box(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true, {
+                r = 0,
+                g = 255,
+                b = 255,
+                a = 80
+            })
+        end
+        if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), false) and PAD.IS_CONTROL_PRESSED(0, 70) and
+            not players.is_in_interior(pid) and pidheal > 0 and pedDistance < 250 then
+            VEHICLE.TRACK_VEHICLE_VISIBILITY(vehicle)
+            VEHICLE.SET_VEHICLE_SHOOT_AT_TARGET(players.user_ped(), PLAYER.GET_PLAYER_PED(pid),
+                ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)).x,
+                ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)).y,
+                ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)).z)
+            PLAYER.SET_PLAYER_MELEE_WEAPON_DAMAGE_MODIFIER(players.user_ped(), 1000, true)
+            PED.SET_PED_RESET_FLAG(players.user_ped(), 95,
+                WEAPON.GET_MAX_RANGE_OF_CURRENT_PED_WEAPON(players.user_ped()) < 250)
+        end
+    end
+end)
+
+GTLP(weapon_veh, '载具武器自瞄[NPC]',{},'达到一定范围会提示可射击!',function()
+    local Allpeds = entities.get_all_peds_as_handles()
+    for i = 1, #Allpeds do
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+    local MyPos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+    local pedPos = ENTITY.GET_ENTITY_COORDS(Allpeds[i])
+    local pidheal = entities.get_health(Allpeds[i])
+    local pedDistance = v3.distance(MyPos, pedPos)
+        if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), false) 
+        and INTERIOR.GET_INTERIOR_FROM_ENTITY(Allpeds[i]) == 0 
+        and ENTITY.IS_ENTITY_A_PED(Allpeds[i]) 
+        and not PED.IS_PED_IN_ANY_VEHICLE(Allpeds[i], false) 
+        and pidheal > 0 and pedDistance < 250 then
+            local v2 = memory.alloc(8)
+            local v4 = memory.alloc(8)
+            if util.get_screen_coord_from_world_coord_no_adjustment(
+                pedPos.x, pedPos.y, pedPos.z, v2, v2 + 4) then
+            directx.draw_text(memory.read_float(v2), memory.read_float(v2 + 4),
+            "     警报!!\n达到瞄准范围", 0, 0.8 ,1,0,0,1, true)
+            if util.get_screen_coord_from_world_coord_no_adjustment(
+                MyPos.x, MyPos.y, MyPos.z, v4, v4 + 4) then
+            directx.draw_line(memory.read_float(v2), memory.read_float(v2 + 4), 
+            memory.read_float(v4), memory.read_float(v4 + 4), 1,0,0,1)
+            end
+            end
+            draw_bounding_box(Allpeds[i], true, {r = 0, g = 255, b = 255, a = 80})
+		end
+		if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), false) 
+        and INTERIOR.GET_INTERIOR_FROM_ENTITY(Allpeds[i]) == 0 
+        and ENTITY.IS_ENTITY_A_PED(Allpeds[i]) 
+        and not PED.IS_PED_IN_ANY_VEHICLE(Allpeds[i], false)
+            and PAD.IS_CONTROL_PRESSED(0, 70) and pidheal > 0 
+            and pedDistance < 250 then
+            VEHICLE.TRACK_VEHICLE_VISIBILITY(vehicle)
+			VEHICLE.SET_VEHICLE_SHOOT_AT_TARGET(players.user_ped(),
+            Allpeds[i], ENTITY.GET_ENTITY_COORDS(
+                Allpeds[i]).x,ENTITY.GET_ENTITY_COORDS(
+                    Allpeds[i]).y, 
+                        ENTITY.GET_ENTITY_COORDS(Allpeds[i]).z)
+			        PLAYER.SET_PLAYER_MELEE_WEAPON_DAMAGE_MODIFIER(
+                    players.user_ped(), 1000, true)
+			    PED.SET_PED_RESET_FLAG(players.user_ped(), 95,
+            WEAPON.GET_MAX_RANGE_OF_CURRENT_PED_WEAPON(players.user_ped()) < 250)
+		end
+	end
+end)
+
+GTLP(weapon_veh,'载具武器自瞄[车辆]',{},'达到一定范围会提示可射击!',function()
+    local AllVehicles = entities.get_all_vehicles_as_handles()
+    for i = 1, #AllVehicles do
+    local vehicle = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false)
+    local MyPos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+    local vehPos = ENTITY.GET_ENTITY_COORDS(AllVehicles[i])
+    local pidheal = entities.get_health(AllVehicles[i])
+    local pedDistance = v3.distance(MyPos, vehPos)
+        if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), false) 
+        and INTERIOR.GET_INTERIOR_FROM_ENTITY(AllVehicles[i]) == 0 
+        and not ENTITY.IS_ENTITY_A_PED(AllVehicles[i])
+        and ENTITY.IS_ENTITY_A_VEHICLE(AllVehicles[i]) 
+        and pidheal > 0 and pedDistance < 250 then
+            local v2 = memory.alloc(8)
+            local v4 = memory.alloc(8)
+            if util.get_screen_coord_from_world_coord_no_adjustment(
+                vehPos.x, vehPos.y, vehPos.z, v2, v2 + 4) then
+            directx.draw_text(memory.read_float(v2), memory.read_float(v2 + 4),
+            "     警报!!\n达到瞄准范围", 0, 0.8 ,1,0,0,1, true)
+            if util.get_screen_coord_from_world_coord_no_adjustment(
+                MyPos.x, MyPos.y, MyPos.z, v4, v4 + 4) then
+            directx.draw_line(memory.read_float(v2), memory.read_float(v2 + 4), 
+            memory.read_float(v4), memory.read_float(v4 + 4), 1,0,0,1)
+            end
+            end
+            draw_bounding_box(AllVehicles[i], true, {r = 0, g = 255, b = 255, a = 80})
+		end
+		if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), false) 
+        and INTERIOR.GET_INTERIOR_FROM_ENTITY(AllVehicles[i]) == 0 
+        and not ENTITY.IS_ENTITY_A_PED(AllVehicles[i]) 
+        and ENTITY.IS_ENTITY_A_VEHICLE(AllVehicles[i], false)
+            and PAD.IS_CONTROL_PRESSED(0, 70) and pidheal > 0 
+            and pedDistance < 250 then
+            VEHICLE.TRACK_VEHICLE_VISIBILITY(vehicle)
+			VEHICLE.SET_VEHICLE_SHOOT_AT_TARGET(players.user_ped(),
+            AllVehicles[i], ENTITY.GET_ENTITY_COORDS(
+                AllVehicles[i]).x,ENTITY.GET_ENTITY_COORDS(
+                    AllVehicles[i]).y, 
+                        ENTITY.GET_ENTITY_COORDS(AllVehicles[i]).z)
+			        PLAYER.SET_PLAYER_MELEE_WEAPON_DAMAGE_MODIFIER(
+                    players.user_ped(), 1000, true)
+			    PED.SET_PED_RESET_FLAG(players.user_ped(), 95,
+            WEAPON.GET_MAX_RANGE_OF_CURRENT_PED_WEAPON(players.user_ped()) < 250)
+		end
+	end
+end)
+
 nfs_cs = GT(carfly, '车速表', {''}, '')
---[[DiuDiu_NFS = GTAC(nfs_cs, "启动车速表模式", {""}, "点击启动", function()
-GTLuaScript.delete(DiuDiu_NFS)
-dofile(filesystem.scripts_dir().."\\lib\\GTSCRIPTS\\GTW\\NFS.lua")
-end)]]
 
 Vehicle_Collision_Reaction = GT(carfly, "载具碰撞反应")
 require "lib.GTSCRIPTS.GTA.vehpop"
 
 mission_car = GT(carfly, "任务专用载具", {}, "")
-    GTAC(mission_car, "生成骷髅马", {""}, "", function ()
+GTAC(mission_car, "生成骷髅马", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0x187D938D,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0x187D938D, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成防爆运输车", {""}, "", function ()
+GTAC(mission_car, "生成防爆运输车", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0xB822A1AA,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0xB822A1AA, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成微型直升机", {""}, "", function ()
+GTAC(mission_car, "生成微型直升机", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0x89BA59F5,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0x89BA59F5, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成骷髅马", {""}, "", function ()
+GTAC(mission_car, "生成骷髅马", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0x187D938D,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0x187D938D, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成防爆运输车", {""}, "", function ()
+GTAC(mission_car, "生成防爆运输车", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0xB822A1AA,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0xB822A1AA, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成微型直升机", {""}, "", function ()
+GTAC(mission_car, "生成微型直升机", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(0x89BA59F5,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(0x89BA59F5, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成义警", {""}, "", function ()
+GTAC(mission_car, "生成义警", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(3052358707,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(3052358707, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成武装小艇", {""}, "", function ()
+GTAC(mission_car, "生成武装小艇", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(3314393930,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(3314393930, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成可汗贾利", {""}, "", function ()
+GTAC(mission_car, "生成可汗贾利", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(2859440138,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(2859440138, pos, 0)
     end
     wait(500)
-    end)
+end)
 
-    GTAC(mission_car, "生成秃鹫直升机", {""}, "", function ()
+GTAC(mission_car, "生成秃鹫直升机", {""}, "", function()
     for pid = 0, 4 do
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    dune = CreateVehicle(788747387,pos,0)
+        pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        dune = CreateVehicle(788747387, pos, 0)
     end
     wait(500)
-end)            
+end)
 --
 Vehicle_Radio_options = GT(carfly, "载具电台", {}, "此功能只在线模式中生效")
--- 载具电台 Labels
-Vehicle_Radio_Stations = {
-    "RADIO_11_TALK_02", -- Blaine County Radio
-    "RADIO_12_REGGAE", -- The Blue Ark
-    "RADIO_13_JAZZ", -- Worldwide FM
-    "RADIO_14_DANCE_02", -- FlyLo FM
-    "RADIO_15_MOTOWN", -- The Lowdown 9.11
-    "RADIO_20_THELAB", -- The Lab
-    "RADIO_16_SILVERLAKE", -- Radio Mirror Park
-    "RADIO_17_FUNK", -- Space 103.2
-    "RADIO_18_90S_ROCK", -- Vinewood Boulevard Radio
-    "RADIO_21_DLC_XM17", -- Blonded Los Santos 97.8 FM
-    "RADIO_22_DLC_BATTLE_MIX1_RADIO", -- Los Santos Underground Radio
-    "RADIO_23_DLC_XM19_RADIO", -- iFruit Radio
-    "RADIO_19_USER", -- Self Radio
-    "RADIO_01_CLASS_ROCK", -- Los Santos Rock Radio
-    "RADIO_02_POP", -- Non-Stop-Pop FM
-    "RADIO_03_HIPHOP_NEW", -- Radio Los Santos
-    "RADIO_04_PUNK", -- Channel X
-    "RADIO_05_TALK_01", -- West Coast Talk Radio
-    "RADIO_06_COUNTRY", -- Rebel Radio
-    "RADIO_07_DANCE_01", -- Soulwax FM
-    "RADIO_08_MEXICAN", -- East Los FM
-    "RADIO_09_HIPHOP_OLD", -- West Coast Classics
-    "RADIO_36_AUDIOPLAYER", -- Media Player
-    "RADIO_35_DLC_HEI4_MLR", -- The Music Locker
-    "RADIO_34_DLC_HEI4_KULT", -- Kult FM
-    "RADIO_27_DLC_PRHEI4", -- Still Slipping Los Santos
-}
+
 VehicleRadio_ListItem = { { "关闭", {}, "OFF" } }
 for k, name in pairs(Vehicle_Radio_Stations) do
     local temp = { "", {}, "" }
@@ -13711,34 +14309,35 @@ local carweaponfun = GT(carfly, "载具武器", {}, "", function(); end)
 P99tiansha = menu.list(carweaponfun, "设置天煞机炮", {""}, "")
 
 GTAC(P99tiansha, "修改天煞机炮", {""}, "将你的天煞机炮修改为任务版", function(on_toggle)
-local p99_explosive_type = memory.scan("81 7B ? ? ? ? ? 75 0D")
-local module_base = p99_explosive_type - tonumber("102C5CC",16)
-local alter_wait_time = module_base + tonumber("1E28E50",16)
-local shoot_between_time = module_base + tonumber("1E2847C",16)
-if module_base then
-memory.write_int(p99_explosive_type+16,0)
-memory.write_float(alter_wait_time,-1)
-memory.write_float(shoot_between_time,0.03999999911)
-util.toast('修改完毕')
-else
-util.toast('无法获取数据')
-end
+    local p99_explosive_type = memory.scan("81 7B ? ? ? ? ? 75 0D")
+    local module_base = p99_explosive_type - tonumber("102C5CC", 16)
+    local alter_wait_time = module_base + tonumber("1E28E50", 16)
+    local shoot_between_time = module_base + tonumber("1E2847C", 16)
+    if module_base then
+        memory.write_int(p99_explosive_type + 16, 0)
+        memory.write_float(alter_wait_time, -1)
+        memory.write_float(shoot_between_time, 0.03999999911)
+        util.toast('修改完毕')
+    else
+        util.toast('无法获取数据')
+    end
 end)
 
 GTAC(P99tiansha, "修改回现版本机炮", {""}, "将你的天煞机炮修改回当前版本", function(on_toggle)
-local p99_explosive_type = memory.scan("81 7B ? ? ? ? ? 75 0D")
-local module_base = p99_explosive_type - tonumber("102C5CC",16)
-local alter_wait_time = module_base + tonumber("1E28E50",16)
-local shoot_between_time = module_base + tonumber("1E2847C",16)
-if module_base then
-memory.write_int(p99_explosive_type+16,85)
-memory.write_float(alter_wait_time,0.125)
-memory.write_float(shoot_between_time,0.125)
-util.toast('修改完毕')
-else
-util.toast('无法获取数据')
-end
+    local p99_explosive_type = memory.scan("81 7B ? ? ? ? ? 75 0D")
+    local module_base = p99_explosive_type - tonumber("102C5CC", 16)
+    local alter_wait_time = module_base + tonumber("1E28E50", 16)
+    local shoot_between_time = module_base + tonumber("1E2847C", 16)
+    if module_base then
+        memory.write_int(p99_explosive_type + 16, 85)
+        memory.write_float(alter_wait_time, 0.125)
+        memory.write_float(shoot_between_time, 0.125)
+        util.toast('修改完毕')
+    else
+        util.toast('无法获取数据')
+    end
 end)
+
 
 ff9car = GT(carweaponfun, "电磁脉冲道奇战马", {}, "生成带有电磁脉冲功能的道奇战马")
 
@@ -13891,6 +14490,61 @@ function deluxomode(veh, ratio)
     native_invoker.push_arg_float(ratio)
     native_invoker.end_call_2(0xD138FA15C9776837)
 end
+
+GTTG(funfeatures_veh,"载具快速充能", {}, "", function(AA)
+    ab8 = AA
+    local state = 0
+    while ab8 do
+        wait(0)
+        local me = players.user()
+        local my_ped = players.user_ped(me)
+        if PED.IS_PED_IN_ANY_VEHICLE(my_ped, true) then
+            local veh = PED.GET_VEHICLE_PED_IS_IN(my_ped)
+            VEHICLE.SET_SCRIPT_ROCKET_BOOST_RECHARGE_TIME(veh, 0)
+        end
+    end
+end)
+
+GTTG(funfeatures_veh,"载具无限充能加速", {}, "", function(AA)
+    ab9 = AA
+    local state = 0
+    while ab9 do
+        wait(0)
+        local me = players.user()
+        local my_ped = players.user_ped(me)
+        if PED.IS_PED_IN_ANY_VEHICLE(my_ped) then
+            local veh = PED.GET_VEHICLE_PED_IS_IN(my_ped)
+            VEHICLE.SET_ROCKET_BOOST_FILL(veh, 999999.0)
+        end
+    end
+end)
+
+GTTG(funfeatures_veh, "载具冲击波", {}, "", function(AA)
+    ab10 = AA
+    local state = 0
+    while ab10 do
+        wait(0)
+        if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(players.user())) then
+            FIRE.ADD_EXPLOSION(ENTITY.GET_ENTITY_COORDS(PED.GET_VEHICLE_PED_IS_IN(players.user_ped(players.user()))).x,
+                ENTITY.GET_ENTITY_COORDS(PED.GET_VEHICLE_PED_IS_IN(players.user_ped(players.user()))).y,
+                ENTITY.GET_ENTITY_COORDS(PED.GET_VEHICLE_PED_IS_IN(players.user_ped(players.user()))).z, 83, 1.0, true,
+                false, 0.0, false)
+        end
+    end
+end)
+
+GTTG(funfeatures_veh,"车载武器快速射击", {}, "", function(AA)
+    ab5 = AA
+    while ab5 do
+        wait(0)
+        local myped = players.user_ped()
+        if PED.IS_PED_IN_ANY_VEHICLE(myped, true) then
+            local Curveh = PED.GET_VEHICLE_PED_IS_USING(myped)
+            VEHICLE.SET_VEHICLE_FIXED(Curveh)
+            VEHICLE.SET_VEHICLE_DEFORMATION_FIXED(Curveh)
+        end
+    end
+end)
 
 GTAC(funfeatures_veh, '陆地火车', {}, '', function()
     spawnAndCustomizeEntity(1030400667)
@@ -14207,25 +14861,25 @@ end)
 
 	GTAC(funfeatures_veh, '左侧翻', {}, '', function()
 		local vehicle = get_vehicle_player_is_in(players.user())
-		if WIRI_ENTITY.DOES_ENTITY_EXIST(vehicle) and WIRI_VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
+		if ENTITY.DOES_ENTITY_EXIST(vehicle) and VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
 		request_control(vehicle, 1000) then
-			WIRI_ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 10.71, 5.0, 0.0, 0.0, 1, false, true, true, true, true)
+			ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 10.71, 5.0, 0.0, 0.0, 1, false, true, true, true, true)
 		end
 	end)
 
 	GTAC(funfeatures_veh, '右侧翻', {}, '', function()
 		local vehicle = get_vehicle_player_is_in(players.user())
-		if WIRI_ENTITY.DOES_ENTITY_EXIST(vehicle) and WIRI_VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
+		if ENTITY.DOES_ENTITY_EXIST(vehicle) and VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
 		request_control(vehicle, 1000) then
-			WIRI_ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 10.71, -5.0, 0.0, 0.0, 1, false, true, true, true, true)
+			ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 10.71, -5.0, 0.0, 0.0, 1, false, true, true, true, true)
 		end
 	end)
 
     GTAC(funfeatures_veh, '双左侧翻', {}, '', function()
 		local vehicle = get_vehicle_player_is_in(players.user())
-		if WIRI_ENTITY.DOES_ENTITY_EXIST(vehicle) and WIRI_VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
+		if ENTITY.DOES_ENTITY_EXIST(vehicle) and VEHICLE.IS_VEHICLE_ON_ALL_WHEELS(vehicle) and
 		request_control(vehicle, 1000) then
-			WIRI_ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 21.43, 20.0, 0.0, 0.0, 1, false, true, true, true, true)
+			ENTITY.APPLY_FORCE_TO_ENTITY(vehicle, 1, 0.0, 0.0, 21.43, 20.0, 0.0, 0.0, 1, false, true, true, true, true)
 		end
 	end)
 
@@ -14273,8 +14927,8 @@ end)
 local nitro_duration = 5000
 local nitro_power = 2000
 GTLP(funfeatures_veh, "氮气加速", {}, "进入载具内按X", function(toggle)
-    if WIRI_PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) and player_cur_car ~= 0 then
-        if WIRI_PAD.IS_CONTROL_JUST_PRESSED(357, 357) then 
+    if PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) and player_cur_car ~= 0 then
+        if PAD.IS_CONTROL_JUST_PRESSED(357, 357) then 
             request_ptfx_asset('veh_xs_vehicle_mods')
             VEHICLE.SET_OVERRIDE_NITROUS_LEVEL(player_cur_car, true, 100, nitro_power, 99999999999, false)
             ENTITY.SET_ENTITY_MAX_SPEED(player_cur_car, 2000)
@@ -14695,6 +15349,7 @@ GTLP(funfeatures_veh, "漂移模式(手动)", {"dshiftdrift"}, "按住shift进�
     end
 end)
 
+--[[
 GTTG(funfeatures_veh, "头文字D模式", {"initiald"}, "应用预定义的载具操纵配置\n使车辆能够产生漂移的效果\n这不会神奇地让你成为漂移高手喔\n也不会神奇地使每辆车都擅长漂移", function(on, click_type)
     initial_d_mode = on
     initial_d_score_thread()
@@ -14707,7 +15362,7 @@ GTTG(funfeatures_veh, "头文字D模式", {"initiald"}, "应用预定义的载�
             end
         end
     end
-end)
+end)]]
 
 GTLP(funfeatures_veh,  "相机方向推力", {"thrustindir"}, "按住X并保持此状态\n将载具推向摄相机的方向视角,用于维持漂移状态", function(on)
     if player_cur_car ~= 0 and PED.IS_PED_IN_ANY_VEHICLE(players.user_ped(), true) then 
@@ -15334,7 +15989,7 @@ GTTG(veh_func, "GPS导航", {"导航提示"}, "", function(value)
     end
 end)
 
-    GTluaScript.slider_text(jesus_main, "驾驶风格", {}, "单击以选择驾驶风格", style_names, function(index, value)
+    GTluaScript.textslider(jesus_main, "驾驶风格", {}, "单击以选择驾驶风格", style_names, function(index, value)
         pluto_switch value do
             case "正常":
                 style = 786603
@@ -15462,7 +16117,7 @@ GTLP(veh_func, "载具效果", {}, "", function ()
     cargoodeffect()
 end)
 
-GTluaScript.slider_text(veh_func,"设置载具效果", {}, "", carvis, function (index)
+GTluaScript.textslider(veh_func,"设置载具效果", {}, "", carvis, function (index)
     set_carvis(index) 
 end)
 
@@ -15600,6 +16255,23 @@ end)
 
 visual_setting()
 
+GTTG(custselc, '阻止脚本主机变更', {}, '', function(YY19)
+    y19 = YY19
+    while y19 do
+        if not is_loading() and NETWORK.NETWORK_IS_HOST() then
+            NETWORK.NETWORK_PREVENT_SCRIPT_HOST_MIGRATION()
+        end
+        wait()
+    end
+    y19 = false
+end)
+
+GTAC(custselc, '全局踢出', {},'',function()
+    for _, pid in players.list(false,true, true) do
+        menu.trigger_commands("kick" .. PLAYER.GET_PLAYER_NAME(pid))
+    end
+end)
+
 GTTG(custselc, "全局控制无敌", {}, "若有防护性的外挂则可能不起作用", function (w)
     on = w
     while on do
@@ -15629,7 +16301,7 @@ end)
 GTAC(custselc, "全局标记傻逼", {}, "", function()
     for pid = 0,31 do
         local pedp  = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        gametag = WIRI_HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
+        gametag = HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
     end
 end)
 
@@ -15882,69 +16554,6 @@ end)
     GTLP(colouredotr, '人间蒸发 rgb颜色', {'JSortRgbReveal'}, '', function()
         GTluaScript.set_value(otr_colour_slider, (otrBlipColour == 84 and 1 or otrBlipColour + 1))
         wait(250)
-    end)
-
-    gameplay = GT(custselc,"线上检查")
-
-    jilux = 0.01
-    jilut = 10
-    liaotianjilu=GTLP(gameplay, "聊天记录", {}, "", function(g)
-    local function displayText(text, x, y)
-        HUD.SET_TEXT_SCALE(0.5, 0.28)
-           HUD.SET_TEXT_FONT(1)
-              HUD.SET_TEXT_COLOUR(0, 255, 0, 255)
-                 HUD.SET_TEXT_CENTRE(false)
-              HUD.SET_TEXT_OUTLINE(true)
-           util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(text)
-        HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y, 0)
-    end
-    l= 0.02  y = 0.01
-    local history = chat.get_history()
-    local startIdx = math.max(#history - jilut, 1)
-
-    for i = startIdx, #history do
-        local msg = history[i]
-           local str = msg.sender_name.." ["..(msg.team_chat and "团队" or "所有")..(msg.is_auto and ", 自由" or "").."] "..msg.contents
-              if msg.time ~= 0 then
-                 str = "["..os.date('%H:%M:%S', msg.time).."] "..str
-              end
-                 displayText(str, jilux, y)
-            y = y + l
-        end
-    end)
-    --GTluaScript.set_value(liaotianjilu, liaotianjilu1)
-
-    GTluaScript.slider(gameplay, '聊天记录位置', {}, '',1, 900, 720, 20, function(jl)
-	    jilux = jl / 900
-    end)
-
-    GTluaScript.slider(gameplay, '聊天记录条数', {}, '',1, 39, 10, 1, function(jt)
-	    jilut = jt / 1
-    end)
-    
-    GTLP(gameplay, "检查打字", {}, "", function(g)
-        local isOpen = chat.is_open()
-        if isOpen then
-            for pid = 0,31 do
-            if PLAYER.GET_PLAYER_PED(pid) ~= 0 then
-            util.draw_debug_text(players.get_name(pid).."正在打字...")
-            end
-            end
-        end
-    end)
-
-    GTTG(gameplay, "事件通知", {}, "", function(g)
-        if g then
-            players.on_flow_event_done(function(p, name, extra)
-                name = lang.get_localised(name)
-                if extra then
-                    name ..= " ("
-                    name ..= extra
-                    name ..= ")"
-                end
-                util.toast(players.get_name(p)..": "..name)
-            end)
-        end
     end)
 
     allareatp = GT(allevent, "全局传送")
@@ -17136,13 +17745,14 @@ end)
 end)
 
 GTAC(donggeb, "董哥崩溃v2", {}, "", function()
-    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
+    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(), 0xE5022D03)
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
     wait(3)
     local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
-ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),p_pos.x,p_pos.y,p_pos.z,false,true,true)
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), p_pos.x, p_pos.y, p_pos.z,
+        false, true, true)
     WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), 0xFBAB5776, 1000, false)
-    TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),-1087,-3012,13.94)
+    TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), -1087, -3012, 13.94)
     wait(300)
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
     wait(1000)
@@ -17151,28 +17761,30 @@ ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.us
 end)
 
 GTAC(donggeb, "董哥崩溃v3", {}, "如停不下来请关闭脚本", function()
-dgcrash()
-end) 
+    dgcrash()
+end)
 
-GTAC(crashr, "同步崩溃", {}, "", function(state)   
+GTAC(crashr, "同步崩溃", {}, "", function(state)
     fishmm = state
-        local TargetPPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,PlayerID)
-        local TargetPPos = ENTITY.GET_ENTITY_COORDS(TargetPPed)
-        ENTITY.SET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),-1992.8982, -780.7021, -0.37660158, false, false, false, false)
-        menu.trigger_commands("levitatepassivemax 0")
-        menu.trigger_commands("levitateassistup 0")
-        menu.trigger_commands("levitateassistdown 0")
-        menu.trigger_commands("noguns")
-        menu.trigger_commands("invisibility on")
-        wait(1000)
-        menu.trigger_commands("acfish")
-        wait(100)
-        menu.trigger_commands("levitate on")
-        wait(100)
-        WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),-1813897027,15,true,true)
-        wait(100)
-        ENTITY.SET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),TargetPPos.x,TargetPPos.y,TargetPPos.z, false, false, false, false)
-        wait(100)
+    local TargetPPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, PlayerID)
+    local TargetPPos = ENTITY.GET_ENTITY_COORDS(TargetPPed)
+    ENTITY.SET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), -1992.8982, -780.7021, -0.37660158,
+        false, false, false, false)
+    menu.trigger_commands("levitatepassivemax 0")
+    menu.trigger_commands("levitateassistup 0")
+    menu.trigger_commands("levitateassistdown 0")
+    menu.trigger_commands("noguns")
+    menu.trigger_commands("invisibility on")
+    wait(1000)
+    menu.trigger_commands("acfish")
+    wait(100)
+    menu.trigger_commands("levitate on")
+    wait(100)
+    WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), -1813897027, 15, true, true)
+    wait(100)
+    ENTITY.SET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), TargetPPos.x, TargetPPos.y,
+        TargetPPos.z, false, false, false, false)
+    wait(100)
     wait(9000)
     if PED.IS_PED_MALE(PLAYER.PLAYER_PED_ID()) then
         menu.trigger_commands("mpmale")
@@ -17185,142 +17797,165 @@ GTAC(crashr, "同步崩溃", {}, "", function(state)
     menu.trigger_commands("levitate off")
     menu.trigger_commands("noguns")
     menu.trigger_commands("invisibility off")
-    notification("ok",colors.red)
-    newnotify("~h~GRANDTOURINGVIP", "~r~&#8721;‹GT‹&#8721;","~r~ok", "CHAR_CHOP", 140)
+    notification("ok", colors.red)
+    newnotify("~h~GRANDTOURINGVIP", "~r~&#8721;‹GT‹&#8721;", "~r~ok", "CHAR_CHOP", 140)
     while fishmm do
         wait()
         PAD._SET_CONTROL_NORMAL(0, 25, 1)
     end
-    end)
+end)
 
 GTAC(crashr, "绳子崩溃", {"math"}, "", function()
-    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-    local ppos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-    pos.x = pos.x+5
-    ppos.z = ppos.z+1
+    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+    local ppos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+    pos.x = pos.x + 5
+    ppos.z = ppos.z + 1
     Utillitruck3 = entities.create_vehicle(2132890591, pos, 0)
     Utillitruck3_pos = ENTITY.GET_ENTITY_COORDS(Utillitruck3)
     kur = entities.create_ped(26, 2727244247, ppos, 0)
     kur_pos = ENTITY.GET_ENTITY_COORDS(kur)
 
     ENTITY.SET_ENTITY_INVINCIBLE(kur, true)
-    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, "Center")
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, Utillitruck3, kur, Utillitruck3_pos.x, Utillitruck3_pos.y, Utillitruck3_pos.z, kur_pos.x, kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center")
+    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true,
+        true, true, 1.0, true, "Center")
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, Utillitruck3, kur, Utillitruck3_pos.x, Utillitruck3_pos.y,
+        Utillitruck3_pos.z, kur_pos.x, kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center")
     wait(100)
     ENTITY.SET_ENTITY_INVINCIBLE(kur, true)
-    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, "Center")
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, Utillitruck3, kur, Utillitruck3_pos.x, Utillitruck3_pos.y, Utillitruck3_pos.z, kur_pos.x, kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center") 
+    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true,
+        true, true, 1.0, true, "Center")
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, Utillitruck3, kur, Utillitruck3_pos.x, Utillitruck3_pos.y,
+        Utillitruck3_pos.z, kur_pos.x, kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center")
     wait(100)
 
     PHYSICS.ROPE_LOAD_TEXTURES()
     local hashes = {2132890591, 2727244247}
-    local pc = getEntityCoords(getPlayerPed(0,pid))
+    local pc = getEntityCoords(getPlayerPed(0, pid))
     local veh = VEHICLE.CREATE_VEHICLE(#hashes, pc.x + 5, pc.y, pc.z, 0, true, true, false)
     local ped = PED.CREATE_PED(26, hashes[2], pc.x, pc.y, pc.z + 1, 0, true, false)
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh); NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh);
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
     ENTITY.SET_ENTITY_INVINCIBLE(ped, true)
     ENTITY.SET_ENTITY_VISIBLE(ped, false, 0)
     ENTITY.SET_ENTITY_VISIBLE(veh, false, 0)
-    local rope = PHYSICS.ADD_ROPE(pc.x + 5, pc.y, pc.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true, true, true, 1, true, 0)
-    local vehc = getEntityCoords(veh); local pedc = getEntityCoords(ped)
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(rope, veh, ped, vehc.x, vehc.y, vehc.z, pedc.x, pedc.y, pedc.z, 2, 0, 0, "Center", "Center")
+    local rope = PHYSICS.ADD_ROPE(pc.x + 5, pc.y, pc.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1,
+        true, true, true, 1, true, 0)
+    local vehc = getEntityCoords(veh);
+    local pedc = getEntityCoords(ped)
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(rope, veh, ped, vehc.x, vehc.y, vehc.z, pedc.x, pedc.y, pedc.z, 2, 0, 0, "Center",
+        "Center")
     wait(1000)
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh); NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh);
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
     PHYSICS.DELETE_CHILD_ROPE(rope)
     PHYSICS.ROPE_UNLOAD_TEXTURES()
 end)
 
-    GTAC(crashr, "核弹崩溃", {""}, "", function()
-    local TargetPlayerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid)
+GTAC(crashr, "核弹崩溃", {""}, "", function()
+    local TargetPlayerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid)
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(TargetPlayerPed, true)
-    local Object_pizza1 = CreateVehicle(1131912276,TargetPlayerPos,0)
-    local Object_pizza2 =CreateObject(2981279339,TargetPlayerPos)
-        TargetPlayerPos.y = TargetPlayerPos.y + 2
-        TargetPlayerPos.z = TargetPlayerPos.z + 70 
-        ENTITY.SET_ENTITY_ALPHA(Object_pizza1, 255)
-        ENTITY.SET_ENTITY_VISIBLE(Object_pizza1, false, 0)
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false, true, true)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(Object_pizza2,Object_pizza1, 0,  0.0, 0.00, 0.00, 1.0, 1.0,1, true, false, true, false, 0, true)
+    local Object_pizza1 = CreateVehicle(1131912276, TargetPlayerPos, 0)
+    local Object_pizza2 = CreateObject(2981279339, TargetPlayerPos)
+    TargetPlayerPos.y = TargetPlayerPos.y + 2
+    TargetPlayerPos.z = TargetPlayerPos.z + 70
+    ENTITY.SET_ENTITY_ALPHA(Object_pizza1, 255)
+    ENTITY.SET_ENTITY_VISIBLE(Object_pizza1, false, 0)
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Object_pizza1, TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, false,
+        true, true)
+    ENTITY.ATTACH_ENTITY_TO_ENTITY(Object_pizza2, Object_pizza1, 0, 0.0, 0.00, 0.00, 1.0, 1.0, 1, true, false, true,
+        false, 0, true)
     wait(5000)
     do
-        for i = 0, 30 do 
-            pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-            for j = -2, 2 do 
-                for k = -2, 2 do 
-                    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.PLAYER_PED_ID(), pos.x + j, pos.y + j, pos.z + (30 - i), 29, 999999.99, true, false, 8)
+        for i = 0, 30 do
+            pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+            for j = -2, 2 do
+                for k = -2, 2 do
+                    local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+                    FIRE.ADD_OWNED_EXPLOSION(PLAYER.PLAYER_PED_ID(), pos.x + j, pos.y + j, pos.z + (30 - i), 29,
+                        999999.99, true, false, 8)
                 end
             end
             wait(20)
         end
-    end    
+    end
     entities.delete_by_handle(Object_pizza1)
     entities.delete_by_handle(Object_pizza2)
-    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
+    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(), 0xE5022D03)
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
     wait(1)
-    local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),p_pos.x,p_pos.y,p_pos.z,false,true,true)
+    local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), p_pos.x, p_pos.y, p_pos.z,
+        false, true, true)
     WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), 0xFBAB5776, 1000, false)
-    TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),-1087,-3012,13.94)
+    TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), -1087, -3012, 13.94)
     wait(300)
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
     wait(1000)
     PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID())
     TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
 
-    local TargetPlayerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid)
+    local TargetPlayerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid)
     local TargetPlayerPos = ENTITY.GET_ENTITY_COORDS(TargetPlayerPed, true)
     local SelfPlayerPed = PLAYER.PLAYER_PED_ID()
     local SelfPlayerPos = ENTITY.GET_ENTITY_COORDS(SelfPlayerPed, true)
     SelfPlayerPos.x = SelfPlayerPos.x + 10
     TargetPlayerPos.x = TargetPlayerPos.x + 10
     local carc = CreateVehicle(2598821281, TargetPlayerPos, ENTITY.GET_ENTITY_HEADING(SelfPlayerPed), true)
-    local carcPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
+    local carcPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
     local pedc = CreatePed(26, 2597531625, TargetPlayerPos, 0)
-    local pedcPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
-    local ropec = PHYSICS.ADD_ROPE(TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 0, 0, 0, 1, 1, 0.00300000000000000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, 0)
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(ropec,carc,pedc,carcPos.x, carcPos.y, carcPos.z ,pedcPos.x, pedcPos.y, pedcPos.z,2, false, false, 0, 0, "Center","Center")
+    local pedcPos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
+    local ropec = PHYSICS.ADD_ROPE(TargetPlayerPos.x, TargetPlayerPos.y, TargetPlayerPos.z, 0, 0, 0, 1, 1,
+        0.00300000000000000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, 0)
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(ropec, carc, pedc, carcPos.x, carcPos.y, carcPos.z, pedcPos.x, pedcPos.y, pedcPos.z,
+        2, false, false, 0, 0, "Center", "Center")
     wait(3500)
     PHYSICS.DELETE_CHILD_ROPE(ropec)
     entities.delete_by_handle(carc)
     entities.delete_by_handle(pedc)
-    end)
+end)
 
 GTAC(crashr, "闪电崩溃", {"flashboom"}, "", function(on_loop)
     PHYSICS.ROPE_LOAD_TEXTURES()
     local pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
     local ppos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-    pos.x = pos.x+5
-    ppos.z = ppos.z+1
+    pos.x = pos.x + 5
+    ppos.z = ppos.z + 1
     cargobob = entities.create_vehicle(2132890591, pos, 0)
     cargobob_pos = ENTITY.GET_ENTITY_COORDS(cargobob)
     kur = entities.create_ped(26, 2727244247, ppos, 0)
     kur_pos = ENTITY.GET_ENTITY_COORDS(kur)
     ENTITY.SET_ENTITY_INVINCIBLE(kur, true)
-    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true, true, true, 1.0, true, "Center")
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, cargobob, kur, cargobob_pos.x, cargobob_pos.y, cargobob_pos.z, kur_pos.x, kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center")
+    newRope = PHYSICS.ADD_ROPE(pos.x, pos.y, pos.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true,
+        true, true, 1.0, true, "Center")
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(newRope, cargobob, kur, cargobob_pos.x, cargobob_pos.y, cargobob_pos.z, kur_pos.x,
+        kur_pos.y, kur_pos.z, 2, 0, 0, "Center", "Center")
 end)
 
 GTLP(crashr, "绳索崩溃全局", {"ropecrash"}, "", function(on_loop)
     PHYSICS.ROPE_LOAD_TEXTURES()
     local hashes = {2132890591, 2727244247}
-    local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,pid))
+    local pc = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, pid))
     local veh = VEHICLE.CREATE_VEHICLE(#hashes, pc.x + 5, pc.y, pc.z, 0, true, true, false)
     local ped = PED.CREATE_PED(26, hashes[2], pc.x, pc.y, pc.z + 1, 0, true, false)
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh); NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh);
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
     ENTITY.SET_ENTITY_INVINCIBLE(ped, true)
     ENTITY.SET_ENTITY_VISIBLE(ped, false, 0)
     ENTITY.SET_ENTITY_VISIBLE(veh, false, 0)
-    local rope = PHYSICS.ADD_ROPE(pc.x + 5, pc.y, pc.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1, true, true, true, 1, true, 0)
-    local vehc = getEntityCoords(veh); local pedc = getEntityCoords(ped)
-    PHYSICS.ATTACH_ENTITIES_TO_ROPE(rope, veh, ped, vehc.x, vehc.y, vehc.z, pedc.x, pedc.y, pedc.z, 2, 0, 0, "Center", "Center")
+    local rope = PHYSICS.ADD_ROPE(pc.x + 5, pc.y, pc.z, 0, 0, 0, 1, 1, 0.0000000000000000000000000000000000001, 1, 1,
+        true, true, true, 1, true, 0)
+    local vehc = getEntityCoords(veh);
+    local pedc = getEntityCoords(ped)
+    PHYSICS.ATTACH_ENTITIES_TO_ROPE(rope, veh, ped, vehc.x, vehc.y, vehc.z, pedc.x, pedc.y, pedc.z, 2, 0, 0, "Center",
+        "Center")
     wait(1000)
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh); NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
-    entities.delete_by_handle(veh); entities.delete_by_handle(ped)
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh);
+    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ped)
+    entities.delete_by_handle(veh);
+    entities.delete_by_handle(ped)
     PHYSICS.DELETE_CHILD_ROPE(rope)
     PHYSICS.ROPE_UNLOAD_TEXTURES()
-    end)
+end)
 
 GTAC(crashr, "全局崩溃V9", {}, "请按住发送键5或空格", function()
     menu.trigger_commands("anticrashcamera on")
@@ -17331,18 +17966,21 @@ GTAC(crashr, "全局崩溃V9", {}, "请按住发送键5或空格", function()
         ENTITY.SET_ENTITY_PROOFS(jet, true, true, true, true, true, true, true, true)
         -- ENTITY.SET_ENTITY_ROTATION(jet, 0, 0, 0, 2, true) -- rotation sync fuck
         -- local let_coords = coords[math.random(1, #coords)]--function() for i =1, 32 do if PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(i) then return ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(i)) end end end
-        if players.exists(to_ply) then 
-            local asda = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(to_ply)) 
-            util.toast('Player ID: '..to_ply..' | asda.x: '.. asda.x.. 'asda.y: '.. asda.y..'asda.z: '.. asda.z)
-            ENTITY.SET_ENTITY_COORDS(jet, asda.x, asda.y, asda.z + 50, false, false, false, true) 
-            to_ply = to_ply +1
-        else 
-            if to_ply >= 32 then to_ply = 0 end
-            to_ply = to_ply +1 
+        if players.exists(to_ply) then
+            local asda = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(to_ply))
+            util.toast('Player ID: ' .. to_ply .. ' | asda.x: ' .. asda.x .. 'asda.y: ' .. asda.y .. 'asda.z: ' ..
+                           asda.z)
+            ENTITY.SET_ENTITY_COORDS(jet, asda.x, asda.y, asda.z + 50, false, false, false, true)
+            to_ply = to_ply + 1
+        else
+            if to_ply >= 32 then
+                to_ply = 0
+            end
+            to_ply = to_ply + 1
             local let_coords = coords[math.random(1, #coords)]
-            ENTITY.SET_ENTITY_COORDS(jet, let_coords[1], let_coords[2], let_coords[3], false, false, false, true) 
+            ENTITY.SET_ENTITY_COORDS(jet, let_coords[1], let_coords[2], let_coords[3], false, false, false, true)
         end
-            
+
         ENTITY.SET_ENTITY_VELOCITY(jet, 0, 0, 0) -- velocity sync fuck
         ENTITY.SET_ENTITY_ROTATION(jet, 0, 0, 0, 2, true) -- rotation sync fuck
         local pedpos = ENTITY.GET_ENTITY_COORDS(GetLocalPed())
@@ -17359,217 +17997,59 @@ GTAC(crashr, "全局崩溃V9", {}, "请按住发送键5或空格", function()
         util.toast("等待同步5秒...")
         wait(3500) -- 5k is original
         for i = 1, 25 do -- 50 is original
-            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(jet, math.random(0, 2555), math.random(0, 2815), math.random(1, 1232), false, false, false) 
-            --ENTITY.SET_ENTITY_COORDS_NO_OFFSET(jet, 252, 2815, 120, false, false, false) -- far away teleport (sync fuck)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(jet, math.random(0, 2555), math.random(0, 2815), math.random(1, 1232),
+                false, false, false)
+            -- ENTITY.SET_ENTITY_COORDS_NO_OFFSET(jet, 252, 2815, 120, false, false, false) -- far away teleport (sync fuck)
             wait()
         end
     else
         util.toast("警告|你不在车里")
         RqModel(util.joaat('hydra'))
-        local spawn_in = entities.create_vehicle(util.joaat('hydra'), ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()), 0.0)
+        local spawn_in = entities.create_vehicle(util.joaat('hydra'), ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID()),
+            0.0)
         PED.SET_PED_INTO_VEHICLE(PLAYER.PLAYER_PED_ID(), spawn_in, -1)
     end
-    
+
 end)
 GTAC(crashr, "防崩镜头关闭", {}, "", function()
     menu.trigger_commands("anticrashcamera off")
 end)
 
-    GTAC(crashr,"声音崩溃",{},"崩溃全局",function()
-        soundcrash_all()
-    end)
+GTAC(crashr, "声音崩溃", {}, "崩溃全局", function()
+    soundcrash_all()
+end)
 
-	GTAC(crashr, "数学崩溃", {}, "", function()
-        numbercrash()
-    end)
+GTAC(crashr, "数学崩溃", {}, "", function()
+    numbercrash()
+end)
 
-    menu.action(crashr, "大自然全局崩溃", {}, "", function()
-        natural_crash_all()
-    end) 
+menu.action(crashr, "大自然全局崩溃", {}, "", function()
+    natural_crash_all()
+end)
 
 GTAC(crashr, "载具崩溃", {}, "", function()
     local model = {}
-    local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0,PlayerID)) pos.z = pos.z + 10
+    local pos<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(0, PlayerID))
+    pos.z = pos.z + 10
     local all_vel = entities.get_all_vehicles_as_handles()
     local crash = {}
     for parachute, model in pairs(all_vel) do
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(model,pos.x, pos.y, pos.z)
-    crash[parachute] = set_vehicle_any_parachute(model,ENTITY.GET_ENTITY_MODEL(model),0x2b778668)
-    for PlayerID = 0 ,32 do
-    local peds = players.user_ped(PlayerID)
-    if PlayerID ~= players.user() and players.exists(PlayerID) then
-    PED.SET_PED_INTO_VEHICLE(peds,model,-1)
-    VEHICLE._SET_VEHICLE_PARACHUTE_ACTIVE(model,true)
-    wait(300)
-    entities.delete_by_handle(model)
-    end
-    end
-    end
-    end)
-	
-	GTAC(crashr, "不知名崩", {}, "", function()
-        nothingcrash()
-    end)
-
-    kickr = GT(allcrash, '全局踢出', {}, '')
-    
-    TXC_SLOW = false
-
-    GTAC(kickr, "AIO踢", {"allaiokick", "allaiok"}, "可能在某些菜单上不起作用.", function ()
-        AIOKickAll()
-    end)
-
-    GTTG(kickr, "更慢但是更好的AIO踢", {}, "", function (on)
-        TXC_SLOW = on
-        if SE_Notifications then
-            util.toast("" .. tostring(on))
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(model, pos.x, pos.y, pos.z)
+        crash[parachute] = set_vehicle_any_parachute(model, ENTITY.GET_ENTITY_MODEL(model), 0x2b778668)
+        for PlayerID = 0, 32 do
+            local peds = players.user_ped(PlayerID)
+            if PlayerID ~= players.user() and players.exists(PlayerID) then
+                PED.SET_PED_INTO_VEHICLE(peds, model, -1)
+                VEHICLE._SET_VEHICLE_PARACHUTE_ACTIVE(model, true)
+                wait(300)
+                entities.delete_by_handle(model)
+            end
         end
-    end)
-
-    GTTG(kickr, "Metodo踢出 V1", {"bkick1"}, "", function(on_toggle)
-    local BlockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Enabled")
-    local UnblockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Disabled")
-    local BlockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Enabled")
-    local UnblockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Disabled")
-    local BlockBailing = menu.ref_by_path("Online>Protections>Block Bailing>Player No Longer In Session")
-    local BlockBailing2 = menu.ref_by_path("Online>Protections>Block Bailing>Switching Primary Crew")
-    local BlockBailing3 = menu.ref_by_path("Online>Protections>Block Bailing>Spectating Related")
-    local BlockBailing4 = menu.ref_by_path("Online>Protections>Block Bailing>Other Reasons")
-    local BlockJoin = menu.ref_by_path("Online>Protections>Block Join Karma")
-    if on_toggle then
-        menu.trigger_commands("nobgscript on")
-        menu.trigger_commands("skipbroadcast on")
-        menu.trigger_commands("speedupspawn on")
-        menu.trigger_commands("speedupfmmc on")
-        menu.trigger_commands("skipswoopdown on")
-        menu.trigger_commands("nospawnactivities on")
-        menu.trigger_commands("showtransitionstate on")
-        menu.trigger_command(BlockIncSyncs)
-        menu.trigger_command(BlockNetEvents)
-        menu.trigger_command(BlockBailing, "on")
-        menu.trigger_command(BlockBailing2, "on")
-        menu.trigger_command(BlockBailing3, "on")
-        menu.trigger_command(BlockBailing4, "on")
-        menu.trigger_command(BlockJoin, "on")
-        util.toast("已激活，现在进入疗程，准备踢腿")
-    else
-        menu.trigger_commands("nobgscript off")
-        menu.trigger_commands("skipbroadcast off")
-        menu.trigger_commands("speedupspawn off")
-        menu.trigger_commands("speedupfmmc off")
-        menu.trigger_commands("skipswoopdown off")
-        menu.trigger_commands("nospawnactivities off")
-        menu.trigger_commands("showtransitionstate off")
-        menu.trigger_command(UnblockIncSyncs)
-        menu.trigger_command(UnblockNetEvents)
-        menu.trigger_command(BlockBailing3, "off")
-        util.toast("听着，一切都停止了")
     end
 end)
 
-GTTG(kickr, "Metodo踢出 V2", {"bkick2"}, "", function(on_toggle)
-local BlockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Enabled")
-local UnblockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Disabled")
-local BlockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Enabled")
-local UnblockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Disabled")
-local BlockBailing = menu.ref_by_path("Online>Protections>Block Bailing>Player No Longer In Session")
-local BlockBailing2 = menu.ref_by_path("Online>Protections>Block Bailing>Switching Primary Crew")
-local BlockBailing3 = menu.ref_by_path("Online>Protections>Block Bailing>Spectating Related")
-local BlockBailing4 = menu.ref_by_path("Online>Protections>Block Bailing>Other Reasons")
-local ShowNotis = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Notification>Enabled")
-local BlockRaw = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Enabled")
-local UnShowNotis = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Notification>Disabled")
-local UnBlockRaw = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Disabled")
-if on_toggle then
-    menu.trigger_commands("nobgscript on")
-    menu.trigger_commands("skipbroadcast on")
-    menu.trigger_commands("speedupspawn on")
-    menu.trigger_commands("speedupfmmc on")
-    menu.trigger_commands("skipswoopdown on")
-    menu.trigger_commands("nospawnactivities on")
-    menu.trigger_commands("showtransitionstate on")
-    menu.trigger_command(BlockIncSyncs)
-    menu.trigger_command(BlockNetEvents)
-    menu.trigger_command(BlockBailing, "on")
-    menu.trigger_command(BlockBailing2, "on")
-    menu.trigger_command(BlockBailing3, "on")
-    menu.trigger_command(BlockBailing4, "on")
-    menu.trigger_command(ShowNotis)
-    menu.trigger_command(BlockRaw)
-    util.toast("已激活，现在进入疗程，准备踢腿")
-else
-    menu.trigger_commands("nobgscript off")
-    menu.trigger_commands("skipbroadcast off")
-    menu.trigger_commands("speedupspawn off")
-    menu.trigger_commands("speedupfmmc off")
-    menu.trigger_commands("skipswoopdown off")
-    menu.trigger_commands("nospawnactivities off")
-    menu.trigger_commands("showtransitionstate off")
-    menu.trigger_command(UnblockIncSyncs)
-    menu.trigger_command(UnblockNetEvents)
-    menu.trigger_command(BlockBailing3, "off")
-    menu.trigger_command(UnShowNotis)
-    menu.trigger_command(UnBlockRaw)
-    util.toast("听着，一切都停止了")
-end
-end)
-
-GTTG(kickr, "Metodo踢出 V3", {"bkick3"}, "", function(on_toggle)
-    local BlockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Enabled")
-    local UnblockNetEvents = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Disabled")
-    local BlockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Enabled")
-    local UnblockIncSyncs = menu.ref_by_path("Online>Protections>Syncs>Incoming>Any Incoming Sync>Block>Disabled")
-    local BlockBailing = menu.ref_by_path("Online>Protections>Block Bailing>Player No Longer In Session")
-    local BlockBailing2 = menu.ref_by_path("Online>Protections>Block Bailing>Switching Primary Crew")
-    local BlockBailing3 = menu.ref_by_path("Online>Protections>Block Bailing>Spectating Related")
-    local BlockBailing4 = menu.ref_by_path("Online>Protections>Block Bailing>Other Reasons")
-    local ShowNotis = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Notification>Enabled")
-    local BlockRaw = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Enabled")
-    local UnShowNotis = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Notification>Disabled")
-    local UnBlockRaw = menu.ref_by_path("Online>Protections>Events>Raw Network Events>Any Event>Block>Disabled")
-    local DontAsk = menu.ref_by_path("Online>Transitions>Speed Up>Don't Ask For Permission To Spawn")
-    if on_toggle then
-        menu.trigger_commands("nobgscript on")
-        menu.trigger_commands("skipbroadcast on")
-        menu.trigger_commands("speedupspawn on")
-        menu.trigger_commands("speedupfmmc on")
-        menu.trigger_commands("skipswoopdown on")
-        menu.trigger_commands("nospawnactivities on")
-        menu.trigger_commands("showtransitionstate on")
-        menu.trigger_command(BlockIncSyncs)
-        menu.trigger_command(BlockNetEvents)
-        menu.trigger_command(BlockBailing, "on")
-        menu.trigger_command(BlockBailing2, "on")
-        menu.trigger_command(BlockBailing3, "on")
-        menu.trigger_command(BlockBailing4, "on")
-        menu.trigger_command(ShowNotis)
-        menu.trigger_command(BlockRaw)
-        menu.trigger_command(DontAsk, "on")
-        util.toast("已激活，现在进入疗程，准备踢腿")
-    else
-        menu.trigger_commands("nobgscript off")
-        menu.trigger_commands("skipbroadcast off")
-        menu.trigger_commands("speedupspawn off")
-        menu.trigger_commands("speedupfmmc off")
-        menu.trigger_commands("skipswoopdown off")
-        menu.trigger_commands("nospawnactivities off")
-        menu.trigger_commands("showtransitionstate off")
-        menu.trigger_command(UnblockIncSyncs)
-        menu.trigger_command(UnblockNetEvents)
-        menu.trigger_command(BlockBailing3, "off")
-        menu.trigger_command(UnShowNotis)
-        menu.trigger_command(UnBlockRaw)
-        menu.trigger_command(DontAsk, "off")
-        util.toast("听着，一切都停止了")
-    end
-end)
-
-GTTG(kickr, "Eso踢出", {}, "", function(on)
-    if on then
-        menu.trigger_commands("bkick1 on")
-    else
-        menu.trigger_commands("bkick1 off")
-    end
+GTAC(crashr, "不知名崩", {}, "", function()
+    nothingcrash()
 end)
 
 GTAC(allcrash, "噪音污染", {"badsound", "earrape"}, "超大声!!!请降低您的音量\n在战局中播放,对玩家有效", function()
@@ -19069,7 +19549,7 @@ end)
     end)
 
     kick_ad_bot_chat = 1
-    GTluaScript.slider_text(adbotblock, "发送踢出内容", {"blockidiotbot"}, "发送踢出内容到公屏", {"通知","Stand通知","团队聊天不联网", "团队聊天联网", "全局聊天不联网", "全局聊天联网"}, function(s)
+    GTluaScript.textslider(adbotblock, "发送踢出内容", {"blockidiotbot"}, "发送踢出内容到公屏", {"通知","Stand通知","团队聊天不联网", "团队聊天联网", "全局聊天不联网", "全局聊天联网"}, function(s)
         kick_ad_bot_chat = s
     end)
     GTD(adbotblock, "更新选项")
@@ -20128,7 +20608,7 @@ GTLP(headlamp, "开启", {"headlamp"}, "", function()
 end)
     
 local jinx_pet
-jinx_toggle = GTLP(funfeatures, "宠物猫Jinx", {}, "招换一只可爱的小猫咪\nBy Jinx.lua", function()
+jinx_toggle = GTLP(funfeatures, "宠物猫Jinx", {}, "招换一只可爱的小猫咪", function()
     if not jinx_pet or not ENTITY.DOES_ENTITY_EXIST(jinx_pet) then
         local jinx = util.joaat("a_c_cat_01")
         request_model(jinx)
@@ -20146,7 +20626,7 @@ end, function()
 end)
     
 local jinx_army = {}
-local army = GT(funfeatures, "宠物猫Jinx军队", {}, "招换一堆可爱又愚蠢的小猫咪\nBy Jinx.lua")
+local army = GT(funfeatures, "宠物猫Jinx军队", {}, "招换一堆可爱又愚蠢的小猫咪")
 GTluaScript.click_slider(army, "生成数量", {}, "最多256只小猫咪", 1, 256, 30, 1, function(val)
     local ped = players.user_ped()
     local pos = ENTITY.GET_ENTITY_COORDS(ped, false)
@@ -20358,36 +20838,36 @@ send_player_sms_2t1 = function (pid, message)
     menu.trigger_commands("smstext"..players.get_name(pid).." "..message)
     menu.trigger_commands("smssend"..players.get_name(pid))
 end
-GTAC(user_options,"检测用户", {},"", function()
+GTAC(user_options, "检测用户", {}, "", function()
     oldpos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
     ENTITY.GET_ENTITY_COORDS(players.user_ped(), 0, 0, 0)
     wait(500)
     set_entity_coords_no_offset_2t1(players.user_ped(), oldpos)
     allvehs = entities.get_all_vehicles_as_handles()
     for i = 1, #allvehs do
-      vehhash = int_to_uint(ENTITY.GET_ENTITY_MODEL(allvehs[i]))
-      if vehhash == 534258863 then
-        pos = ENTITY.GET_ENTITY_COORDS(allvehs[i])
-        if 0 == pos.x and 0 == pos.y then
-          print(tostring(pos.z))
-          nopid = 0 - pos.z
-          pid = math.floor(nopid)
-          if mmtluascriptchatsession then
-            if pid ~= players.user() then
-              mmmtuser = players.get_name(pid)
-              chat.send_message("检测到GRANDTOURINGVIP用户["..mmmtuser.."]", false,true, true)
-              notification("检测到用户"..mmmtuser)
+        vehhash = int_to_uint(ENTITY.GET_ENTITY_MODEL(allvehs[i]))
+        if vehhash == 534258863 then
+            pos = ENTITY.GET_ENTITY_COORDS(allvehs[i])
+            if 0 == pos.x and 0 == pos.y then
+                print(tostring(pos.z))
+                nopid = 0 - pos.z
+                pid = math.floor(nopid)
+                if mmtluascriptchatsession then
+                    if pid ~= players.user() then
+                        mmmtuser = players.get_name(pid)
+                        chat.send_message("检测到GRANDTOURINGVIP用户[" .. mmmtuser .. "]", false, true, true)
+                        notification("检测到用户" .. mmmtuser)
+                    end
+                elseif pid ~= players.user() then
+                    print(pid)
+                    mmmtuser = players.get_name(pid)
+                    send_player_sms_2t1(pid, "~h~welcome,GRANDTOURINGVIP用户[~f~" .. mmmtuser .. "~q~]")
+                    notification("检测到用户" .. mmmtuser)
+                end
             end
-          elseif pid ~= players.user() then
-            print(pid)
-            mmmtuser = players.get_name(pid)
-            send_player_sms_2t1(pid, "~h~welcome,GRANDTOURINGVIP用户[~f~"..mmmtuser.."~q~]")
-            notification("检测到用户"..mmmtuser)
-          end
+            wait(1)
         end
         wait(1)
-      end
-      wait(1)
     end
 end)
 
@@ -20445,23 +20925,159 @@ enableTR = GTAC(chat_translation, "启用翻译功能", {}, "", function()
     end
 end)
 
+CT = GT(FY, '聊天记录', {}, '')
+
+jilux = 0.01
+jilut = 10
+jilur, jilug, jilub, bjr, bjg, bjb, bja = 50, 150, 200, 10, 55, 90, 200
+liaotianjilu = GTLP(CT, '开启', {}, '', function()
+    function showText(text, x, y)
+        HUD.SET_TEXT_SCALE(0.5, 0.22)
+        HUD.SET_TEXT_FONT(1)
+        HUD.SET_TEXT_COLOUR(jilur, jilug, jilub, 255)
+        HUD.SET_TEXT_CENTRE(false)
+        HUD.SET_TEXT_OUTLINE(true)
+        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(text)
+        HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y, 0)
+    end
+    l = 0.02
+    y = 0.01
+    local history = chat.get_history()
+    local startIdx = math.max(#history - jilut, 1)
+
+    for i = startIdx, #history do
+        local msg = history[i]
+        local str = msg.sender_name .. " [" .. (msg.team_chat and "团队" or "所有") ..
+                        (msg.is_auto and ", 自由" or "") .. "] " .. msg.contents
+        if msg.time ~= 0 then
+            str = "[" .. os.date('%H:%M:%S', msg.time) .. "] " .. str
+        end
+        showText(str, jilux, y)
+        GRAPHICS.DRAW_RECT(jilux + 0.07, y + 0.01, 0.15, 0.017, bjr, bjg, bjb, bja, false)
+        y = y + l
+    end
+end)
+
+CT:slider('聊天记录位置', {"jilupos"}, '', 1, 900, 1, 20, function(jl)
+    jilux = jl / 900
+end)
+
+CT:slider('聊天记录条数', {"jiluline"}, '', 1, 39, 10, 1, function(jt)
+    jilut = jt / 1
+end)
+
+CT:slider('字体颜色[R]', {"jilucr"}, '', 0, 255, 50, 10, function(jlvr)
+    jilur = jlvr
+end)
+
+CT:slider('字体颜色[G]', {"jilucg"}, '', 0, 255, 150, 10, function(jlvg)
+    jilug = jlvg
+end)
+
+CT:slider('字体颜色[B]', {"jilucb"}, '', 0, 255, 200, 10, function(jlvb)
+    jilub = jlvb
+end)
+
+CT:slider('背景颜色[R]', {"cbjr"}, '', 0, 255, 10, 10, function(bjbv)
+    bjr = bjbv
+end)
+
+CT:slider('背景颜色[G]', {"cbjg"}, '', 0, 255, 55, 10, function(bjgv)
+    bjg = bjgv
+end)
+
+CT:slider('背景颜色[B]', {"cbjb"}, '', 0, 255, 90, 10, function(bjbv)
+    bjb = bjbv
+end)
+
+CT:slider('背景透明板[A]', {"bjalpha"}, '', 0, 255, 200, 10, function(bjv)
+    bja = bjv
+end)
+
+loglist = GT(FY, "控制台选项")
+
+local logx = 0
+local logy = 0
+local logcolor = {r = 176, g = 136, b = 226}
+loadlog = GTTG(loglist, "打开控制台", {}, "", function(AA)
+    ab11 = AA
+    if ab11 then
+        if filesystem.exists(filesystem.stand_dir() .. '\\Log.txt') then
+            while ab11 do
+                wait(0)
+                noticed_x = 0
+                notice_msgs = {}
+                notice_file = io.open(filesystem.stand_dir() .. "\\Log.txt", "r")
+                for i in notice_file:lines() do
+                    notice_msgs[#notice_msgs + 1] = i
+                end
+                for i = #notice_msgs, 1, -1 do
+                    if #notice_msgs <= 13 or #notice_msgs - i <= 13 then
+                        GRAPHICS.DRAW_RECT(logx+0.22, logy+0.02, .42, .03, 255, 255, 255, 255)
+                        GRAPHICS.DRAW_RECT(logx+0.22, logy+0.16, .42, .25, 0, 0, 0, 155)
+                        set_text("~italic~" .. notice_msgs[i], logx+0.012, logy+4 * 0.01 + 0.02 * noticed_x, logcolor.r, logcolor.g, logcolor.b, .18)
+                        directx.draw_text(logx+0.070, logy+0.01, "Stand Log 日志记录控制台", 1, 1 * 0.6, 1 * 0.089, 1 * 0.5, 1, 1,
+                            false)
+                        directx.draw_text(logx+0.41, logy+0.0041, "X", 1, 1 * 0.8, 0, 0, 0, 1, false)
+                        directx.draw_text(logx+0.392, logy+0.003, "口", 1, 1 * 0.8, 0, 0, 0, 1, false)
+                        directx.draw_text(logx+0.372, logy+0.003, "一", 1, 1 * 0.8, 0, 0, 0, 1, false)
+                        noticed_x = noticed_x + 0.8
+                    end
+                end
+                notice_file:close()
+                notice_file = nil
+            end
+        else
+            notice_file = nil
+            ab11 = false
+        end
+    elseif notice_file then
+        notice_file:close()
+        notice_file = nil
+    end
+end)
+
+GTluaScript.slider(loglist, "控制台位置 X", {"consolex", }, "", 0, 14, 0, 1, function (cox)
+    logx = cox / 25
+end)
+
+GTluaScript.slider(loglist, "控制台位置 Y", {"consoley", }, "", 0, 14, 0, 1, function (cox)
+    logy = cox / 20
+end)
+
+GTluaScript.slider(loglist, "控制台颜色 R", {"consoler", }, "", 0, 255, logcolor.r, 1, function (cor)
+    logcolor.r = cor
+end)
+
+GTluaScript.slider(loglist, "控制台颜色 G", {"consoleg", }, "", 0, 255, logcolor.g, 1, function (cog)
+    logcolor.g = cog
+end)
+
+GTluaScript.slider(loglist, "控制台颜色 B", {"consoleb", }, "", 0, 255, logcolor.b, 1, function (cob)
+    logcolor.b = cob
+end)
+
+GTAC(loglist, '清除Log日志记录', {}, '', function()
+    local file = io.open(filesystem.stand_dir() .. "\\Log.txt", "w")
+    if file then
+        file:write("")
+        file:close()
+    end
+    gtoast("Log.txt中的日志信息已清除")
+end)
 
 chatspamtrash = GT(FY, "公屏内容")
 
 GTLuaScript.list_action(chatspamtrash, "R星聊天", {""}, "", {"R星认证","R星标志","R星锁定"}, function(index)
-    pluto_switch index do
-        case 1:
+    if index == 1 then
             local k = inputC("输入要说的话", 99, "¦")
             chat.send_message(k, false, true, true)
-            break
-        case 2:
+    elseif index == 2 then
             local k = inputC("输入要说的话", 99, "∑")
             chat.send_message(k, false, true, true)
-            break
-        case 3:
+    elseif index == 2 then
             local k = inputC("输入要说的话", 99, "Ω")
             chat.send_message(k, false, true, true)
-        break
     end
 end)
 
@@ -20920,7 +21536,7 @@ GTLP(world_lol, "下狗屎雨",{""}, "天上掉下一堆臭臭", function()
         local hash = util.joaat("prop_big_shit_02")
            request_model_load(hash)
               if goushi <= 15 then 
-                 local c = WIRI_ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-20, 20), math.random(-20, 20), math.random(20, 20))
+                 local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-20, 20), math.random(-20, 20), math.random(20, 20))
                      local goushis = entities.create_object(hash, c)
                      ENTITY.FREEZE_ENTITY_POSITION(goushis, false)
                   ENTITY.SET_ENTITY_DYNAMIC(goushis, true)
@@ -20934,7 +21550,7 @@ GTLP(world_lol, "下狗屎雨",{""}, "天上掉下一堆臭臭", function()
         local hash = util.joaat("tr_prop_tr_military_pickup_01a")
            request_model_load(hash)
               if goushi <= 15 then 
-                 local c = WIRI_ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-30, 30), math.random(-30, 30), math.random(30, 30))
+                 local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-30, 30), math.random(-30, 30), math.random(30, 30))
                      local goushis = entities.create_object(hash, c)
                      ENTITY.FREEZE_ENTITY_POSITION(goushis, false)
                   ENTITY.SET_ENTITY_DYNAMIC(goushis, true)
@@ -21095,7 +21711,7 @@ GTLP(world_lol, "投放炸弹",{"bowlingshower"}, "不断有炸弹从空中投�
     local hash = util.joaat("imp_prop_bomb_ball")
     request_model_load(hash)
     if active_bowling_balls <= 15 then 
-        local c = WIRI_ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-200, 200), math.random(-200, 200), math.random(100, 300))
+        local c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), math.random(-200, 200), math.random(-200, 200), math.random(100, 300))
         local ball = entities.create_object(hash, c)
         ENTITY.FREEZE_ENTITY_POSITION(ball, false)
         ENTITY.SET_ENTITY_DYNAMIC(ball, true)
@@ -21727,7 +22343,7 @@ end)
 hb2 = false
 hb1 = false
 util.create_thread(function ()
-    local name = WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
+    local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
 
     for _,id in ipairs(sxid) do
         if name == id.playeridx then
@@ -21764,46 +22380,46 @@ restartgt = GTAC(G, ">>重新启动", {}, "", function ()
 end)
 
 myString = "关于更新脚本到最新版,您可加入群聊(651502721)下载新版GTLua 关于脚本的基本功能疑问,您可直接加入聊天群获得帮助(716431566) 购买其他菜单,您可在经销商列表中找到各个经销商(您可以选择xgmenu.me/symenu.me) 获取1v1的帮助,您可联系Mag(907401714)或草莓酱(1104626388)"
---GTAC(other_options,"获取技术支持",{},myString,function()end)
 
 require "lib.GTSCRIPTS.GTA.hbl"
-sponsor = GT(other_options, 'GTVIP Pro 用户', {}, '功德无量，爱心支持')
+sponsor = GT(other_options, 'GTLua VIP 顶级用户', {}, '功德无量，爱心支持')
+GTD(sponsor, ">>所有 GTLua VIP 顶级用户<<")
 for _, v in ipairs(hb_id) do
-    GTD(sponsor, "GTVIP: " .. v.name, function()
-    end)
+    GTD(sponsor, "GTLua VIP: " .. v.name, function()end)
 end
-GTD(sponsor, "...未完待续...", function()
-end)
+GTD(sponsor, "...还有大约400个未显示...", function()end)
+GTD(sponsor, "...未完待续...", function()end)
 
-blackweb = GT(other_options, "经销商级卡网", {}, "你可以在此找到经过GTVIP团队认证的经销商")
-GTD(blackweb, "经销商列表")
-GTH(blackweb, "佳佳小铺", "https://7777v.cn/", "留言:官网直售")
-GTH(blackweb, "沙耶的小店", "https://symenu.me/", "留言:暂无")
-GTH(blackweb, "西瓜 XiGua Store", "https://xgmenu.me/", "留言:暂无")
-GTH(blackweb, "老王二代", "http://xn--4kq1hq65htok.store", "留言:暂无")
-GTH(blackweb, "ASKshak经销商会", "https://daker.cc/", "留言:2TSTAND经销")
-GTH(blackweb, "小刘 Xiao Liu Store", "https://xlmenu.love/", "留言:暂无")
-GTH(blackweb, "菌儿的小店", "https://junmenu.top/", "留言:暂无")
-GTH(blackweb, "白山茶", "http://bscmenu.online", "留言:暂无")
-GTH(blackweb, "旧梦~R", "http://fuzhuzhijia.xyz/", "留言:暂无")
-GTH(blackweb, "忧刊小店", "https://youkan.vip/", "留言:暂无")
-GTH(blackweb, "艾洛佩斯伽的超级小店", "http://ailuopeisjia.top", "留言:暂无")
-GTH(blackweb, "DLHPJY", "https://fzgw.7egg.cn/", "留言:暂无")
-GTH(blackweb, "KexiaoLove", "http://kexiaonolove.asia/", "留言:暂无")
+gt_web = GT(other_options, "经销商级卡网", {}, "你可以在此找到经过GTVIP团队认证的经销商")
+GTD(gt_web, "经销商列表")
+GTH(gt_web, "佳佳小铺", "https://gtvip.pro/", "GTLua 会员销售官网网站")
+GTH(gt_web, "沙耶的小店", "https://symenu.me/", "留言:暂无")
+GTH(gt_web, "西瓜 XiGua Store", "https://xgmenu.me/", "留言:暂无")
+GTH(gt_web, "旧梦~R", "http://fuzhuzhijia.xyz/", "留言:认准官方经销商旧梦\nGTLua VIP Ulta")
+GTH(gt_web, "老王二代", "http://xn--4kq1hq65htok.store", "留言:暂无")
+GTH(gt_web, "ASKshak经销商会", "https://daker.cc/", "留言:2TSTAND经销")
+GTH(gt_web, "小刘 Xiao Liu Store", "https://xlmenu.love/", "留言:暂无")
+GTH(gt_web, "小白&湾湾的经销小铺", "https://www.xbmenu.love", "留言:暂无")
+GTH(gt_web, "菌儿的小店", "https://junmenu.top/", "留言:暂无")
+GTH(gt_web, "白山茶", "http://bscmenu.online", "留言:暂无")
+GTH(gt_web, "忧刊小店", "https://youkan.vip/", "留言:暂无")
+GTH(gt_web, "艾洛佩斯伽的超级小店", "http://ailuopeisjia.top", "留言:暂无")
+GTH(gt_web, "DLHPJY", "https://fzgw.7egg.cn/", "留言:暂无")
+GTH(gt_web, "KexiaoLove", "http://kexiaonolove.asia/", "留言:暂无")
 
 zhujixianshi = GT(other_options, "UI显示选项", {}, "在这里修改各种显示在屏幕中的元素")
 zanzhuzx = GT(other_options, "GTLua 团队")
 
-baocunanjain=GTTG(zhujixianshi, "[按F8保存设置]", {""}, "",function(f)
-gt=f
-while gt do
-wait()
-if util.is_key_down(0x77) then
-baocun()
-newnotify("~h~GRANDTOURINGVIP", "~r~&#8721;‹GT‹&#8721;", "~h~~b~配置已保存", "CHAR_CHOP", 140)
-end
-end
-gt=false
+baocunanjain = GTTG(zhujixianshi, "[按F8保存设置]", {""}, "", function(f)
+    gt = f
+    while gt do
+        wait()
+        if util.is_key_down(0x77) then
+            baocun()
+            newnotify("~h~GRANDTOURINGVIP", "~r~&#8721;‹GT‹&#8721;", "~h~~b~配置已保存", "CHAR_CHOP", 140)
+        end
+    end
+    gt = false
 end)
 menu.set_value(baocunanjain, true)
 
@@ -21869,8 +22485,8 @@ misclightmenu = GT(zhujixianshi, "追光灯")
 playerdis = GT(zhujixianshi, "显示玩家栏")
 WaterMark = GT(zhujixianshi, "信息栏", {""}, "非常好看且实用的信息显示~")
 rainbowinfo = GTAC(WaterMark, "开启信息显示", {""}, "开启该功能选项在最下方", function()
-dofile(filesystem.scripts_dir().."\\lib\\GTSCRIPTS\\GTW\\WM.lua")
-GTLuaScript.delete(rainbowinfo)
+    dofile(filesystem.scripts_dir() .. "\\lib\\GTSCRIPTS\\GTW\\WM.lua")
+    GTLuaScript.delete(rainbowinfo)
 end)
 
 map_name_type = v2()
@@ -21983,7 +22599,7 @@ strarS_y_type = (strarS_y / 100)
 end)
 menu.set_value(wjlxs, wjlxs1)
 anjian = GT(zhujixianshi, '按键显示', {''}, '')
-nextcons = GT(zhujixianshi, "控制台")
+
 local fakemessages_root = GT(onlinemode, "虚假警告", {}, "虚假信息屏幕")
 
 GTluaScript.slider(fakemessages_root, "延迟虚假消息", {}, "在显示虚假消息之前等待多长时间（以秒为单位）", 0, 300, 0, 1, function(s)
@@ -22239,7 +22855,7 @@ GTLP(lines, "玩家连接线", {}, "", function(toggle)
             GRAPHICS.DRAW_LINE(playerCoords.x, playerCoords.y, playerCoords.z, pedCoords.x, pedCoords.y, pedCoords.z, 50, 255, 150, 255)
             local lineEndCoords = v3.new(pedCoords.x, pedCoords.y, pedCoords.z)
             local boxColor = {r = 50, g = 255, b = 150, a = 255}
-            WIRI_GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
+            GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
         end
     end
 end)
@@ -22256,7 +22872,7 @@ GTLP(lines, "NPC连接线", {}, "", function(toggle)
             GRAPHICS.DRAW_LINE(playerCoords.x, playerCoords.y, playerCoords.z, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 255, 255)
             local lineEndCoords = v3.new(pedCoords.x, pedCoords.y, pedCoords.z)
             local boxColor = {r = 0, g = 0, b = 255, a = 255}
-            WIRI_GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
+            GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
         end
     end
 end)
@@ -22273,7 +22889,7 @@ GTLP(lines, "载具连接线", {}, "", function(toggle)
             GRAPHICS.DRAW_LINE(playerCoords.x, playerCoords.y, playerCoords.z, pedCoords.x, pedCoords.y, pedCoords.z, 0, 255, 0, 255)
             local lineEndCoords = v3.new(pedCoords.x, pedCoords.y, pedCoords.z)
             local boxColor = {r = 0, g = 255, b = 0, a = 255}
-            WIRI_GRAPHICS.DRAW_MARKER(1, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 4, 4, 1.7, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
+            GRAPHICS.DRAW_MARKER(1, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 4, 4, 1.7, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
         end
     end
 end)
@@ -22290,7 +22906,7 @@ GTLP(lines, "物体连接线", {}, "", function(toggle)
             GRAPHICS.DRAW_LINE(playerCoords.x, playerCoords.y, playerCoords.z, pedCoords.x, pedCoords.y, pedCoords.z, 0, 255, 255, 255)
             local lineEndCoords = v3.new(pedCoords.x, pedCoords.y, pedCoords.z)
             local boxColor = {r = 0, g = 255, b = 255, a = 255}
-            WIRI_GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
+            GRAPHICS.DRAW_MARKER(43, lineEndCoords.x, lineEndCoords.y, lineEndCoords.z-0.90, pedCoords.x, pedCoords.y, pedCoords.z, 0, 0, 0, 1, 1, 1.5, boxColor.r, boxColor.b, boxColor.g, boxColor.a, false, true, 2, 0, 0, 0, false)
         end
     end
 end)
@@ -22358,7 +22974,7 @@ while gt do
         for pid = 0, 31 do
              if pid ~= players.user() and players.exists(pid) then
                  pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-                 WIRI_GRAPHICS.DRAW_MARKER(2, pos.x, pos.y, pos.z+1.5, 0, 0, 0, 0, 180, 0, 1, 1, 1, 255, 0, 255, 255, false, true, 2, true, 0, 0, false)
+                 GRAPHICS.DRAW_MARKER(2, pos.x, pos.y, pos.z+1.5, 0, 0, 0, 0, 180, 0, 1, 1, 1, 255, 0, 255, 255, false, true, 2, true, 0, 0, false)
              end
         end
     end
@@ -22624,7 +23240,7 @@ while gt do
         for pid = 0, 31 do
              if pid ~= players.user() and players.exists(pid) then
                  pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-                 WIRI_GRAPHICS.DRAW_MARKER(2, pos.x, pos.y, pos.z+1.5, 0, 0, 0, 0, 180, 0, 1, 1, 1, 255, 0, 255, 255, false, true, 2, true, 0, 0, false)
+                 GRAPHICS.DRAW_MARKER(2, pos.x, pos.y, pos.z+1.5, 0, 0, 0, 0, 180, 0, 1, 1, 1, 255, 0, 255, 255, false, true, 2, true, 0, 0, false)
              end
         end
     end
@@ -22848,7 +23464,7 @@ menu.set_value(xssjrq, xssjrq1)
         HUD.SET_TEXT_COLOUR(60, 255, 255, 255)--字体颜色
         util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("GRANDTOURINGVIP YYDS!!!")
         HUD.END_TEXT_COMMAND_DISPLAY_TEXT(0.5,0.4,0)--字体位置
-        WIRI_CAM.SET_CINEMATIC_BUTTON_ACTIVE(false)     
+        CAM.SET_CINEMATIC_BUTTON_ACTIVE(false)     
         GRAPHICS.DRAW_RECT(0.5, 0.5, 0.01, 0.01, currentColor[1], currentColor[2], currentColor[3], alpha) --背景大小
         GRAPHICS.DRAW_RECT(0.5, 0.5, 0.05, 0.05, currentColor[1], currentColor[2], currentColor[3], alpha) --背景大小 
         GRAPHICS.DRAW_RECT(0.5, 0.5, 0.10, 0.10, currentColor[1], currentColor[2], currentColor[3], alpha) --背景大小
@@ -22924,7 +23540,7 @@ end)
 zaxiang = GT(other_options, "其他杂项功能")
 
 ZT = GT(zaxiang, "动态主题", {"sszt"}, "")
-util.require_no_lag"lib.GTSCRIPTS.GTW.ZT"
+require "lib.GTSCRIPTS.GTW.ZT"
 
 times_button_pressed = 0
 GTAC(zaxiang,"试试点击", {}, "一个友好的功能哟~\n连点有彩蛋喔~", function(f)
@@ -22942,25 +23558,6 @@ GTAC(zaxiang,"试试点击", {}, "一个友好的功能哟~\n连点有彩蛋喔~
         end 
     end
 end)
-
---[[GTTG(zaxiang, "事件通知", {}, "", function(t)
-fg = t
-if fg then
-shijian=players.on_flow_event_done(function(p, name, extra)
-    name = lang.get_localised(name)
-    if extra then
-        name ..= " ("
-        name ..= extra
-        name ..= ")"
-    end
-    newnotify("~h~GRANDTOURINGVIP", "~r~&#8721;‹GT‹&#8721;", "~h~~b~"..players.get_name(p)..": "..name, "CHAR_CHOP", 140)
-end)
-end
-shijian = 0
-shijian = false
-fg = false
-fg = 0
-end)]]
 
 function teleportToWaypoint()
     if HUD.IS_WAYPOINT_ACTIVE() then
@@ -23087,7 +23684,8 @@ GTTG(minimap,"锁定地图角度", {"lockminimapangle"}, "", function(on)
 	end
 	HUD.UNLOCK_MINIMAP_ANGLE()
 end)
- centermap = off
+
+centermap = off
 GTTG(minimap, "以你为中心的地图", {"centermap"}, "", function(on)
 	centermap = on
 	while centermap do 
@@ -23104,52 +23702,6 @@ GTTG(minimap, "隐藏地图", {}, "", function(on)
 	end
 end)
 
-timestamp_toggle = false
-GTAC(nextcons, "复制控制台信息到剪贴板", {}, "将控制台信息的完整的最后x行复制到剪贴板", function()
-util.copy_to_clipboard(full_stdout, true)
-end)
-
-GTluaScript.slider(nextcons, "最大显示字符", {"nconsolemaxchars"}, "", 1, 1000, 200, 1, function(s)
-max_chars = s
-end)
-
-GTluaScript.slider(nextcons, "最大显示行数", {"nconsolemaxlines"}, "", 1, 60, 25, 1, function(s)
-max_lines = s
-end)
-
-GTluaScript.slider_float(nextcons, "字体大小", {"nconsolemaxlines"}, "", 1, 1000, 35, 1, function(s)
-font_size = s*0.01
-end)
-
-GTTG(nextcons, "显示时间", {"ntime"}, "", function(on)
-timestamp_toggle = on
-end, false)
-
-draw_toggle = false
-GTTG(nextcons, "绘制控制台", {"ndrawconsole"}, "", function(on)
-draw_toggle = on
-end, false)
-
-local text_color = {r = 1, g = 0, b = 1, a = 1}
-GTluaScript.colour(nextcons, "文字颜色", {"nconsoletextcolor"}, "", 1, 0, 0, 1, true, function(on_change)
-text_color = on_change
-end)
-
-local bg_color = {r = 0, g = 1, b = 1, a = 1}
-GTluaScript.colour(nextcons, "背景颜色", {"nconsolebgcolor"}, "", 0, 0, 0, 0, true, function(on_change)
-bg_color = on_change
-end)
-
-util.create_tick_handler(function()
-    local text = get_last_lines(log_dir)
-    if draw_toggle then
-        local size_x, size_y = directx.get_text_size(disp_stdout, font_size)
-        size_x += 0.01
-        size_y += 0.01
-        directx.draw_rect(0.0, 0.15, size_x, size_y, bg_color)
-        directx.draw_text(0.0, 0.15, disp_stdout, 0, font_size, text_color, true)
-    end
-end)
 --STAND版本
 local window_x = 0.86
 local window_y = 0.03
@@ -23307,7 +23859,7 @@ end)
 
 GTAC(other_options, "幸运人员", {}, "", function ()
     require "lib.GTSCRIPTS.GTA.list"
-    local name = WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
+    local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
     local hasPermission = false 
 
     for _, id in ipairs(spid) do
@@ -23346,9 +23898,7 @@ skills={
     "打炮",
     "考妣",
     "考妣",
-    "考妣",
-    "考妣",
-    "考妣",
+
 }
 rainbowr = 0
 rainbowg = 0
@@ -23422,20 +23972,20 @@ shitdo = GTAC(hidetext, "看看今天干点啥", {"lookshitwhat"}, "", function(
     local me = players.user()
     local my_ped = players.user_ped(me)
     menu.trigger_commands("dotext on")
-    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_trevor1")
+    --[[GRAPHICS.USE_PARTICLE_FX_ASSET("scr_trevor1")
     while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_trevor1") do
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_trevor1")
         wait(0)
-    end
+    end]]
     wait(4000)
-    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_trevor1")
+    --[[GRAPHICS.USE_PARTICLE_FX_ASSET("scr_trevor1")
     while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_trevor1") do
         STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_trevor1")
         wait(0)
-    end
-    GRAPHICS.START_PARTICLE_FX_LOOPED_ON_ENTITY("scr_trev1_trailer_boosh", my_ped, 0, 0.0, 0.0, 0, 0, 0, 3)
+    end]]
+    --GRAPHICS.START_PARTICLE_FX_LOOPED_ON_ENTITY("scr_trev1_trailer_boosh", my_ped, 0, 0.0, 0.0, 0, 0, 0, 3)
     wait(1)
-    FIRE.ADD_EXPLOSION(-50, -819.27, 326.175, 0, 1.0, true, false, 0.0, false)
+    --FIRE.ADD_EXPLOSION(-50, -819.27, 326.175, 0, 1.0, true, false, 0.0, false)
     wait(1)
     menu.trigger_commands("dotext off")
     menu.trigger_commands("starttexts on")
@@ -23446,45 +23996,16 @@ end)
 
 menu.trigger_commands("lookshitwhat")
 menu.set_visible(hidetext, false)
---
---[[function lerp(start, destination, speed)
-    return start + ((destination - start) * speed)
-end
-textX = 0.0
-textEndPosition = 0.83 
-speed = 0.01 
-xianshiziti2 = menu.toggle(players_root,"你看不见的显示",{}, "", function(f)
-    ucant = f
-    while ucant do
-        wait()
-        textX = lerp(textX, textEndPosition, speed)
-        local text = "~h~GRAND"
-        HUD.SET_TEXT_SCALE(0.5, 0.5)
-        rainbowr = rainbowr + math.random(0, 3)
-        rainbowg = rainbowg + math.random(0, 3)
-        rainbowb = rainbowb + math.random(0, 3)
-        if rainbowr > 255 then
-            rainbowr = rainbowr - 255
-        end
-        if rainbowg > 255 then
-            rainbowg = rainbowg - 255
-        end
-        if rainbowb > 255 then
-            rainbowb = rainbowb - 255
-        end
-        HUD.SET_TEXT_COLOUR(rainbowr, rainbowg, rainbowb, 255)
-        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(text, v2(textX, 0.02))
-    end
-end)]]
 
-GTTG(zaxiang, "隐藏Stand用户", {}, "对其他用户来说，你是隐形的，但也不是检测器", function(on_toggle)
-local standid = menu.ref_by_path("Online>Protections>Detections>Stand User Identification")
-if on_toggle then
-GTluaScript.trigger_command(standid, "on")
-else
-GTluaScript.trigger_command(standid, "off")
-end
-end)
+GTTG(zaxiang, "隐藏Stand用户", {}, "对其他用户来说，你是隐形的，但也不是检测器",
+    function(on_toggle)
+        local standid = menu.ref_by_path("Online>Protections>Detections>Stand User Identification")
+        if on_toggle then
+            GTluaScript.trigger_command(standid, "on")
+        else
+            GTluaScript.trigger_command(standid, "off")
+        end
+    end)
 
 rlight = 255
 GTluaScript.slider(misclightmenu, "R", {"lightred"}, "", 0, 255, 28, 1, function(s)
@@ -23638,18 +24159,19 @@ GTLP(zanzhuzx, "致谢名单", {""}, "GRANDTOURING董事会", function()
     draw_string(string.format("~italic~~bold~~q~ ~q~[丢丢] ~w~[02] ~y~[xion] ~r~[rudan]"), 0.250,0.520,1.5,5)
 end)]]
 
-GTAC(zanzhuzx, "GTLua Operation Team", {}, "", function () end)
-GTD(zanzhuzx, "GT[Main Creator]")
-GTD(zanzhuzx, "瑞思拜[Main Developer]")
-GTD(zanzhuzx, "12[Arting]")
-GTD(zanzhuzx, "丢丢[Planning]")
-GTD(zanzhuzx, "安安安安安[Admin]")
-GTD(zanzhuzx, "Hardon[Function]")
-GTD(zanzhuzx, "西木[Function]")
-GTD(zanzhuzx, "草莓酱[Admin]")
-GTD(zanzhuzx, "Mag[Marketing]")
-GTD(zanzhuzx, "7SkyK1ng[Shit Base]")
-GTD(zanzhuzx, "Rebound[Menu]")
+GTD(zanzhuzx, "GTLua Team", {}, "", function () end)
+GTS(zanzhuzx, "GT[Creator]", {}, "", {"2022年加入", "GTLua 创始人"}, function()end)
+GTS(zanzhuzx, "Respect[Developer]", {}, "", {"2022年加入", "GTLua 开发者"}, function()end)
+GTS(zanzhuzx, "Mag[Website]", {}, "", {"2024年加入", "GTLua 网页设计", "极夜科技 创始人"},function()end)
+GTS(zanzhuzx, "速响[Polar Night]",{},"",{"2024年加入", "GTLua 身份验证技术", "极夜科技 创始人"},function()end)
+GTS(zanzhuzx, "12[Arting]",{},"",{"2022年加入", "GTLua 美工设计"},function()end)
+GTS(zanzhuzx, "西木[Function]",{},"",{"2022年加入", "GTLua 功能支持"},function()end)
+GTS(zanzhuzx, "丢丢[Plan]",{},"",{"2022年加入", "GTLua 功能策划"},function()end)
+GTS(zanzhuzx, "船船[Admin]",{},"",{"2023年加入", "GTLua 管理员"},function()end)
+GTS(zanzhuzx, "Hardon[Function]",{},"",{"2023年加入", "GTLua 功能支持"},function()end)
+GTS(zanzhuzx, "草莓酱[Admin]",{},"",{"2023年加入", "GTLua 代表人"},function()end)
+GTS(zanzhuzx, "7SkyK1ng[Shit Base]",{},"",{"2023年加入", "Shit Base"},function()end)
+GTS(zanzhuzx, "Rebound[Menu]",{},"",{"2023年加入", "为GTLua提供帮助", "回弹菜单官方"},function()end)
 GTAC(zanzhuzx, "...更多", {}, "", function ()
     gtoast("联系我们加入GTLua团队\n了解GTLua如何与GTA相得益彰\n了解我们的名字,和我们的故事\n了解如何与我们一同创造奇迹")
 end)
@@ -23664,11 +24186,11 @@ GTTG(zaxiang, "禁用圈钱鲨鱼卡显示", {}, "", function(on)
 end, false)
 
 zaxiang:action("重启游戏", {},"合理的重启", function(f)
-WIRI_MISC.RESTART_GAME()
+    MISC.RESTART_GAME()
 end)
 
 zaxiang:action("退出游戏", {},"合理的退出", function(f)
-WIRI_MISC.QUIT_GAME()
+    MISC.QUIT_GAME()
 end)
 
 pass_list = {{0}}
@@ -23722,7 +24244,7 @@ show_credits = GTTG(other_options, "鸣谢人员", {}, "", function(on)
         AUDIO.SET_FRONTEND_RADIO_ACTIVE(true)
         AUDIO.SET_RADIO_STATION_MUSIC_ONLY("RADIO_18_90S_ROCK", true)
         AUDIO.SET_RADIO_TO_STATION_NAME("RADIO_03_HIPHOP_NEW")
-        WIRI_AUDIO.FORCE_MUSIC_TRACK_LIST("RADIO_03_HIPHOP_NEW", "radio_03_hiphop_new_core_music", 3 * 61000 - 15000) --timed the best--
+        AUDIO.FORCE_MUSIC_TRACK_LIST("RADIO_03_HIPHOP_NEW", "radio_03_hiphop_new_core_music", 3 * 61000 - 15000) --timed the best--
         local delay_time = util.current_time_millis() + 100
         while show_credits.value do
             directx.draw_rect(0, 0, 1, 1, {r = 0, g = 0, b = 0, a = 1})
@@ -23964,15 +24486,12 @@ and ENTITY.HAS_ENTITY_CLEAR_LOS_TO_ENTITY(ped, players.user_ped(), 17)
 and MISC.GET_DISTANCE_BETWEEN_COORDS(c1.x, c1.y, c1.z, c2.x, c2.y, c2.z) < 1000 
 and WEAPON.GET_SELECTED_PED_WEAPON(ped) ~= -1569615261 
 and PED.GET_PED_CONFIG_FLAG(ped, 78, true) then
-pluto_switch anti_aim_type do 
-case 1: 
+if anti_aim_type == 1 then
 util.trigger_script_event(1 << pid, {-1388926377, 4, -1762807505, 0})
-break
-case 2: 
+elseif anti_aim_type == 2 then
 local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0, 0.0, 2.8)
 FIRE.ADD_EXPLOSION(coords['x'], coords['y'], coords['z'], 70, 100.0, false, true, 0.0)
-break
-case 3:
+elseif anti_aim_type == 3 then
 menu.trigger_commands("kill " .. players.get_name(pid))
 break
 end
@@ -24089,20 +24608,19 @@ end
    \ \_______\ \__\\ _\\ \__\ \__\ \__\\ \__\ \_______\   \ \__\ \ \_______\ \_______\ \__\\ _\\ \__\ \__\\ \__\ \_______\ \__/ /     \ \__\ \__\   
     \|_______|\|__|\|__|\|__|\|__|\|__| \|__|\|_______|    \|__|  \|_______|\|_______|\|__|\|__|\|__|\|__| \|__|\|_______|\|__|/       \|__|\|__|   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-GRANDTOURINGVIP™ Copyright© 2023 
-All rights reserved.
-    ⠄⠄⠄⣰⣿⠄⠄⠄⠄⠄⢠⠄⠄⢀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
-    ⠄⠄⢰⣿⠿⠄⡀⠄⠄⠄⠘⣷⡀⠄⠢⣄⠄⠄⠄⠄⠄⠄⠄⣠⠖⠁⠄⠄⠄⠄
-    ⠄⣤⢸⣿⣿⣆⠣⠄⠄⠄⠄⠸⣿⣦⡀⠙⢶⣦⣄⡀⠄⡠⠞⠁⢀⡴⠄⠄⠄⠄
-    ⢰⣿⣎⣿⣿⣿⣦⣀⠄⠄⠄⠄⠹⣿⣿⣦⢄⡙⠻⠿⠷⠶⠤⢐⣋⣀⠄⠄⠄⠄
-    ⢸⣿⠛⠛⠻⠿⢿⣿⣧⢤⣤⣄⣠⡘⣿⣿⣿⡟⠿⠛⠂⠈⠉⠛⢿⣿⠄⠄⠄⠄
-    ⠄⡇⢰⣿⣇⡀⠄⠄⣝⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⡄⠄⠈⠄⣷⢠⡆⠄⠄⠄⠄
-    ⢹⣿⣼⣿⣯⢁⣤⣄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⣴⠶⣲⣵⠟⠄⠄⠄⠄⠄
-    ⠄⢿⣿⣿⣿⣷⣮⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣟⣡⡴⠄⠄⠄⠄⠄
-    ⠄⠰⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⡀⠄⠄⠄⠄
-    ⠄⠄⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣶⡞⠄⠄⠄⠄⠄
-    ⠄⠄⠐⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄⠄⠄⠄⠄⠄
-    ⠄⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⣯⣿⣯⣿⣾⣿⣿⣿⣿⣿⡿⠋⠄⠄⠄⠄⠄⠄⠄
-    ⠄⠄⠄⠄⠄⠄⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣵⠄⠄⠄⠄⠄⠄⠄⠄⠄
-    ⠄⠄⠄⠄⠄⠄⠄⢀⣿⣯⣟⣿⣿⣿⡿⣟⣯⣷⣿⣿⡏⣤⠄⠄⠄⠄⠄⠄⠄⠄
-    ⠄⠄⠄⠄⠄⠄⠄⣞⢸⣿⣿⣿⣾⣷⣿⣿⣿⣿⣿⣿⣇⣿⡆⠄⠄⠄⠄⠄⠄⠄]]
+GRANDTOURINGVIP™ Copyright© 2024 All rights reserved.
+⠄⠄⠄⣰⣿⠄⠄⠄⠄⠄⢠⠄⠄⢀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⢰⣿⠿⠄⡀⠄⠄⠄⠘⣷⡀⠄⠢⣄⠄⠄⠄⠄⠄⠄⠄⣠⠖⠁⠄⠄⠄⠄
+⠄⣤⢸⣿⣿⣆⠣⠄⠄⠄⠄⠸⣿⣦⡀⠙⢶⣦⣄⡀⠄⡠⠞⠁⢀⡴⠄⠄⠄⠄
+⢰⣿⣎⣿⣿⣿⣦⣀⠄⠄⠄⠄⠹⣿⣿⣦⢄⡙⠻⠿⠷⠶⠤⢐⣋⣀⠄⠄⠄⠄
+⢸⣿⠛⠛⠻⠿⢿⣿⣧⢤⣤⣄⣠⡘⣿⣿⣿⡟⠿⠛⠂⠈⠉⠛⢿⣿⠄⠄⠄⠄
+⠄⡇⢰⣿⣇⡀⠄⠄⣝⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⡄⠄⠈⠄⣷⢠⡆⠄⠄⠄⠄
+⢹⣿⣼⣿⣯⢁⣤⣄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⣴⠶⣲⣵⠟⠄⠄⠄⠄⠄
+⠄⢿⣿⣿⣿⣷⣮⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣟⣡⡴⠄⠄⠄⠄⠄
+⠄⠰⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⡀⠄⠄⠄⠄
+⠄⠄⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣶⡞⠄⠄⠄⠄⠄
+⠄⠄⠐⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⣯⣿⣯⣿⣾⣿⣿⣿⣿⣿⡿⠋⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣵⠄⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠄⢀⣿⣯⣟⣿⣿⣿⡿⣟⣯⣷⣿⣿⡏⣤⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠄⣞⢸⣿⣿⣿⣾⣷⣿⣿⣿⣿⣿⣿⣇⣿⡆⠄⠄⠄⠄⠄⠄⠄]]

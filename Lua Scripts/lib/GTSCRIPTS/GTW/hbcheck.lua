@@ -3,11 +3,11 @@ starhb = "你已经是至臻皇榜用户\n享受所有皇榜的特权,以及:\n�
 imhb = "您已经是皇榜成员\n以下特权已激活:\n战局横幅提示(其他GTVIP用户)\n免疫GTVIP用户脚本攻击\nVIP特有脚本名称显示\n可被选中为随机幸运人\n免密码启动脚本\n皇榜专属独家功能\nStand+2Take1双资格皇榜\n可无限增加多个游戏ID"
 hbinfo = "加入皇榜可享受以下特权:\n战局横幅提示(其他GTVIP用户)\n免疫其他GTVIP用户的脚本攻击\n获得VIP功能与立刻加入VIP群聊 若您是卡网经销商,可免费加入GTVIP认证经销商列表\n联系QQ(1114983012/820104093)"
 function checkme()
-    local master = "GTLua VIP Master"
+    local master = "Preview EDV "..GT_version
     local vip388 = " GT-VIP Ultra "..GT_version
     local vipme = "  GT-VIP Pro "..GT_version
     local standard = "   Standard "..GT_version
-    local name = WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
+    local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
     
     if name == "RhymeBear" then
         return master
@@ -62,7 +62,7 @@ function checkme()
 end
 
 --定义是不是皇榜的玩家
-local name = WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
+local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
 isSpidPlayer = false
 
 for _, id in ipairs(spid) do
@@ -145,3 +145,18 @@ for _, id in ipairs(spid) do
         end
     end
 end
+
+MBPrefix = "[GRANDTOURINGVIP]"
+og_toast = util.toast
+og_log = util.log
+
+util.toast = function(str, flag) 
+    assert(str != nil, "No string given") 
+    if flag ~= nil then 
+        og_toast(MBPrefix .. tostring(str), flag) 
+    else 
+        og_toast(MBPrefix .. tostring(str)) 
+    end 
+end
+
+util.log = function(str) assert(str != nil, "No string given") og_log(MBPrefix .. tostring(str)) end

@@ -6,34 +6,19 @@
 ╚██████╔╝██║  ██║██║  ██║██║ ╚████║██████╔╝   ██║   ╚██████╔╝╚██████╔╝██║  ██║██║██║ ╚████║╚██████╔╝ ╚████╔╝ ██║██║     
  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝    ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝      
 GRANDTOURINGVIP™ Copyright© 2024 All rights reserved.]] 
---require "lib.GTSCRIPTS.V"
 require "lib.GTSCRIPTS.W"
 require "lib.GTSCRIPTS.O" 
 require "lib.GTSCRIPTS.T"
+require "lib.GTSCRIPTS.GTA.table"
 scaleform = require('lib.GTSCRIPTS.Z')
---sf = scaleform('instructional_buttons')
-translations = {}
-Lang = {}
-Lang.Version = ""
-Template = false
-translations.lang = {}
-translations.current_translations = {}
-translations.missing_translations = {}
-friends_in_this_session = {}
-modders_in_this_session = {}
-wait = util.yield
---gtoast = util.toast
-GTluaScript = menu
-GT = GTluaScript.list
-GTAC = GTluaScript.action
-GTD = GTluaScript.divider
-GTLP = GTluaScript.toggle_loop
-GTTG = GTluaScript.toggle
-GTH = GTluaScript.hyperlink
-gtlog = util.log
-new = {}
-Ini = {}
-GT_version = '3.20'
+translations = {} Lang = {} Lang.Version = "" Template = false
+translations.lang = {} translations.current_translations = {} translations.missing_translations = {}
+friends_in_this_session = {} modders_in_this_session = {} wait = util.yield joaat = util.joaat
+GTluaScript = menu GT = GTluaScript.list GTAC = GTluaScript.action GTD = GTluaScript.divider 
+GTLP = GTluaScript.toggle_loop GTTG = GTluaScript.toggle GTH = GTluaScript.hyperlink GTS = menu.textslider gtlog = util.log
+new = {} Ini = {}
+--
+GT_version = '4.07'
 translations = {}
 setmetatable(translations, {
     __index = function (self, key)
@@ -41,7 +26,7 @@ setmetatable(translations, {
     end
 })
 function updatelogs()
-    notification("更新了世界选项>火车选项\n世界选项>世界玩乐>劈海\n载具选项>载具玩乐>陆地火车\n载具选项>载具玩乐>陆地飞机\n载具选项>载具玩乐>陆地船只\n自我选项>新型娱乐>XX原形\n玩家选项>虚假无敌\n崩溃选项>推荐选项>ID1\n崩溃选项>推荐选项>ID2\n崩溃选项>推荐选项>ID3\n恶搞选项>近期更新>传送位置故障\n恶搞选项>近期更新>打破玩家物理平衡\n恶搞选项>近期更新>视觉XX\n恶搞选项>近期更新>隐形爬楼梯\n错误改进和皇榜添加")
+    notification("GTLua已经适配Stand 114，并添加了新的功能！\n更新了聊天记录显示功能并放置在聊天选项中\n修复了当点击重启脚本时通知名称缀出现重叠\n载具选项>载具玩乐>载具快速充能\n载具选项>载具玩乐>载具无限充能加速\n载具选项>载具玩乐>载具冲击波\n载具选项>载具玩乐>车载武器快速射击\n玩家选项>复活归位(复活在最后的位置)\n自我选项>自我娱乐>新型娱乐>蓄意轰拳\n自我选项>自我娱乐>新型娱乐>移动的棺材\n聊天选项>控制台选项(开启/位置/颜色)\n旧版控制台功能已被移除\n自瞄选项现在归类为武器选项\n错误修复和皇榜添加")
 end
 --
 hasShownToast = false
@@ -52,8 +37,8 @@ currentMonth = tonumber(os.date("%m"))
 currentDay = tonumber(os.date("%d"))
 
 notifyYear = 2024
-notifyMonth = 3
-notifyDay = 20
+notifyMonth = 4
+notifyDay = 7
 
 _G.daysSince = _G.daysSince or 0
 
@@ -65,14 +50,14 @@ util.create_tick_handler(function ()
     if daysSince >= 33 and not hasShownToast then
         gtoast("无法使用此版本，因为过于老旧\n请更新脚本，下载群号已复制")
         hasShownToast = true
-        util.copy_to_clipboard("651502721", false)
+        util.copy_to_clipboard("933822463", false)
         return
         util.stop_script()
     end
 
     if daysSince >= 30 and not hasShownToast then
         gtoast("当前版本 "..GT_version.." 过于老旧，不受支持\n请更新到最新版本,下载群号已复制\n你有三天的更新时间，否则将无法使用该版本")
-        util.copy_to_clipboard("651502721", false)
+        util.copy_to_clipboard("933822463", false)
         outdatanow = true
         hasShownToast = true
         days30 = true
@@ -104,7 +89,7 @@ bbtct = "[点击此处加入官方群聊中进行询问]\n\n*加载脚本显示(
 grouplink = "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=s_TXl5bUz7qNHUDHJV9p4gcAsBwqNnmq&authKey=%2FlvMHJriXIPU%2FzftUdGe3nd7JTF9JdwgJ6lfS61V1NzlZRriXxxY9vx14BsgKwJV&noverify=0&group_code=716431566"
 
 function toFloat(num)
-return (num / 10) * 10
+    return (num / 10) * 10
 end
 --
 function SETUP_SINGLE_LINE(scaleform)
@@ -188,7 +173,15 @@ if SCRIPT_MANUAL_START then
         return true
     end)
 end
-
+function set_text(t, x, y, r, g, b, v)
+    HUD.SET_TEXT_SCALE(1,v)
+    HUD.SET_TEXT_FONT(0)
+    HUD.SET_TEXT_COLOUR(r, g, b, 255)
+    HUD.SET_TEXT_CENTRE(false)
+    HUD.SET_TEXT_OUTLINE(true)
+    util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT(t)
+    HUD.END_TEXT_COMMAND_DISPLAY_TEXT(x, y)
+end
 function do_label_preset(label, text)
     -- log("Setting up label present for label " .. label .. " with text " .. text)
     menu.trigger_commands("addlabel " .. label)
@@ -230,7 +223,7 @@ end
 function RGBNeonKit(pedm)
     local vmod = PED.GET_VEHICLE_PED_IS_IN(pedm, false)
     for i = 0, 3 do
-        C_C_VEHICLE.SET_VEHICLE_NEON_ENABLED(vmod, i, true)
+        VEHICLE.SET_VEHICLE_NEON_ENABLED(vmod, i, true)
     end
 end
 local rgb = {
@@ -243,9 +236,9 @@ function zjbs()
         local red = (math.random(0, 255))
         local green = (math.random(0, 255))
         local blue = (math.random(0, 255))
-        C_C_VEHICLE.SET_VEHICLE_NEON_COLOUR(vmod, red, green, blue)
-        C_C_VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vmod, red, green, blue)
-        C_C_VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vmod, red, green, blue)
         wait(rgb.cus)
     end
 end
@@ -257,1095 +250,15 @@ function qzd()
         local vmod = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), true)
         RGBNeonKit(players.user_ped())
         local rcolor = math.random(1, 12)
-        C_C_VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
-        C_C_VEHICLE.SET_VEHICLE_NEON_INDEX_COLOUR(vmod, color[rcolor][1])
-        C_C_VEHICLE.SET_VEHICLE_COLOURS(vmod, color[rcolor][1], color[rcolor][1])
-        C_C_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vmod, 0, color[rcolor][1])
-        C_C_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vmod, color[rcolor][1])
-        C_C_VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vmod, color[rcolor][2])
+        VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
+        VEHICLE.SET_VEHICLE_NEON_INDEX_COLOUR(vmod, color[rcolor][1])
+        VEHICLE.SET_VEHICLE_COLOURS(vmod, color[rcolor][1], color[rcolor][1])
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vmod, 0, color[rcolor][1])
+        VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vmod, color[rcolor][1])
+        VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vmod, color[rcolor][2])
         wait(srgb.cus)
     end
 end
-
-colors = {
-    green = 184,
-    red = 6,
-    yellow = 190,
-    black = 2,
-    white = 1,
-    gray = 3,
-    pink = 201,
-    purple = 49,
-    blue = 11
-}
-
-ladder_objects = {}
-pause = 0
-do1 = 16
-re = 17
-mi = 18
-fa = 19
-sol = 20
-la = 21
-ti = 22
-do2 = 23
-
-C1 = 16
-D1 = 17
-E1 = 18
-F1 = 19
-G1 = 20
-A1 = 21
-B1 = 22
-C2 = 23
-
-whole = 1
-half = 2
-quarter = 4
-eighth = 8
-sixteenth = 16
-
-MOD_HORN = 14
-
-horn_on = false
-
-dicdd = {"ANIM_GROUP_MOVE_BALLISTIC", "ANIM_GROUP_MOVE_LEMAR_ALLEY", "clipset@move@trash_fast_turn",
-         "FEMALE_FAST_RUNNER", "missfbi4prepp1_garbageman", "move_characters@franklin@fire",
-         "move_characters@Jimmy@slow@", "move_characters@michael@fire", "move_f@flee@a", "move_f@scared",
-         "move_f@sexy@a", "move_heist_lester", "move_injured_generic", "move_lester_CaneUp", "move_m@bag",
-         "MOVE_M@BAIL_BOND_NOT_TAZERED", "MOVE_M@BAIL_BOND_TAZERED", "move_m@brave", "move_m@casual@d",
-         "move_m@drunk@moderatedrunk", "MOVE_M@DRUNK@MODERATEDRUNK", "MOVE_M@DRUNK@MODERATEDRUNK_HEAD_UP",
-         "MOVE_M@DRUNK@SLIGHTLYDRUNK", "MOVE_M@DRUNK@VERYDRUNK", "move_m@fire", "move_m@gangster@var_e",
-         "move_m@gangster@var_f", "move_m@gangster@var_i", "move_m@JOG@", "MOVE_M@PRISON_GAURD", "MOVE_P_M_ONE",
-         "MOVE_P_M_ONE_BRIEFCASE", "move_p_m_zero_janitor", "move_p_m_zero_slow", "move_ped_bucket",
-         "move_ped_crouched", "move_ped_mop", "MOVE_M@FEMME@", "MOVE_F@FEMME@", "MOVE_M@GANGSTER@NG",
-         "MOVE_F@GANGSTER@NG", "MOVE_M@POSH@", "MOVE_F@POSH@", "MOVE_M@TOUGH_GUY@", "MOVE_F@TOUGH_GUY@"}
-
-
-songs = {{
-    name = "一闪一闪亮晶晶",
-    bpm = 90,
-    notes = {pause, do1, do1, sol, sol, la, la, {
-        pitch = sol,
-        length = half
-    }, pause, fa, fa, mi, mi, re, re, {
-        pitch = do1,
-        length = half
-    }, pause, sol, sol, fa, fa, mi, mi, {
-        pitch = re,
-        length = half
-    }, pause, sol, sol, fa, fa, mi, mi, {
-        pitch = re,
-        length = half
-    }, pause, do1, do1, sol, sol, la, la, {
-        pitch = sol,
-        length = half
-    }, pause, fa, fa, mi, mi, re, re, {
-        pitch = do1,
-        length = half
-    }, pause}
-}, {
-    name = "在月光下",
-    bpm = 60,
-    notes = {fa, fa, fa, sol, {
-        pitch = la,
-        length = half
-    }, {
-        pitch = sol,
-        length = half
-    }, fa, la, sol, sol, {
-        pitch = fa,
-        length = whole
-    }, fa, fa, fa, sol, {
-        pitch = la,
-        length = half
-    }, {
-        pitch = sol,
-        length = half
-    }, fa, la, sol, sol, {
-        pitch = fa,
-        length = whole
-    }}
-}, {
-    name = "热热的十字面包",
-    bpm = 60,
-    notes = {{
-        pitch = mi,
-        length = half
-    }, {
-        pitch = re,
-        length = half
-    }, {
-        pitch = do1,
-        length = half
-    }, {
-        pitch = pause,
-        length = half
-    }, {
-        pitch = mi,
-        length = half
-    }, {
-        pitch = re,
-        length = half
-    }, {
-        pitch = do1,
-        length = half
-    }, {
-        pitch = pause,
-        length = half
-    }, do1, do1, do1, do1, re, re, re, re, {
-        pitch = mi,
-        length = half
-    }, {
-        pitch = re,
-        length = half
-    }, {
-        pitch = do1,
-        length = half
-    }, {
-        pitch = pause,
-        length = half
-    }}
-}}
-
-snowmens = {
-    { -955.5352, -782.4186, 15.925326 },
-    { -819.9067, 165.35524, 71.26295 },
-    { -247.92003, -1561.2175, 32.22973 },
-    { 901.3996, -288.05026, 65.643715 },
-    { 1275.6772, -642.3789, 68.208786 },
-    { 1993.1008, 3829.6396, 32.167336 },
-    { -375.47916, 6230.158, 31.490055 },
-    { -1414.4647, 5094.9272, 60.674263 },
-    { -1946.0231, 594.93756, 119.79223 },
-    { -1100.889, -1401.0138, 5.215467 },
-    { -780.418, 877.2859, 203.18001 },
-    { -455.12027, 1130.5625, 325.89175 },
-    { 221.46722, -107.01075, 69.763985 },
-    { 1560.3787, 6447.053, 23.9866 },
-    { 3301.7886, 5149.8853, 18.34274 },
-    { 1703.0568, 4671.928, 43.15301 },
-    { 224.9161, 3107.3345, 42.18394 },
-    { 2360.0037, 2522.7166, 46.66731 },
-    { 1510.8555, 1725.0353, 109.89355 },
-    { -48.96374, 1964.4028, 189.87181 },
-    { -1516.2083, 2140.2168, 56.11924 },
-    { -2826.2356, 1424.6211, 100.706116 },
-    { -2957.531, 723.6389, 28.792404 },
-    { 1341.4302, -1583.5093, 54.135414 },
-    { 178.00232, -895.9712, 30.69326 }
-}
-config = {
-    debug_mode = false,
-    test_mode = false,
-    delay_between_button_press = 500,
-    delay_sitting_at_slot_machine = 5000,
-    delay_between_spins = 3000,
-    delay_after_entering_casino = 4000,
-    default_spin_delay_time = 1000,
-    max_daily_winnings = 45000000,
-    millis_in_day = 86400000
-}
-state = {}
-menus = {}
-commands = {
-    rigslotmachines = menu.ref_by_path("Online>Quick Progress>Casino>Slot Machines Outcome")
-}
-
-slot_machine_positions = {{
-    seated = {
-        x = 1102.2573,
-        y = 232.43211,
-        z = -50.0909
-    },
-    standing = {
-        x = 1102.6787,
-        y = 232.73073,
-        z = -49.84076,
-        h = 90
-    }
-}, {
-    seated = {
-        x = 1112.4808,
-        y = 234.83745,
-        z = -50.0909
-    },
-    standing = {
-        x = 1112.0146,
-        y = 235.13573,
-        z = -49.84075,
-        h = -90
-    }
-}, {
-    seated = {
-        x = 1110.1028,
-        y = 235.05864,
-        z = -50.0909
-    },
-    standing = {
-        x = 1110.5834,
-        y = 235.30466,
-        z = -49.840767,
-        h = 90
-    }
-}, {
-    seated = {
-        x = 1111.9581,
-        y = 237.83565,
-        z = -50.0909
-    },
-    standing = {
-        x = 1112.1866,
-        y = 237.27339,
-        z = -49.840763,
-        h = 0
-    }
-}, {
-    seated = {
-        x = 1113.66,
-        y = 238.81334,
-        z = -50.0909
-    },
-    standing = {
-        x = 1113.8134,
-        y = 238.09317,
-        z = -49.840786,
-        h = 0
-    }
-}, {
-    seated = {
-        x = 1139.4238,
-        y = 250.89787,
-        z = -51.2909
-    },
-    standing = {
-        x = 1139.8647,
-        y = 250.2418,
-        z = -51.035732,
-        h = 70
-    }
-}, {
-    seated = {
-        x = 1130.6184,
-        y = 251.2604,
-        z = -51.2909
-    },
-    standing = {
-        x = 1130.7328,
-        y = 251.68321,
-        z = -51.035774,
-        h = 180
-    }
-}, {
-    seated = {
-        x = 1137.2375,
-        y = 253.092,
-        z = -51.2909
-    },
-    standing = {
-        x = 1137.3026,
-        y = 253.69514,
-        z = -51.03577,
-        h = 180
-    }
-}, {
-    seated = {
-        x = 1103.4133,
-        y = 230.6071,
-        z = -50.0909
-    },
-    standing = {
-        x = 1102.95,
-        y = 230.27,
-        z = -49.84,
-        h = -90
-    }
-}, {
-    seated = {
-        x = 1118.7598,
-        y = 230.03072,
-        z = -50.0909
-    },
-    standing = {
-        x = 1119.2648,
-        y = 230.20291,
-        z = -49.840748,
-        h = 100
-    }
-}}
-
-selectedobject = 1268884662
-all_objects = {-1268884662, -1268884662, 4121513285, 1085274000, 1729911864, 2166988379, 3702106121, 1398809829,
-               1043035044, 3639322914, 464329140, 4046278932, 3785611910, 388197031, 2977746558, 659187150, 420170064,
-               2436749075, 1193854962, 476379176, 630616933, 3945660640, 1565925668, 175309727, 3196461136, 3251728163,
-               176008245, 2112015640, 993120320, 865627822, 266130508, 3762892718, 3854180205, 2804199464, 523317885,
-               1327834842, 1321190118, 29828513, -1026778664, 310817095, 4130089803, 148511758, 3087007557, 2969831089,
-               3533371316, 2024855755, 2450168807, 297107423, 2017086435, 3553022755, 4046278932, 3639322914,
-               3231494328, 3271283456, 386059801, 202070568, 1971657777, 2005313754, 3859048180, 866394777, 740404217,
-               2409855828, 286298615, 795984016, 2374537677, 3161612443, 1165195353, 2450522579, 4260070095, 974883178,
-               3965551402, 3854180205, 3696781377, 4124467285, 2684801972, 3449848423, 118627012, 1565925668,
-               1924419321, 2201918560, 3762892718, 266130508, 1193854962, 630616933, 476379176, 2436749075, 2154892897,
-               1369811908, 2420804668, 1948561556, 356462018, 462203053, 3552768664, 2057223314, 3290378943, 168901740,
-               303280717, 725259233, 2064599526, 4204303756, 3185604174, 1046958884, 81317377, 2539784170, 795367207,
-               2684668286, 827574655, 617299305, 3999634798}
-
-
-attachments_table = {
-    ---------------------PISTOLS--------------------------------------
-    ["0xFED0FD71"] = "Default Clip", --Default Clip
-    ["0xED265A1C"] = "Extended Clip", --Extended Clip
-    ["0x359B7AAE"] = "Flashlight", --Flashlight
-    ["0x65EA7EBB"] = "Suppressor", --Suppressor
-    ["0xD7391086"] = "Yusuf Amir Luxury Finish", --Yusuf Amir Luxury Finish
-    ["0x721B079"] = "Default Clip", --Default Clip
-    ["0xD67B4F2D"] = "Extended Clip", --Extended Clip
-    ["0xC304849A"] = "Suppressor", --Suppressor
-    ["0xC6654D72"] = "Yusuf Amir Luxury Finish", --Yusuf Amir Luxury Finish
-    ["0x31C4B22A"] = "Default Clip", --Default Clip
-    ["0x249A17D5"] = "Extended Clip", --Extended Clip
-    ["0x9B76C72C"] = "Gilded Gun Metal Finish", --Gilded Gun Metal Finish
-    ["0x2297BE19"] = "Default Clip", --Default Clip
-    ["0xD9D3AC92"] = "Extended Clip", --Extended Clip
-    ["0xA73D4664"] = "Suppressor", --Suppressor
-    ["0x77B8AB2F"] = "Platinum Pearl Deluxe Finish", --Platinum Pearl Deluxe Finish
-    ["0x16EE3040"] = "VIP Variant", --VIP Variant
-    ["0x9493B80D"] = "Bodyguard Variant", --Bodyguard Variant
-    ["0xE9867CE3"] = "Default Clip", --Default Clip
-    ["0xF8802ED9"] = "Default Clip", --Default Clip
-    ["0x7B0033B3"] = "Extended Clip", --Extended Clip
-    ["0x8033ECAF"] = "Etched Wood Grip Finish", --Etched Wood Grip Finish
-    ["0xD4A969A"] = "Default Clip", --Default Clip
-    ["0x64F9C62B"] = "Extended Clip", --Extended Clip
-    ["0x7A6A7B7B"] = "Etched Wood Grip Finish", --Etched Wood Grip Finish
-    ["0xBA23D8BE"] = "Default Rounds", --Default Rounds
-    ["0xC6D8E476"] = "Tracer Rounds", --Tracer Rounds
-    ["0xEFBF25"] = "Incendiary Rounds", --Incendiary Rounds
-    ["0x10F42E8F"] = "Hollow Point Rounds", --Hollow Point Rounds
-    ["0xDC8BA3F"] = "Full Metal Jacket Rounds", --Full Metal Jacket Rounds
-    ["0x420FD713"] = "Holographic Sight", --Holographic Sight
-    ["0x49B2945"] = "Small Scope", --Small Scope
-    ["0x27077CCB"] = "Compensator", --Compensator
-    ["0xC03FED9F"] = "Digital Camo", --Digital Camo
-    ["0xB5DE24"] = "Brushstroke Camo", --Brushstroke Camo
-    ["0xA7FF1B8"] = "Woodland Camo", --Woodland Camo
-    ["0xF2E24289"] = "Skull", --Skull
-    ["0x11317F27"] = "Sessanta Nove", --Sessanta Nove
-    ["0x17C30C42"] = "Perseus", --Perseus
-    ["0x257927AE"] = "Leopard", --Leopard
-    ["0x37304B1C"] = "Zebra", --Zebra
-    ["0x48DAEE71"] = "Geometric", --Geometric
-    ["0x20ED9B5B"] = "Boom!", --Boom!
-    ["0xD951E867"] = "Patriotic", --Patriotic
-    ["0x1466CE6"] = "Default Clip", --Default Clip
-    ["0xCE8C0772"] = "Extended Clip", --Extended Clip
-    ["0x902DA26E"] = "Tracer Rounds", --Tracer Rounds
-    ["0xE6AD5F79"] = "Incendiary Rounds", --Incendiary Rounds
-    ["0x8D107402"] = "Hollow Point Rounds", --Hollow Point Rounds
-    ["0xC111EB26"] = "Full Metal Jacket Rounds", --Full Metal Jacket Rounds
-    ["0x4A4965F3"] = "Flashlight", --Flashlight
-    ["0x47DE9258"] = "Mounted Scope", --Mounted Scope
-    ["0xAA8283BF"] = "Compensator", --Compensator
-    ["0xF7BEEDD"] = "Digital Camo", --Digital Camo
-    ["0x8A612EF6"] = "Brushstroke Camo", --Brushstroke Camo
-    ["0x76FA8829"] = "Woodland Camo", --Woodland Camo
-    ["0xA93C6CAC"] = "Skull", --Skull
-    ["0x9C905354"] = "Sessanta Nove", --Sessanta Nove
-    ["0x4DFA3621"] = "Perseus", --Perseus
-    ["0x42E91FFF"] = "Leopard", --Leopard
-    ["0x54A8437D"] = "Zebra", --Zebra
-    ["0x68C2746"] = "Geometric", --Geometric
-    ["0x2366E467"] = "Boom!", --Boom!
-    ["0x441882E6"] = "Boom!", --Boom!
-    ["0xE7EE68EA"] = "Digital Camo", --Digital Camo
-    ["0x29366D21"] = "Brushstroke Camo", --Brushstroke Camo
-    ["0x3ADE514B"] = "Woodland Camo", --Woodland Camo
-    ["0xE64513E9"] = "Skull", --Skull
-    ["0xCD7AEB9A"] = "Sessanta Nove", --Sessanta Nove
-    ["0xFA7B27A6"] = "Perseus", --Perseus
-    ["0xE285CA9A"] = "Leopard", --Leopard
-    ["0x2B904B19"] = "Zebra", --Zebra
-    ["0x22C24F9C"] = "Geometric", --Geometric
-    ["0x8D0D5ECD"] = "Boom!", --Boom!
-    ["0x1F07150A"] = "Patriotic", --Patriotic
-    ["0x94F42D62"] = "Default Clip", --Default Clip
-    ["0x5ED6C128"] = "Extended Clip", --Extended Clip
-    ["0x25CAAEAF"] = "Tracer Rounds", --Tracer Rounds
-    ["0x2BBD7A3A"] = "Incendiary Rounds", --Incendiary Rounds
-    ["0x85FEA109"] = "Hollow Point Rounds", --Hollow Point Rounds
-    ["0x4F37DF2A"] = "Full Metal Jacket Rounds", --Full Metal Jacket Rounds
-    ["0x8ED4BB70"] = "Mounted Scope", --Mounted Scope
-    ["0x43FD595B"] = "Flashlight", --Flashlight
-    ["0x21E34793"] = "Compensator", --Compensator
-    ["0x5C6C749C"] = "Digital Camo", --Digital Camo
-    ["0x15F7A390"] = "Brushstroke Camo", --Brushstroke Camo
-    ["0x968E24DB"] = "Woodland Camo", --Woodland Camo
-    ["0x17BFA99"] = "Skull", --Skull
-    ["0xF2685C72"] = "Sessanta Nove", --Sessanta Nove
-    ["0xDD2231E6"] = "0xDD2231E6", --Perseus
-    ["0xBB43EE76"] = "Leopard", --Leopard
-    ["0x4D901310"] = "Zebra", --Zebra
-    ["0x5F31B653"] = "Geometric", --Geometric
-    ["0x697E19A0"] = "Boom!", --Boom!
-    ["0x930CB951"] = "Patriotic", --Patriotic
-    ["0xB4FC92B0"] = "Digital Camo", --Digital Camo
-    ["0x1A1F1260"] = "Digital Camo", --Digital Camo
-    ["0xE4E00B70"] = "Digital Camo",
-    ["0x2C298B2B"] = "Digital Camo",
-    ["0xDFB79725"] = "Digital Camo",
-    ["0x6BD7228C"] = "Digital Camo",
-    ["0x9DDBCF8C"] = "Digital Camo",
-    ["0xB319A52C"] = "Digital Camo",
-    ["0xC6836E12"] = "Digital Camo",
-    ["0x43B1B173"] = "Digital Camo",
-    ["0x4ABDA3FA"] = "Patriotic", --Patriotic
-    ["0x45A3B6BB"] = "Default Clip", --Default Clip
-    ["0x33BA12E8"] = "Extended Clip", --Extended Clip
-    ["0xD7DBF707"] = "Festive tint", --Festive tint
-    ["0x54D41361"] = "Default Clip", --Default Clip
-    ["0x81786CA9"] = "Extended Clip", --Extended Clip
-    ["0x9307D6FA"] = "Suppressor", --Suppressor
-    ----------------SUBMACHINE-GUNS------------------------
-    ["0xCB48AEF0"] = "Default Clip",
-    ["0x10E6BA2B"] = "Extended Clip",
-    ["0x359B7AAE"] = "Flashlight",
-    ["0x9D2FBF29"] = "Scope",
-    ["0x487AAE09"] = "Yusuf Amir Luxury Finish",
-    ["0x26574997"] = "Default Clip",
-    ["0x350966FB"] = "Extended Clip",
-    ["0x79C77076"] = "Drum Magazine",
-    ["0x7BC4CDDC"] = "Flashlight",
-    ["0x3CC6BA57"] = "Scope",
-    ["0x27872C90"] = "Yusuf Amir Luxury Finish",
-    ["0x8D1307B0"] = "Default Clip",
-    ["0xBB46E417"] = "Extended Clip",
-    ["0x278C78AF"] = "Yusuf Amir Luxury Finish",
-    ["0x84C8B2D3"] = "Default Clip",
-    ["0x937ED0B7"] = "Extended Clip",
-    ["0x4C24806E"] = "Default Clip",
-    ["0xB9835B2E"] = "Extended Clip",
-    ["0x7FEA36EC"] = "Tracer Rounds",
-    ["0xD99222E5"] = "Incendiary Rounds",
-    ["0x3A1BD6FA"] = "Hollow Point Rounds",
-    ["0xB5A715F"] = "Full Metal Jacket Rounds",
-    ["0x9FDB5652"] = "Holographic Sight",
-    ["0xE502AB6B"] = "Small Scope",
-    ["0x3DECC7DA"] = "Medium Scope",
-    ["0xB99402D4"] = "Flat Muzzle Brake",
-    ["0xC867A07B"] = "Tactical Muzzle Brake",
-    ["0xDE11CBCF"] = "Fat-End Muzzle Brake",
-    ["0xEC9068CC"] = "Precision Muzzle Brake",
-    ["0x2E7957A"] = "Heavy Duty Muzzle Brake",
-    ["0x347EF8AC"] = "Slanted Muzzle Brake",
-    ["0x4DB62ABE"] = "Split-End Muzzle Brake",
-    ["0xD9103EE1"] = "Default Barrel",
-    ["0xA564D78B"] = "Heavy Barrel",
-    ["0xC4979067"] = "Digital Camo",
-    ["0x3815A945"] = "Brushstroke Camo",
-    ["0x4B4B4FB0"] = "Woodland Camo",
-    ["0xEC729200"] = "Skull",
-    ["0x48F64B22"] = "Sessanta Nove",
-    ["0x35992468"] = "Perseus",
-    ["0x24B782A5"] = "Leopard",
-    ["0xA2E67F01"] = "Zebra",
-    ["0x2218FD68"] = "Geometric",
-    ["0x45C5C3C5"] = "Boom!",
-    ["0x399D558F"] = "Patriotic",
-    ["0x476E85FF"] = "Default Clip",
-    ["0xB92C6979"] = "Extended Clip",
-    ["0xA9E9CAF4"] = "Drum Magazine",
-    ["0x4317F19E"] = "Default Clip",
-    ["0x334A5203"] = "Extended Clip",
-    ["0x6EB8C8DB"] = "Drum Magazine",
-    ["0xC164F53"] = "Grip",
-    ["0xAA2C45B4"] = "Scope",
-    ------------Shotguns-------------
-    ["0xE608B35E"] = "Suppressor",
-    ["0xA2D79DDB"] = "Yusuf Amir Luxury Finish",
-    ["0x85A64DF9"] = "Gilded Gun Metal Finish",
-    ["0x94E81BC7"] = "Default Clip",
-    ["0x86BD7F72"] = "Extended Clip",
-    ["0x837445AA"] = "Suppressor",
-    ["0xCD940141"] = "Default Shells",
-    ["0x9F8A1BF5"] = "Dragon's Breath Shells",
-    ["0x4E65B425"] = "Steel Buckshot Shells",
-    ["0xE9582927"] = "Flechette Shells",
-    ["0x3BE4465D"] = "Explosive Slugs",
-    ["0x3F3C8181"] = "Medium Scope",
-    ["0xAC42DF71"] = "Suppressor",
-    ["0x5F7DCE4D"] = "Squared Muzzle Brake	",
-    ["0xE3BD9E44"] = "Digital Camo",
-    ["0x17148F9B"] = "Brushstroke Camo",
-    ["0x24D22B16"] = "Woodland Camo",
-    ["0xF2BEC6F0"] = "Skull",
-    ["0x85627D"] = "Sessanta Nove",
-    ["0xDC2919C5"] = "Perseus",
-    ["0xE184247B"] = "Leopard",
-    ["0xD8EF9356"] = "Zebra",
-    ["0xEF29BFCA"] = "Geometric",
-    ["0x67AEB165"] = "Boom!",
-    ["0x46411A1D"] = "Patriotic",
-    ["0x324F2D5F"] = "Default Clip",
-    ["0x971CF6FD"] = "Extended Clip",
-    ["0x88C7DA53"] = "Drum Magazine",
-    ---------Rifles-------------------------------
-    ["0xBE5EEA16"] = "Default Clip",
-    ["0xB1214F9B"] = "Extended Clip",
-    ["0xDBF0A53D"] = "Drum Magazine",
-    ["0x4EAD7533"] = "Yusuf Amir Luxury Finish",
-    ["0x9FBE33EC"] = "Default Clip",
-    ["0x91109691"] = "Extended Clip",
-    ["0xBA62E935"] = "Box Magazine",
-    ["0xA0D89C42"] = "Scope",
-    ["0xD89B9658"] = "Yusuf Amir Luxury Finish",
-    ["0xFA8FA10F"] = "Default Clip",
-    ["0x8EC1C979"] = "Extended Clip",
-    ["0x377CD377"] = "Gilded Gun Metal Finish",
-    ["0xC6C7E581"] = "Default Clip",
-    ["0x7C8BD10E"] = "Extended Clip",
-    ["0x6B59AEAA"] = "Drum Magazine",
-    ["0x730154F2"] = "Etched Gun Metal Finish",
-    ["0xC5A12F80"] = "Default Clip",
-    ["0xB3688B0F"] = "Extended Clip",
-    ["0xA857BC78"] = "Gilded Gun Metal Finish",
-    ["0x18929DA"] = "Default Clip",
-    ["0xEFB00628"] = "Extended Clip",
-    ["0x822060A9"] = "Tracer Rounds",
-    ["0xA99CF95A"] = "Incendiary Rounds",
-    ["0xFAA7F5ED"] = "Armor Piercing Rounds",
-    ["0x43621710"] = "Full Metal Jacket Rounds",
-    ["0xC7ADD105"] = "Small Scope",
-    ["0x659AC11B"] = "Default Barrel",
-    ["0x3BF26DC7"] = "Heavy Barrel",
-    ["0x9D65907A"] = "Grip",
-    ["0xAE4055B7"] = "Digital Camo",
-    ["0xB905ED6B"] = "Brushstroke Camo",
-    ["0xA6C448E8"] = "Woodland Camo",
-    ["0x9486246C"] = "Skull",
-    ["0x8A390FD2"] = "Sessanta Nove",
-    ["0x2337FC5"] = "Perseus",
-    ["0xEFFFDB5E"] = "Leopard",
-    ["0xDDBDB6DA"] = "Zebra",
-    ["0xCB631225"] = "Geometric",
-    ["0xA87D541E"] = "Boom!",
-    ["0xC5E9AE52"] = "Patriotic",
-    ["0x16C69281"] = "Default Clip",
-    ["0xDE1FA12C"] = "Extended Clip",
-    ["0x8765C68A"] = "Tracer Rounds",
-    ["0xDE011286"] = "Incendiary Rounds",
-    ["0x51351635"] = "Armor Piercing Rounds",
-    ["0x503DEA90"] = "Full Metal Jacket Rounds",
-    ["0xC66B6542"] = "Large Scope",
-    ["0xE73653A9"] = "Default Barrel",
-    ["0xF97F783B"] = "Heavy Barrel",
-    ["0xD40BB53B"] = "Digital Camo",
-    ["0x431B238B"] = "Brushstroke Camo",
-    ["0x34CF86F4"] = "Woodland Camo",
-    ["0xB4C306DD"] = "Skull",
-    ["0xEE677A25"] = "Sessanta Nove",
-    ["0xDF90DC78"] = "Perseus",
-    ["0xA4C31EE"] = "Leopard",
-    ["0x89CFB0F7"] = "Zebra",
-    ["0x7B82145C"] = "Geometric",
-    ["0x899CAF75"] = "Boom!",
-    ["0x5218C819"] = "Patriotic",
-    ["0x8610343F"] = "Default Clip",
-    ["0xD12ACA6F"] = "Extended Clip",
-    ["0xEF2C78C1"] = "Tracer Rounds",
-    ["0xFB70D853"] = "Incendiary Rounds",
-    ["0xA7DD1E58"] = "Armor Piercing Rounds",
-    ["0x63E0A098"] = "Full Metal Jacket Rounds",
-    ["0x43A49D26"] = "Default Barrel",
-    ["0x5646C26A"] = "Heavy Barrel",
-    ["0x911B24AF"] = "Digital Camo",
-    ["0x37E5444B"] = "Brushstroke Camo",
-    ["0x538B7B97"] = "Woodland Camo",
-    ["0x25789F72"] = "Skull",
-    ["0xC5495F2D"] = "Sessanta Nove",
-    ["0xCF8B73B1"] = "Perseus",
-    ["0xA9BB2811"] = "Leopard",
-    ["0xFC674D54"] = "Zebra",
-    ["0x7C7FCD9B"] = "Geometric",
-    ["0xA5C38392"] = "Boom!",
-    ["0xB9B15DB0"] = "Patriotic",
-    ["0x4C7A391E"] = "Default Clip",
-    ["0x5DD5DBD5"] = "Extended Clip",
-    ["0x1757F566"] = "Tracer Rounds",
-    ["0x3D25C2A7"] = "Incendiary Rounds",
-    ["0x255D5D57"] = "Armor Piercing Rounds",
-    ["0x44032F11"] = "Full Metal Jacket Rounds",
-    ["0x833637FF"] = "Default Barrel",
-    ["0x8B3C480B"] = "Heavy Barrel",
-    ["0x4BDD6F16"] = "Digital Camo",
-    ["0x406A7908"] = "Brushstroke Camo",
-    ["0x2F3856A4"] = "Woodland Camo",
-    ["0xE50C424D"] = "Skull",
-    ["0xD37D1F2F"] = "Sessanta Nove	",
-    ["0x86268483"] = "Perseus",
-    ["0xF420E076"] = "Leopard",
-    ["0xAAE14DF8"] = "Zebra",
-    ["0x9893A95D"] = "Geometric",
-    ["0x6B13CD3E"] = "Boom!",
-    ["0xDA55CD3F"] = "Patriotic",
-    ["0x513F0A63"] = "Default Clip",
-    ["0x59FF9BF8"] = "Extended Clip",
-    ["0xC607740E"] = "Drum Magazine",
-    ["0x2D46D83B"] = "Default Clip",
-    ["0x684ACE42"] = "Extended Clip",
-    ["0x6B82F395"] = "Iron Sights",
-    -------------Machine-Guns-----------
-    ["0xF434EF84"] = "Default Clip",
-    ["0x82158B47"] = "Extended Clip",
-    ["0x3C00AFED"] = "Scope",
-    ["0xD6DABABE"] = "Yusuf Amir Luxury Finish",
-    ["0xE1FFB34A"] = "Default Clip",
-    ["0xD6C59CD6"] = "Extended Clip",
-    ["0x92FECCDD"] = "Etched Gun Metal Finish",
-    ["0x492B257C"] = "Default Clip",
-    ["0x17DF42E9"] = "Extended Clip",
-    ["0xF6649745"] = "Tracer Rounds",
-    ["0xC326BDBA"] = "Incendiary Rounds",
-    ["0x29882423"] = "Armor Piercing Rounds",
-    ["0x57EF1CC8"] = "Full Metal Jacket Rounds",
-    ["0xC34EF234"] = "Default Barrel",
-    ["0xB5E2575B"] = "Heavy Barrel",
-    ["0x4A768CB5"] = "Digital Camo",
-    ["0xCCE06BBD"] = "Brushstroke Camo",
-    ["0xBE94CF26"] = "Woodland Camo",
-    ["0x7609BE11"] = "Skull",
-    ["0x48AF6351"] = "Sessanta Nove",
-    ["0x9186750A"] = "Perseus",
-    ["0x84555AA8"] = "Leopard",
-    ["0x1B4C088B"] = "Zebra",
-    ["0xE046DFC"] = "Geometric",
-    ["0x28B536E"] = "Boom!",
-    ["0xD703C94D"] = "Patriotic",
-    ["0x1CE5A6A5"] = "Default Clip",
-    ["0xEAC8C270"] = "Extended Clip",
-    --------------Sniper---------------
-    ["0x9BC64089"] = "Default Clip",
-    ["0xD2443DDC"] = "Scope",
-    ["0xBC54DA77"] = "Advanced Scope",
-    ["0x4032B5E7"] = "Etched Wood Grip Finish",
-    ["0x476F52F4"] = "Default Clip",
-    ["0x94E12DCE"] = "Default Clip",
-    ["0xE6CFD1AA"] = "Extended Clip",
-    ["0xD77A22D2"] = "Tracer Rounds",
-    ["0x6DD7A86E"] = "Incendiary Rounds",
-    ["0xF46FD079"] = "Armor Piercing Rounds",
-    ["0xE14A9ED3"] = "Full Metal Jacket Rounds",
-    ["0x5B1C713C"] = "Zoom Scope",
-    ["0x381B5D89"] = "Default Barrel",
-    ["0x68373DDC"] = "Heavy Barrel",
-    ["0x9094FBA0"] = "Digital Camo",
-    ["0x7320F4B2"] = "Brushstroke Camo",
-    ["0x60CF500F"] = "Woodland Camo",
-    ["0xFE668B3F"] = "Skull",
-    ["0xF3757559"] = "Sessanta Nove",
-    ["0x193B40E8"] = "Perseus",
-    ["0x107D2F6C"] = "Leopard",
-    ["0xC4E91841"] = "Zebra",
-    ["0x9BB1C5D3"] = "Geometric",
-    ["0x3B61040B"] = "Boom!",
-    ["0xB7A316DA"] = "Boom!",
-    ["0xFA1E1A28"] = "Default Clip",
-    ["0x2CD8FF9D"] = "Extended Clip",
-    ["0xEC0F617"] = "Incendiary Rounds",
-    ["0xF835D6D4"] = "Armor Piercing Rounds",
-    ["0x3BE948F6"] = "Full Metal Jacket Rounds",
-    ["0x89EBDAA7"] = "Explosive Rounds",
-    ["0x82C10383"] = "Zoom Scope",
-    ["0xB68010B0"] = "Night Vision Scope",
-    ["0x2E43DA41"] = "Thermal Scope",
-    ["0x5F7DCE4D"] = "Squared Muzzle Brake",
-    ["0x6927E1A1"] = "Bell-End Muzzle Brake",
-    ["0x909630B7"] = "Default Barrel",
-    ["0x108AB09E"] = "Heavy Barrel",
-    ["0xF8337D02"] = "Digital Camo",
-    ["0xC5BEDD65"] = "Brushstroke Camo",
-    ["0xE9712475"] = "Woodland Camo",
-    ["0x13AA78E7"] = "Skull",
-    ["0x26591E50"] = "Sessanta Nove",
-    ["0x302731EC"] = "Perseus",
-    ["0xAC722A78"] = "Leopard",
-    ["0xBEA4CEDD"] = "Zebra",
-    ["0xCD776C82"] = "Geometric",
-    ["0xABC5ACC7"] = "Boom!",
-    ["0x6C32D2EB"] = "Patriotic",
-    ["0xD83B4141"] = "Default Clip",
-    ["0xCCFD2AC5"] = "Extended Clip",
-    ["0x1C221B1A"] = "Scope",
-    ["0x161E9241"] = "Yusuf Amir Luxury Finish",
-    --------Heavy-Weapons---------
-    ["0x11AE5C97"] = "Default Clip"
-}
-
-object_names = {
-
-"Click Next Object >",
-"Bricks",
-"w_ex_pipebomb",
-"Pizza's",
-"prop_boombox_01",
-"xm3_prop_xm3_boombox_01a",
-"1",
-"2",
-"3",
-"4",
-"5",
-"6",
-"7",
-"8",
-"9",
-"10",
-"11",
-"12",
-"13",
-"14",
-"15",
-"16",
-"17",
-"18",
-"19",
-"20",
-"21",
-"22",
-"23",
-"24",
-"25",
-"26",
-"27",
-"28",
-"29",
-"Dandy's",
-"Keypad's",
-"Brittle Bush",
-"Saplin",
-"Fragment",
-"Gas",
-"Ball",
-"Flagpole",
-"Combat MG",
-"Mag1",
-"Barrel",
-"40mm",
-"Corp Rope",
-"prop_amb_ciggy_01",
-"prop_table_03_chr",
-"prop_parasol_03",
-"prop_traffic_01d",
-"prop_streetlight_01",
-"v_serv_bs_gelx3",
-"prop_table_03",
-"v_serv_bs_foam1",
-"v_ret_ta_paproll2",
-"v_serv_bs_razor",
-"prop_tv_05",
-"v_ret_gc_box2",
-"prop_rub_stool",
-"prop_speaker_05",
-"v_serv_bs_shvbrush",
-"v_serv_bs_shampoo",
-"v_ret_ta_spray",
-"v_serv_bs_cond",
-"v_serv_bs_clutter",
-"v_ilev_bs_door",
-"prop_ld_purse_01",
-"prop_amb_phone",
-"prop_bin_10b",
-"prop_amb_40oz_02",
-"p_amb_coffeecup_01",
-"prop_coffee_mac_02",
-"prop_fire_exting_2a",
-"prop_wall_light_06a",
-"prop_xmas_ext",
-"xm_prop_x17_osphatch_col",
-"reh_prop_reh_sign_jk_01a",
-"reh_prop_reh_bag_para_01a",
-"tr_prop_tr_meet_coll_01",
-"vw_prop_vw_garage_coll_01a",
-"prop_forsale_dyn_01",
-"xm_prop_base_cabinet_door_01",
-"xm_prop_x17dlc_rep_sign_01a",
-"gr_prop_gr_bunkeddoor_col",
-"v_ret_ta_firstaid",
-"prop_aircon_m_01",
-"prop_wall_light_02a",
-"v_ret_gc_calc",
-"prop_micro_04",
-"prop_gumball_02",
-"prop_watercooler",
-"prop_radio_01",
-"prop_game_clock_01",
-"prop_cctv_cam_06a",
-"prop_till_01",
-"prop_chair_02",
-"prop_chair_04a",
-"xs_prop_arena_flipper_large_01a",
-"xs_prop_arena_flipper_small_01a",
-"xs_prop_arena_flipper_xl_01a",
-"xs_prop_arena_flipper_large_01a_sf",
-"xs_prop_arena_flipper_small_01a_sf",
-"xs_prop_arena_flipper_xl_01a_sf",
-"xs_prop_arena_flipper_large_01a_wl",
-"xs_prop_arena_flipper_small_01a_wl",
-"xs_prop_arena_flipper_xl_01a_wl",
-"xs_prop_trophy_flipper_01a"
-}
-
---手机按键
-SoundAnnoy = {
-    { "All", "SHORT_PLAYER_SWITCH_SOUND_SET" },
-    { "TENNIS_POINT_WON", "HUD_AWARDS" },
-    {"Air_Defenses_Disabled", "DLC_sum20_Business_Battle_AC_Sounds"},
-    {"Air_Defences_Activated", "DLC_sum20_Business_Battle_AC_Sounds"},
-    {"TIME_LAPSE_MASTER", "0"},
-    {"Fire", "DLC_BTL_Terrobyte_Turret_Sounds"},
-    {"TIMER", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Timer_10s", "DLC_HALLOWEEN_FVJ_Sounds"},
-    {"TIMER_STOP", "HUD_MINI_GAME_SOUNDSET"},
-    {"5s_To_Event_Start_Countdown", "GTAO_FM_Events_Soundset"},
-    {"10s", "MP_MISSION_COUNTDOWN_SOUNDSET"},
-    {"5s", "MP_MISSION_COUNTDOWN_SOUNDSET"},
-    {"5_Second_Timer", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"5_SEC_WARNING", "HUD_MINI_GAME_SOUNDSET"},
-    {"3_2_1_NON_RACE", "HUD_MINI_GAME_SOUNDSET"},
-    {"3_2_1", "HUD_MINI_GAME_SOUNDSET"},
-    {"Arming_Countdown", "GTAO_Speed_Convoy_Soundset"},
-    {"Bomb_Disarmed", "GTAO_Speed_Convoy_Soundset"},
-    {"Boss_Blipped", "GTAO_Magnate_Hunt_Boss_SoundSet"},
-    {"Boss_Message_Orange", "GTAO_Boss_Goons_FM_Soundset"},
-    {"1st_Person_Transition", "PLAYER_SWITCH_CUSTOM_SOUNDSET"},
-    {"Apt_Style_Purchase", "DLC_APT_Apartment_SoundSet"},
-    {"ARM_WRESTLING_WHOOSH_MASTER", "0"},
-    {"ASSASSINATIONS_HOTEL_TIMER_COUNTDOWN", "ASSASSINATION_MULTI"},
-    {"ATM_WINDOW", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"BASE_JUMP_PASSED", "HUD_AWARDS"},
-    {"Bed", "WastedSounds"},
-    {"Beep_Green", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Beep_Red", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Blade_Appear", "APT_BvS_Soundset"},
-    {"BOATS_PLANES_HELIS_BOOM", "MP_LOBBY_SOUNDS"},
-    {"Breaker_01", "DLC_HALLOWEEN_FVJ_Sounds"},
-    {"Breaker_02", "DLC_HALLOWEEN_FVJ_Sounds"},
-    {"Bus_Schedule_Pickup", "DLC_PRISON_BREAK_HEIST_SOUNDS"},
-    {"CABLE_SNAPS", "CONSTRUCTION_ACCIDENT_1_SOUNDS"},
-    {"CAM_PAN_DARTS", "HUD_MINI_GAME_SOUNDSET"},
-    {"Camera_Shoot", "Phone_Soundset_Franklin"},
-    {"CANCEL", "HUD_FREEMODE_SOUNDSET"},
-    {"CAR_BIKE_WHOOSH", "MP_LOBBY_SOUNDS"},
-    {"CHALLENGE_UNLOCKED", "HUD_AWARDS"},
-    {"CHECKPOINT_AHEAD", "HUD_MINI_GAME_SOUNDSET"},
-    {"CHECKPOINT_BEHIND", "HUD_MINI_GAME_SOUNDSET"},
-    {"Checkpoint_Hit", "GTAO_FM_Events_Soundset"},
-    {"CHECKPOINT_MISSED", "HUD_MINI_GAME_SOUNDSET"},
-    {"CHECKPOINT_NORMAL", "HUD_MINI_GAME_SOUNDSET"},
-    {"CHECKPOINT_PERFECT", "HUD_MINI_GAME_SOUNDSET"},
-    {"Checkpoint_Teammate", "GTAO_Shepherd_Sounds"},
-    {"CHECKPOINT_UNDER_THE_BRIDGE", "HUD_MINI_GAME_SOUNDSET"},
-    {"Click", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"CLICK_BACK", "WEB_NAVIGATION_SOUNDS_PHONE"},
-    {"Click_Fail", "WEB_NAVIGATION_SOUNDS_PHONE"},
-    {"Click_Special", "WEB_NAVIGATION_SOUNDS_PHONE"},
-    {"CLOSED", "MP_PROPERTIES_ELEVATOR_DOORS"},
-    {"CONFIRM_BEEP", "HUD_MINI_GAME_SOUNDSET"},
-    {"CONTINUE", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Continue_Appears", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Crash", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Criminal_Damage_High_Value", "GTAO_FM_Events_Soundset"},
-    {"Criminal_Damage_Kill_Player", "GTAO_FM_Events_Soundset"},
-    {"Criminal_Damage_Low_Value", "GTAO_FM_Events_Soundset"},
-    {"Cycle_Item", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"DELETE", "HUD_DEATHMATCH_SOUNDSET"},
-    {"Delete_Placed_Prop", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"Deliver_Pick_Up", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"DiggerRevOneShot", "BulldozerDefault"},
-    {"Door_Open", "DOCKS_HEIST_FINALE_2B_SOUNDS"},
-    {"Drill_Pin_Break", "DLC_HEIST_FLEECA_SOUNDSET"},
-    {"Dropped", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"EDIT", "HUD_DEATHMATCH_SOUNDSET"},
-    {"Start_Squelch", "CB_RADIO_SFX"},
-    {"End_Squelch", "CB_RADIO_SFX"},
-    {"Enemy_Capture_Start", "GTAO_Magnate_Yacht_Attack_Soundset"},
-    {"Enemy_Deliver", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"Enemy_Pick_Up", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"Enter_1st", "GTAO_FM_Events_Soundset"},
-    {"Enter_Area", "DLC_Lowrider_Relay_Race_Sounds"},
-    {"Enter_Capture_Zone", "DLC_Apartments_Drop_Zone_Sounds"},
-    {"ERROR", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"Event_Message_Purple", "GTAO_FM_Events_Soundset"},
-    {"Event_Start_Text", "GTAO_FM_Events_Soundset"},
-    {"EXIT", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Exit_Capture_Zone", "DLC_Apartments_Drop_Zone_Sounds"},
-    {"Failure", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Falling_Crates", "EXILE_1"},
-    {"Faster_Bar_Full", "RESPAWN_ONLINE_SOUNDSET"},
-    {"Faster_Click", "RESPAWN_ONLINE_SOUNDSET"},
-    {"FestiveGift", "Feed_Message_Sounds"},
-    {"FIRST_PLACE", "HUD_MINI_GAME_SOUNDSET"},
-    {"FLIGHT_SCHOOL_LESSON_PASSED", "HUD_AWARDS"},
-    {"FLYING_STREAM_END_INSTANT", "FAMILY_5_SOUNDS"},
-    {"FocusIn", "HintCamSounds"},
-    {"FocusOut", "HintCamSounds"},
-    {"Friend_Deliver", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"Friend_Pick_Up", "HUD_FRONTEND_MP_COLLECTABLE_SOUNDS"},
-    {"GO", "HUD_MINI_GAME_SOUNDSET"},
-    {"Goal", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"GOLF_BIRDIE", "HUD_AWARDS"},
-    {"GOLF_EAGLE", "HUD_AWARDS"},
-    {"GOLF_HUD_HOLE_IN_ONE_MASTER", "0"},
-    {"GOLF_HUD_SCORECARD_MASTER", "0"},
-    {"GOLF_NEW_RECORD", "HUD_AWARDS"},
-    {"Goon_Paid_Small", "GTAO_Boss_Goons_FM_Soundset"},
-    {"Grab_Parachute", "BASEJUMPS_SOUNDS"},
-    {"Hack_Failed", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"},
-    {"Hack_Success", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"},
-    {"HACKING_CLICK", "0"},
-    {"HACKING_CLICK_BAD", "0"},
-    {"HACKING_CLICK_GOOD", "0"},
-    {"HACKING_MOVE_CURSOR", "0"},
-    {"Hang_Up", "Phone_SoundSet_Michael"},
-    {"HIGHLIGHT", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Highlight_Accept", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Highlight_Cancel", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Highlight_Error", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Highlight_Move", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"HIGHLIGHT_NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Hit", "RESPAWN_ONLINE_SOUNDSET"},
-    {"Hit_1", "LONG_PLAYER_SWITCH_SOUNDS"},
-    {"Hit_In", "PLAYER_SWITCH_CUSTOM_SOUNDSET"},
-    {"Hit_Out", "PLAYER_SWITCH_CUSTOM_SOUNDSET"},
-    {"HORDE_COOL_DOWN_TIMER", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"HUD_FREEMODE_CANCEL_MASTER", "0"},
-    {"Kill_List_Counter", "GTAO_FM_Events_Soundset"},
-    {"LEADERBOARD", "HUD_MINI_GAME_SOUNDSET"},
-    {"Lights_On", "GTAO_MUGSHOT_ROOM_SOUNDS"},
-    {"LIMIT", "DLC_APT_YACHT_DOOR_SOUNDS"},
-    {"Load_Scene", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"LOCAL_PLYR_CASH_COUNTER_COMPLETE", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"LOCAL_PLYR_CASH_COUNTER_INCREASE", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"LOOSE_MATCH", "HUD_MINI_GAME_SOUNDSET"},
-    {"Lose_1st", "GTAO_FM_Events_Soundset"},
-    {"LOSER", "HUD_AWARDS"},
-    {"Map_Roll_Down", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Map_Roll_Up", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"MARKER_ERASE", "HEIST_BULLETIN_BOARD_SOUNDSET"},
-    {"MARTIN1_DISTANT_TRAIN_HORNS_MASTER", "0"},
-    {"MEDAL_BRONZE", "HUD_AWARDS"},
-    {"MEDAL_GOLD", "HUD_AWARDS"},
-    {"MEDAL_SILVER", "HUD_AWARDS"},
-    {"MEDAL_UP", "HUD_MINI_GAME_SOUNDSET"},
-    {"Menu_Accept", "Phone_SoundSet_Default"},
-    {"Mission_Pass_Notify", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"MP_5_SECOND_TIMER", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"MP_AWARD", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"MP_Flash", "WastedSounds"},
-    {"MP_IDLE_KICK", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"MP_IDLE_TIMER", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"MP_Impact", "WastedSounds"},
-    {"MP_RANK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"MP_WAVE_COMPLETE", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"NAV", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"Nav_Arrow_Ahead", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"Nav_Arrow_Behind", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"Nav_Arrow_Left", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"Nav_Arrow_Right", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"NAV_LEFT_RIGHT", "HUD_FREEMODE_SOUNDSET"},
-    {"NAV_UP_DOWN", "HUD_FREEMODE_SOUNDSET"},
-    {"Near_Miss_Counter_Reset", "GTAO_FM_Events_Soundset"},
-    {"NO", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Object_Dropped_Remote", "GTAO_FM_Events_Soundset"},
-    {"Off_High", "MP_RADIO_SFX"},
-    {"OK", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"ON", "NOIR_FILTER_SOUNDS"},
-    {"On_Call_Player_Join", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"OOB_Cancel", "GTAO_FM_Events_Soundset"},
-    {"OOB_Start", "GTAO_FM_Events_Soundset"},
-    {"OPEN_WINDOW", "LESTER1A_SOUNDS"},
-    {"OPENED", "MP_PROPERTIES_ELEVATOR_DOORS"},
-    {"OTHER_TEXT", "HUD_AWARDS"},
-    {"Out_Of_Area", "DLC_Lowrider_Relay_Race_Sounds"},
-    {"Out_Of_Bounds_Timer", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"Paper_Shuffle", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Parcel_Vehicle_Lost", "GTAO_FM_Events_Soundset"},
-    {"Payment_Non_Player", "DLC_HEISTS_GENERIC_SOUNDS"},
-    {"Payment_Player", "DLC_HEISTS_GENERIC_SOUNDS"},
-    {"Pen_Tick", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"PERSON_SCROLL", "HEIST_BULLETIN_BOARD_SOUNDSET"},
-    {"PERSON_SELECT", "HEIST_BULLETIN_BOARD_SOUNDSET"},
-    {"Phone_Generic_Key_02", "HUD_MINIGAME_SOUNDSET"},
-    {"PICK_UP", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Pin_Bad", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"},
-    {"PIN_BUTTON", "ATM_SOUNDS"},
-    {"Pin_Centred", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"},
-    {"Pin_Good", "DLC_HEIST_BIOLAB_PREP_HACKING_SOUNDS"},
-    {"PIPES_LAND", "CONSTRUCTION_ACCIDENT_1_SOUNDS"},
-    {"Place_Prop_Fail", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"Place_Prop_Success", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"Player_Collect", "DLC_PILOT_MP_HUD_SOUNDS"},
-    {"Player_Enter_Line", "GTAO_FM_Cross_The_Line_Soundset"},
-    {"Player_Exit_Line", "GTAO_FM_Cross_The_Line_Soundset"},
-    {"Power_Down", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Pre_Screen_Stinger", "DLC_HEISTS_FAILED_SCREEN_SOUNDS"},
-    {"PS2A_MONEY_LOST", "PALETO_SCORE_2A_BANK_SS"},
-    {"PURCHASE", "HUD_LIQUOR_STORE_SOUNDSET"},
-    {"Put_Away", "Phone_SoundSet_Michael"},
-    {"QUIT", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"QUIT_WHOOSH", "HUD_MINI_GAME_SOUNDSET"},
-    {"RACE_PLACED", "HUD_AWARDS"},
-    {"RAMP_DOWN", "TRUCK_RAMP_DOWN"},
-    {"RAMP_UP", "TRUCK_RAMP_DOWN"},
-    {"RANK_UP", "HUD_AWARDS"},
-    {"REMOTE_PLYR_CASH_COUNTER_COMPLETE", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"REMOTE_PLYR_CASH_COUNTER_INCREASE", "DLC_HEISTS_GENERAL_FRONTEND_SOUNDS"},
-    {"Reset_Prop_Position", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"RESTART", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"RETRY", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"ROBBERY_MONEY_TOTAL", "HUD_FRONTEND_CUSTOM_SOUNDSET"},
-    {"ROPE_CUT", "ROPE_CUT_SOUNDSET"},
-    --{"ROUND_ENDING_STINGER_CUSTOM", "CELEBRATION_SOUNDSET"},
-    {"Save_Scene", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"SCOPE_UI_MASTER", "0"},
-    {"ScreenFlash", "WastedSounds"},
-    {"SCREEN_SWIPE", "CELEBRATION_SWIPE"},
-    {"SELECT", "HUD_FREEMODE_SOUNDSET"},
-    {"Select_Placed_Prop", "DLC_Dmod_Prop_Editor_Sounds"},
-    {"Shard_Disappear", "GTAO_FM_Events_Soundset"},
-    {"SHOOTING_RANGE_ROUND_OVER", "HUD_AWARDS"},
-    {"Short_Transition_In", "PLAYER_SWITCH_CUSTOM_SOUNDSET"},
-    {"Short_Transition_Out", "PLAYER_SWITCH_CUSTOM_SOUNDSET"},
-    {"SKIP", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Start", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"STUN_COLLECT", "MINUTE_MAN_01_SOUNDSET"},
-    {"Success", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"Swap_Sides", "DLC_HALLOWEEN_FVJ_Sounds"},
-    {"SWING_SHUT", "GTAO_APT_DOOR_DOWNSTAIRS_GLASS_SOUNDS"},
-    {"Tattooing_Oneshot", "TATTOOIST_SOUNDS"},
-    {"Tattooing_Oneshot_Remove", "TATTOOIST_SOUNDS"},
-    {"Team_Capture_Start", "GTAO_Magnate_Yacht_Attack_Soundset"},
-    {"TENNIS_MATCH_POINT", "HUD_AWARDS"},
-    {"TENNIS_POINT_WON", "HUD_AWARDS"},
-    {"TextHit", "WastedSounds"},
-    {"TOGGLE_ON", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"Turn", "DLC_HEIST_HACKING_SNAKE_SOUNDS"},
-    {"UNDER_THE_BRIDGE", "HUD_AWARDS"},
-    {"WAYPOINT_SET", "HUD_FRONTEND_DEFAULT_SOUNDSET"},
-    {"WEAPON_ATTACHMENT_EQUIP", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"WEAPON_ATTACHMENT_UNEQUIP", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"WEAPON_PURCHASE", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"WEAPON_SELECT_ARMOR", "HUD_AMMO_SHOP_SOUNDSET"},
-    {"Whoosh_1s_L_to_R", "MP_LOBBY_SOUNDS"},
-    {"Whoosh_1s_R_to_L", "MP_LOBBY_SOUNDS"},
-    {"WIN", "HUD_AWARDS"},
-    {"Zone_Enemy_Capture", "DLC_Apartments_Drop_Zone_Sounds"},
-    {"Zone_Neutral", "DLC_Apartments_Drop_Zone_Sounds"},
-    {"Zone_Team_Capture", "DLC_Apartments_Drop_Zone_Sounds"},
-    {"Zoom_In", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Zoom_Left", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Zoom_Out", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Zoom_Right", "DLC_HEIST_PLANNING_BOARD_SOUNDS"},
-    {"Checkpoint_Finish_Winner", "DLC_Tuner_Car_Meet_Test_Area_Events_Sounds"},
-    {"Checkpoint", "DLC_Tuner_Car_Meet_Test_Area_Events_Sounds"},
-}
 
 --物体前置
 function RequestModel(hash, timeout)
@@ -1353,163 +266,11 @@ function RequestModel(hash, timeout)
     STREAMING.REQUEST_MODEL(hash)
     local end_time = os.time() + timeout
     repeat
-    wait()
+        wait()
     until STREAMING.HAS_MODEL_LOADED(hash) or os.time() >= end_time
     return STREAMING.HAS_MODEL_LOADED(hash)
-    end
-    
-    All_business_properties = {
-    -- Clubhouses
-    "1334 Roy Lowenstein Blvd",
-    "7 Del Perro Beach",
-    "75 Elgin Avenue",
-    "101 Route 68",
-    "1 Paleto Blvd",
-    "47 Algonquin Blvd",
-    "137 Capital Blvd",
-    "2214 Clinton Avenue",
-    "1778 Hawick Avenue",
-    "2111 East Joshua Road",
-    "68 Paleto Blvd",
-    "4 Goma Street",
-    -- Facilities
-    "Grand Senora Desert",
-    "Route 68",
-    "Sandy Shores",
-    "Mount Gordo",
-    "Paleto Bay",
-    "Lago Zancudo",
-    "Zancudo River",
-    "Ron Alternates Wind Farm",
-    "Land Act Reservoir",
-    -- Arcades
-    "Pixel Pete's - Paleto Bay",
-    "Wonderama - Grapeseed",
-    "Warehouse - Davis",
-    "Eight-Bit - Vinewood",
-    "Insert Coin - Rockford Hills",
-    "Videogeddon - La Mesa",
-    }
-    
-    small_warehouses = {
-    [1] = "Pacific Bait Storage", 
-    [2] = "White Widow Garage", 
-    [3] = "Celltowa Unit", 
-    [4] = "Convenience Store Lockup", 
-    [5] = "Foreclosed Garage", 
-    [9] = "Pier 400 Utility Building", 
-    }
-    
-    medium_warehouses = {
-    [7] = "Derriere Lingerie Backlot", 
-    [10] = "GEE Warehouse", 
-    [11] = "LS Marine Building 3", 
-    [12] = "Railyard Warehouse", 
-    [13] = "Fridgit Annexe",
-    [14] = "Disused Factory Outlet", 
-    [15] = "Discount Retail Unit", 
-    [21] = "Old Power Station", 
-    }
-    
-    large_warehouses = {
-    [6] = "Xero Gas Factory",  
-    [8] = "Bilgeco Warehouse", 
-    [16] = "Logistics Depot", 
-    [17] = "Darnell Bros Warehouse", 
-    [18] = "Wholesale Furniture", 
-    [19] = "Cypress Warehouses", 
-    [20] = "West Vinewood Backlot", 
-    [22] = "Walker & Sons Warehouse"
-    }
-    
-    proofs = {
-    bullet = {name="Bullets",on=false},
-    fire = {name="Fire",on=false},
-    explosion = {name="Explosions",on=false},
-    collision = {name="Collision",on=false},
-    melee = {name="Melee",on=false},
-    steam = {name="Steam",on=false},
-    drown = {name="Drowning",on=false},
-    }
-    
-    modded_weapons = {
-    "weapon_railgun",
-    "weapon_stungun",
-    "weapon_digiscanner",
-    }
-    
-    things = {
-    "brickade2",
-    "hauler",
-    "hauler2",
-    "manchez3",
-    "terbyte",
-    "minitank"
-    }
-    
-    
-    doors = {
-    "v_ilev_ml_door1",
-    "v_ilev_ta_door",
-    "v_ilev_247door",
-    "v_ilev_247door_r",
-    "v_ilev_lostdoor",
-    "v_ilev_bs_door",
-    "v_ilev_cs_door01",
-    "v_ilev_cs_door01_r",
-    "v_ilev_gc_door03",
-    "v_ilev_gc_door04",
-    "v_ilev_clothmiddoor",
-    "v_ilev_clothmiddoor",
-    "prop_shop_front_door_l",
-    "prop_shop_front_door_r"
-    }
-    
-    object_stuff = {
-    names = {
-    "Hamburger",
-    "UFO",
-    "Ferris Wheel",
-    "Windmill",
-    "Cement Mixer",
-    "Scaffolding",
-    "Garage Door",
-    "Big Bowling Ball",
-    "Big Soccer Ball",
-    "Big Orange Ball",
-    "Stunt Ramp",
-    
-    },
-    objects = {
-    "xs_prop_hamburgher_wl",
-    "p_spinning_anus_s",
-    "prop_ld_ferris_wheel",
-    "prop_windmill_01",
-    "prop_staticmixer_01",
-    "prop_towercrane_02a",
-    "des_scaffolding_root",
-    "prop_sm1_11_garaged",
-    "stt_prop_stunt_bowling_ball",
-    "stt_prop_stunt_soccer_ball",
-    "prop_juicestand",
-    "stt_prop_stunt_jump_l",
-    }
-    }
-    
-    values = {
-    [1] = 50,
-    [2] = 88,
-    [3] = 160,
-    [4] = 208,
-    }
-    
-    unreleased_vehicles = {
-    "virtue",
-    "broadway",
-    "everon2",
-    "eudora",
-    "boor"
-    }
+end
+
 --空中漂移
 function slerp(q1, q2, t)
     local cosTheta = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w
@@ -2692,1250 +1453,210 @@ function get_player_veh(pid,with_access)
 end
 
 function teleport_place()
-local interiors = {
-{"安全空间 [挂机室]", {x=-158.71494, y=-982.75885, z=149.13135}},
-{"酷刑室", {x=147.170, y=-2201.804, z=4.688}},
-{"矿道", {x=-595.48505, y=2086.4502, z=131.38136}},
-{"欧米茄车库", {x=2330.2573, y=2572.3005, z=46.679367}},
-{"末日任务服务器组", {x=2155.077, y=2920.9417, z=-81.075455}},
-{"角色捏脸房间", {x=402.91586, y=-998.5701, z=-99.004074}},
-{"Lifeinvader大楼", {x=-1082.8595, y=-254.774, z=37.763317}},
-{"竞速结束车库", {x=405.9228, y=-954.1149, z=-99.6627}},
-{"被摧毁的医院", {x=304.03894, y=-590.3037, z=43.291893}},
-{"体育场", {x=-256.92334, y=-2024.9717, z=30.145584}},
-{"Split Sides喜剧俱乐部", {x=-430.00974, y=261.3437, z=83.00648}},
-{"巴哈马酒吧", {x=-1394.8816, y=-599.7526, z=30.319544}},
-{"看门人之家", {x=-110.20285, y=-8.6156025, z=70.51957}},
-{"费蓝德医生之家", {x=-1913.8342, y=-574.5799, z=11.435149}},
-{"杜根房子", {x=1395.2512, y=1141.6833, z=114.63437}},
-{"弗洛伊德公寓", {x=-1156.5099, y=-1519.0894, z=10.632717}},
-{"麦克家", {x=-813.8814, y=179.07889, z=72.15914}},
-{"富兰克林家（旧）", {x=-14.239959, y=-1439.6913, z=31.101551}},
-{"富兰克林家（新）", {x=7.3125067, y=537.3615, z=176.02803}},
-{"崔佛家", {x=1974.1617, y=3819.032, z=33.436287}},
-{"莱斯斯家", {x=1273.898, y=-1719.304, z=54.771}},
-{"莱斯特的纺织厂", {x=713.5684, y=-963.64795, z=30.39534}},
-{"莱斯特的纺织厂办事处", {x=707.2138, y=-965.5549, z=30.412853}},
-{"甲基安非他明实验室", {x=1391.773, y=3608.716, z=38.942}},
-{"人道实验室", {x=3625.743, y=3743.653, z=28.69009}},
-{"汽车旅馆客房", {x=152.2605, y=-1004.471, z=-99.024}},
-{"警察局", {x=443.4068, y=-983.256, z=30.689589}},
-{"太平洋标准银行金库", {x=263.39627, y=214.39891, z=101.68336}},
-{"布莱恩郡银行", {x=-109.77874, y=6464.8945, z=31.626724}},
-{"龙舌兰酒吧", {x=-564.4645, y=275.5777, z=83.074585}},
-{"废料厂车库", {x=485.46396, y=-1315.0614, z=29.2141}},
-{"失落摩托帮", {x=980.8098, y=-101.96038, z=74.84504}},
-{"范吉利科珠宝店", {x=-629.9367, y=-236.41296, z=38.057056}},
-{"机场休息室", {x=-913.8656, y=-2527.106, z=36.331566}},
-{"停尸房", {x=240.94368, y=-1379.0645, z=33.74177}},
-{"联盟保存处", {x=1.298771, y=-700.96967, z=16.131021}},
-{"军事基地瞭望塔", {x=-2357.9187, y=3249.689, z=101.45073}},
-{"事务所内部", {x=-1118.0181, y=-77.93254, z=-98.99977}},
-{"复仇者内部", {x=518.6444, y=4750.4644, z=-69.3235}},
-{"恐霸内部", {x=-1421.015, y=-3012.587, z=-80.000}},
-{"地堡内部", {x=899.5518,y=-3246.038, z=-98.04907}},
-{"IAA 办公室", {x=128.20, y=-617.39, z=206.04}},
-{"FIB 顶层", {x=135.94359, y=-749.4102, z=258.152}},
-{"FIB 47层", {x=134.5835, y=-766.486, z=234.152}},
-{"FIB 49层", {x=134.635, y=-765.831, z=242.152}},
-{"大公鸡", {x=-31.007448, y=6317.047, z=40.04039}},
-{"大麻商店", {x=-1170.3048, y=-1570.8246, z=4.663622}},
-{"脱衣舞俱乐部DJ位置", {x=121.398254, y=-1281.0024, z=29.480522}},
-}
-        for index, data in pairs(interiors) do
-            local location_name = data[1]
-            local location_coords = data[2]
-            menu.action(teleport, location_name, {}, "", function()
-                menu.trigger_commands("doors on")
-                menu.trigger_commands("nodeathbarriers on")
-                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), location_coords.x, location_coords.y, location_coords.z, false, false, false)
-            end)
-        end
+    local interiors = {{"安全空间 [挂机室]", {
+        x = -158.71494,
+        y = -982.75885,
+        z = 149.13135
+    }}, {"酷刑室", {
+        x = 147.170,
+        y = -2201.804,
+        z = 4.688
+    }}, {"矿道", {
+        x = -595.48505,
+        y = 2086.4502,
+        z = 131.38136
+    }}, {"欧米茄车库", {
+        x = 2330.2573,
+        y = 2572.3005,
+        z = 46.679367
+    }}, {"末日任务服务器组", {
+        x = 2155.077,
+        y = 2920.9417,
+        z = -81.075455
+    }}, {"角色捏脸房间", {
+        x = 402.91586,
+        y = -998.5701,
+        z = -99.004074
+    }}, {"Lifeinvader大楼", {
+        x = -1082.8595,
+        y = -254.774,
+        z = 37.763317
+    }}, {"竞速结束车库", {
+        x = 405.9228,
+        y = -954.1149,
+        z = -99.6627
+    }}, {"被摧毁的医院", {
+        x = 304.03894,
+        y = -590.3037,
+        z = 43.291893
+    }}, {"体育场", {
+        x = -256.92334,
+        y = -2024.9717,
+        z = 30.145584
+    }}, {"Split Sides喜剧俱乐部", {
+        x = -430.00974,
+        y = 261.3437,
+        z = 83.00648
+    }}, {"巴哈马酒吧", {
+        x = -1394.8816,
+        y = -599.7526,
+        z = 30.319544
+    }}, {"看门人之家", {
+        x = -110.20285,
+        y = -8.6156025,
+        z = 70.51957
+    }}, {"费蓝德医生之家", {
+        x = -1913.8342,
+        y = -574.5799,
+        z = 11.435149
+    }}, {"杜根房子", {
+        x = 1395.2512,
+        y = 1141.6833,
+        z = 114.63437
+    }}, {"弗洛伊德公寓", {
+        x = -1156.5099,
+        y = -1519.0894,
+        z = 10.632717
+    }}, {"麦克家", {
+        x = -813.8814,
+        y = 179.07889,
+        z = 72.15914
+    }}, {"富兰克林家（旧）", {
+        x = -14.239959,
+        y = -1439.6913,
+        z = 31.101551
+    }}, {"富兰克林家（新）", {
+        x = 7.3125067,
+        y = 537.3615,
+        z = 176.02803
+    }}, {"崔佛家", {
+        x = 1974.1617,
+        y = 3819.032,
+        z = 33.436287
+    }}, {"莱斯斯家", {
+        x = 1273.898,
+        y = -1719.304,
+        z = 54.771
+    }}, {"莱斯特的纺织厂", {
+        x = 713.5684,
+        y = -963.64795,
+        z = 30.39534
+    }}, {"莱斯特的纺织厂办事处", {
+        x = 707.2138,
+        y = -965.5549,
+        z = 30.412853
+    }}, {"甲基安非他明实验室", {
+        x = 1391.773,
+        y = 3608.716,
+        z = 38.942
+    }}, {"人道实验室", {
+        x = 3625.743,
+        y = 3743.653,
+        z = 28.69009
+    }}, {"汽车旅馆客房", {
+        x = 152.2605,
+        y = -1004.471,
+        z = -99.024
+    }}, {"警察局", {
+        x = 443.4068,
+        y = -983.256,
+        z = 30.689589
+    }}, {"太平洋标准银行金库", {
+        x = 263.39627,
+        y = 214.39891,
+        z = 101.68336
+    }}, {"布莱恩郡银行", {
+        x = -109.77874,
+        y = 6464.8945,
+        z = 31.626724
+    }}, {"龙舌兰酒吧", {
+        x = -564.4645,
+        y = 275.5777,
+        z = 83.074585
+    }}, {"废料厂车库", {
+        x = 485.46396,
+        y = -1315.0614,
+        z = 29.2141
+    }}, {"失落摩托帮", {
+        x = 980.8098,
+        y = -101.96038,
+        z = 74.84504
+    }}, {"范吉利科珠宝店", {
+        x = -629.9367,
+        y = -236.41296,
+        z = 38.057056
+    }}, {"机场休息室", {
+        x = -913.8656,
+        y = -2527.106,
+        z = 36.331566
+    }}, {"停尸房", {
+        x = 240.94368,
+        y = -1379.0645,
+        z = 33.74177
+    }}, {"联盟保存处", {
+        x = 1.298771,
+        y = -700.96967,
+        z = 16.131021
+    }}, {"军事基地瞭望塔", {
+        x = -2357.9187,
+        y = 3249.689,
+        z = 101.45073
+    }}, {"事务所内部", {
+        x = -1118.0181,
+        y = -77.93254,
+        z = -98.99977
+    }}, {"复仇者内部", {
+        x = 518.6444,
+        y = 4750.4644,
+        z = -69.3235
+    }}, {"恐霸内部", {
+        x = -1421.015,
+        y = -3012.587,
+        z = -80.000
+    }}, {"地堡内部", {
+        x = 899.5518,
+        y = -3246.038,
+        z = -98.04907
+    }}, {"IAA 办公室", {
+        x = 128.20,
+        y = -617.39,
+        z = 206.04
+    }}, {"FIB 顶层", {
+        x = 135.94359,
+        y = -749.4102,
+        z = 258.152
+    }}, {"FIB 47层", {
+        x = 134.5835,
+        y = -766.486,
+        z = 234.152
+    }}, {"FIB 49层", {
+        x = 134.635,
+        y = -765.831,
+        z = 242.152
+    }}, {"大公鸡", {
+        x = -31.007448,
+        y = 6317.047,
+        z = 40.04039
+    }}, {"大麻商店", {
+        x = -1170.3048,
+        y = -1570.8246,
+        z = 4.663622
+    }}, {"脱衣舞俱乐部DJ位置", {
+        x = 121.398254,
+        y = -1281.0024,
+        z = 29.480522
+    }}}
+    for index, data in pairs(interiors) do
+        local location_name = data[1]
+        local location_coords = data[2]
+        menu.action(teleport, location_name, {}, "", function()
+            menu.trigger_commands("doors on")
+            menu.trigger_commands("nodeathbarriers on")
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), location_coords.x, location_coords.y,
+                location_coords.z, false, false, false)
+        end)
     end
-
-station_name = {
-    ["布莱恩郡之声"] = "RADIO_11_TALK_02", 
-    ["蓝色方舟"] = "RADIO_12_REGGAE",
-    ["全球电台"] = "RADIO_13_JAZZ",
-    ["飞莲电台"] = "RADIO_14_DANCE_02",
-    ["真相 91.1"] = "RADIO_15_MOTOWN",
-    ["实验室电台"] = "RADIO_20_THELAB",
-    ["明镜公园之音"] = "RADIO_16_SILVERLAKE",
-    ["103.2 空间"] = "RADIO_17_FUNK",
-    ["好麦坞大道电台"] = "RADIO_18_90S_ROCK",
-    ["金发洛圣都 97.8 电台"] = "RADIO_21_DLC_XM17",
-    ["洛圣都地下电台"] = "RADIO_22_DLC_BATTLE_MIX1_RADIO",
-    ["iFruit 电台"] = "RADIO_23_DLC_XM19_RADIO",
-    ["自电台(如果该玩家没有设置自电台,将自动切换为 MOTOMAMI 洛圣都电台)"] = "RADIO_19_USER",
-    ["洛圣都摇滚台"] = "RADIO_01_CLASS_ROCK",
-    ["无止境流行乐电台"] = "RADIO_02_POP",
-    ["洛圣都广播电台"] = "RADIO_03_HIPHOP_NEW",
-    ["X 频道"] = "RADIO_04_PUNK",
-    ["西海岸谈话电台"] = "RADIO_05_TALK_01",
-    ["叛逆电台"] = "RADIO_06_COUNTRY", 
-    ["灵魂之蜡电台"] = "RADIO_07_DANCE_01",
-    ["东洛电台"] = "RADIO_08_MEXICAN",
-    ["西海岸经典"] = "RADIO_09_HIPHOP_OLD",
-    ["媒体播放器"] = "RADIO_36_AUDIOPLAYER",
-    ["音乐柜"] = "RADIO_35_DLC_HEI4_MLR",
-    ["库尔特 FM"] = "RADIO_34_DLC_HEI4_KULT",
-    ["放松依旧洛圣都"] = "RADIO_27_DLC_PRHEI4",
-}
-
-disguise_object = 0
-disguise_objects = {
-    [0] = "prop_bush_med_03",
-    [1] = "prop_tree_lficus_06",
-    [2] = "prop_palm_fan_03_b",
-    [3] = "prop_streetlight_01",
-    [4] = "prop_recyclebin_04_b",
-    [5] = "prop_recyclebin_05_a",
-    [6] = "prop_riding_crop_01",
-    [7] = "prop_cs_katana_01",
-    [8] = "prop_kino_light_02",
-    [9] = "apa_prop_flag_china",
-    [10] = "prop_gr_bmd_b",
-    [11] = "w_smug_bomb_01",
-    [12] = "xs_prop_arena_pit_fire_01a",
-}
-disguise_names = {
-    [0] = "灌木丛",
-    [1] = "树",
-    [2] = "棕榈树",
-    [3] = "路灯",
-    [4] = "垃圾桶",
-    [5] = "回收站",
-    [6] = "马鞭",
-    [7] = "武士刀",
-    [8] = "灯架",
-    [9] = "国旗",
-    [10] = "锅盖",
-    [11] = "原子弹",
-    [12] = "大烧烤",
-}
-
-    Til = {
-        T('NONE'),
-        T('BLACK'),
-        T('DARKSMOKE'),
-        T('LIGHTSMOKE'),
-        T('STOCK'),
-        T('LIMO'),
-        T('GREEN')
-    }
-
- Mainc = {
-        T('Metallic Black'),
-        T('Metallic Graphite Black'),
-        T('Metallic Black Steal'),
-        T('Metallic Dark Silver'),  
-        T('Metallic Silver'),
-        T('Metallic Blue Silver'),
-        T('Metallic Steel Gray'),
-        T('Metallic Shadow Silver'),
-        T('Metallic Stone Silver'),
-        T('Metallic Midnight Silver'),
-        T('Metallic Gun Metal'),
-        T('Metallic Anthracite Grey'),
-        T('Matte Black'),
-        T('Matte Gray'),
-        T('Matte Light Grey'),  
-        T('Util Black'),
-        T('Util Black Poly'),
-        T('Util Dark silver'),  
-        T('Util Silver'),
-        T('Util Gun Metal'),  
-        T('Util Shadow Silver'),
-        T('Worn Black'),
-        T('Worn Graphite'),
-        T('Worn Silver Grey'),  
-        T('Worn Silver'),
-        T('Worn Blue Silver'),  
-        T('Worn Shadow Silver'),  
-        T('Metallic Red'),
-        T('Metallic Torino Red'),
-        T('Metallic Formula Red'),
-        T('Metallic Blaze Red'),  
-        T('Metallic Graceful Red'), 
-        T('Metallic Garnet Red'),
-        T('Metallic Desert Red'),
-        T('Metallic Cabernet Red'),
-        T('Metallic Candy Red'),
-        T('Metallic Sunrise Orange'), 
-        T('Metallic Classic Gold'),
-        T('Metallic Orange'), 
-        T('Matte Red'),   
-        T('Matte Dark Red'),  
-        T('Matte Orange'),
-        T('Matte Yellow'),  
-        T('Util Red'),
-        T('Util Bright Red'), 
-        T('Util Garnet Red'), 
-        T('Worn Red'),
-        T('Worn Golden Red'),
-        T('Worn Dark Red'),
-        T('Metallic Dark Green'), 
-        T('Metallic Racing Green'),
-        T('Metallic Sea Green'),  
-        T('Metallic Olive Green'),  
-        T('Metallic Green'),
-        T('Metallic Gasoline Blue Green'),
-        T('Matte Lime Green'),
-        T('Util Dark Green'),   
-        T('Util Green'),
-        T('Worn Dark Green'), 
-        T('Worn Green'),
-        T('Worn Sea Wash'),
-        T('Metallic Midnight Blue'),  
-        T('Metallic Dark Blue'),  
-        T('Metallic Saxony Blue'),  
-        T('Metallic Blue'),
-        T('Metallic Mariner Blue'),   
-        T('Metallic Harbor Blue'),  
-        T('Metallic Diamond Blue'), 
-        T('Metallic Surf Blue'),
-        T('Metallic Nautical Blue'),  
-        T('Metallic Bright Blue'),
-        T('Metallic Purple Blue'),  
-        T('Metallic Spinnaker Blue'),   
-        T('Metallic Ultra Blue'), 
-        T('Metallic Bright Blue'),  
-        T('Util Dark Blue'),
-        T('Util Midnight Blue'),  
-        T('Util Blue'),
-        T('Util Sea Foam Blue'),
-        T('Util Lightning blue'),
-        T('Util Maui Blue Poly'),
-        T('Util Bright Blue'),
-        T('Matte Dark Blue'),
-        T('Matte Blue'),
-        T('Matte Midnight Blue'), 
-        T('Worn Dark blue'),
-        T('Worn Blue'),
-        T('Worn Light blue'),
-        T('Metallic Taxi Yellow'),
-        T('Metallic Race Yellow'),
-        T('Metallic Bronze'),
-        T('Metallic Yellow Bird'),
-        T('Metallic Lime'),
-        T('Metallic Champagne'),
-        T('Metallic Pueblo Beige'), 
-        T('Metallic Dark Ivory'),
-        T('Metallic Choco Brown'),
-        T('Metallic Golden Brown'),
-        T('Metallic Light Brown'),
-        T('Metallic Straw Beige'),  
-        T('Metallic Moss Brown'),
-        T('Metallic Biston Brown'),
-        T('Metallic Beechwood'),
-        T('Metallic Dark Beechwood'),   
-        T('Metallic Choco Orange'), 
-        T('Metallic Beach Sand'),
-        T('Metallic Sun Bleeched Sand'),  
-        T('Metallic Cream'),
-        T('Util Brown'),  
-        T('Util Medium Brown'), 
-        T('Util Light Brown'),  
-        T('Metallic White'),  
-        T('Metallic Frost White'),
-        T('Worn Honey Beige'),
-        T('Worn Brown'),  
-        T('Worn Dark Brown'),
-        T('Worn straw beige'),  
-        T('Brushed Steel'),
-        T('Brushed Black steel'),   
-        T('Brushed Aluminium'),
-        T('Chrome'),
-        T('Worn Off White'), 
-        T('Util Off White'), 
-        T('Worn Orange'), 
-        T('Worn Light Orange'), 
-        T('Metallic Securicor Green'),    
-        T('Worn Taxi Yellow'), 
-        T('police car blue'),   
-        T('Matte Green'),   
-        T('Matte Brown'),   
-        T('Worn Orange'), 
-        T('Matte White'),   
-        T('Worn White'),
-        T('Worn Olive Army Green'),   
-        T('Pure White'),  
-        T('Hot Pink'),  
-        T('Salmon pink'),
-        T('Metallic Vermillion Pink'),
-        T('Orange'),
-        T('Green'), 
-        T('Blue'),
-        T('Mettalic Black Blue'),   
-        T('Metallic Black Purple'), 
-        T('Metallic Black Red'),
-        T('Hunter Green'),
-        T('Metallic Purple'),
-        T('Metaillic V Dark Blue'), 
-        T('MODSHOP BLACK1'), 
-        T('Matte Purple'),
-        T('Matte Dark Purple'),   
-        T('Metallic Lava Red'), 
-        T('Matte Forest Green'),  
-        T('Matte Olive Drab'),  
-        T('Matte Desert Brown'),
-        T('Matte Desert Tan'),  
-        T('Matte Foilage Green'),
-        T('DEFAULT ALLOY COLOR'),
-        T('Epsilon Blue'),
-        T('Pure Gold'),
-        T('Brushed Gold')
-    }
-
-Bbw = {
-    T('Chrome OG Hunnets'),
-    T('Gold OG Hunnets'),
-    T('Chrome Wires'),
-    T('Gold Wires'),
-    T('Chrome Spoked Out'),
-    T('Gold Spoked Out'),
-    T('Chrome Knock-Offs'),
-    T('Gold Knock-Offs'),
-    T('Chrome Bigger Worm'),
-    T('Gold Bigger Worm'),
-    T('Chrome Vintage Wire'),
-    T('Gold Vintage Wire'),
-    T('Chrome Classic Wire'),
-    T('Gold Classic Wire'),
-    T('GroundRide'),
-    T('Chrome Smoothie'),
-    T('Gold Smoothie'),
-    T('Chrome Classic Rod'),
-    T('Gold Classic Rod'),
-    T('Chrome Dollar'),
-    T('Gold Dollar'),
-    T('Chrome Mighty Star'),
-    T('Gold Mighty Star'),
-    T('Chrome Decadent Dish'),
-    T('Gold Decadent Dish'),
-    T('Gold Razor Style'),
-    T('Chrome Celtic Knot'),
-    T('Gold Celtic Knot'),
-    T('Chrome Warrior Dish'),
-    T('Gold Warrior Dish'),
-    T('Gold Big Dog Spokes'),
-    T('Chrome OG Hunnets Thin White'),
-    T('Gold OG Hunnets Thin White'),
-    T('Chrome Wires Thin White'),
-    T('Gold Wires Thin White'),
-    T('Chrome Spoked Out Thin White'),
-    T('Gold Spoked Out Thin White'),
-    T('Chrome Knock-Offs Thin White'),
-    T('Gold Knock-Offs Thin White'),
-    T('Chrome Bigger Worm Thin White'),
-    T('Gold Bigger Worm Thin White'),
-    T('Chrome Vintage Wire Thin White'),
-    T('Gold Vintage Wire Thin White'),
-    T('Chrome Classic Wire Thin White'),
-    T('Gold Classic Wire Thin White'),
-    T('GroundRide Thin White'),
-    T('Chrome Smoothie Thin White'),
-    T('Gold Smoothie Thin White'),
-    T('Chrome Classic Rod Thin White'),
-    T('Gold Classic Rod Thin White'),
-    T('Chrome Dollar Thin White'),
-    T('Gold Dollar Thin White'),
-    T('Chrome Mighty Star Thin White'),
-    T('Gold Mighty Star Thin White'),
-    T('Chrome Decadent Dish Thin White'),
-    T('Gold Decadent Dish Thin White'),
-    T('Gold Razor Style Thin White'),
-    T('Chrome Celtic Knot Thin White'),
-    T('Gold Celtic Knot Thin White'),
-    T('Chrome Warrior Dish Thin White'),
-    T('Gold Warrior Dish Thin White'),
-    T('Gold Big Dog Spokes Thin White'),
-    T('Chrome OG Hunnets Medium White'),
-    T('Gold OG Hunnets Medium White'),
-    T('Chrome Wires Medium White'),
-    T('Gold Wires Medium White'),
-    T('Chrome Spoked Out Medium White'),
-    T('Gold Spoked Out Medium White'),
-    T('Chrome Knock-Offs Medium White'),
-    T('Gold Knock-Offs Medium White'),
-    T('Chrome Bigger Worm Medium White'),
-    T('Gold Bigger Worm Medium White'),
-    T('Chrome Vintage Wire Medium White'),
-    T('Gold Vintage Wire Medium White'),
-    T('Chrome Classic Wire Medium White'),
-    T('Gold Classic Wire Medium White'),
-    T('GroundRide Medium White'),
-    T('Chrome Smoothie Medium White'),
-    T('Gold Smoothie Medium White'),
-    T('Chrome Classic Rod Medium White'),
-    T('Gold Classic Rod Medium White'),
-    T('Chrome Dollar Medium White'),
-    T('Gold Dollar Medium White'),
-    T('Chrome Mighty Star Medium White'),
-    T('Gold Mighty Star Medium White'),
-    T('Chrome Decadent Dish Medium White'),
-    T('Gold Decadent Dish Medium White'),
-    T('Gold Razor Style Medium White'),
-    T('Chrome Celtic Knot Medium White'),
-    T('Gold Celtic Knot Medium White'),
-    T('Chrome Warrior Dish Medium White'),
-    T('Gold Warrior Dish Medium White'),
-    T('Gold Big Dog Spokes Medium White'),
-    T('Chrome OG Hunnets Thick White'),
-    T('Gold OG Hunnets Thick White'),
-    T('Chrome Wires Thick White'),
-    T('Gold Wires Thick White'),
-    T('Chrome Spoked Out Thick White'),
-    T('Gold Spoked Out Thick White'),
-    T('Chrome Knock-Offs Thick White'),
-    T('Gold Knock-Offs Thick White'),
-    T('Chrome Bigger Worm Thick White'),
-    T('Gold Bigger Worm Thick White'),
-    T('Chrome Vintage Wire Thick White'),
-    T('Gold Vintage Wire Thick White'),
-    T('Chrome Classic Wire Thick White'),
-    T('Gold Classic Wire Thick White'),
-    T('GroundRide Thick White'),
-    T('Chrome Smoothie Thick White'),
-    T('Gold Smoothie Thick White'),
-    T('Chrome Classic Rod Thick White'),
-    T('Gold Classic Rod Thick White'),
-    T('Chrome Dollar Thick White'),
-    T('Gold Dollar Thick White'),
-    T('Chrome Mighty Star Thick White'),
-    T('Gold Mighty Star Thick White'),
-    T('Chrome Decadent Dish Thick White'),
-    T('Gold Decadent Dish Thick White'),
-    T('Gold Razor Style Thick White'),
-    T('Chrome Celtic Knot Thick White'),
-    T('Gold Celtic Knot Thick White'),
-    T('Chrome Warrior Dish Thick White'),
-    T('Gold Warrior Dish Thick White'),
-    T('Gold Big Dog Spokes Thick White'),
-    T('Chrome OG Hunnets Red Line'),
-    T('Gold OG Hunnets Red Line'),
-    T('Chrome Wires Red Line'),
-    T('Gold Wires Red Line'),
-    T('Chrome Spoked Out Red Line'),
-    T('Gold Spoked Out Red Line'),
-    T('Chrome Knock-Offs Red Line'),
-    T('Gold Knock-Offs Red Line'),
-    T('Chrome Bigger Worm Red Line'),
-    T('Gold Bigger Worm Red Line'),
-    T('Chrome Vintage Wire Red Line'),
-    T('Gold Vintage Wire Red Line'),
-    T('Chrome Classic Wire Red Line'),
-    T('Gold Classic Wire Red Line'),
-    T('GroundRide Red Line'),
-    T('Chrome Smoothie Red Line'),
-    T('Gold Smoothie Red Line'),
-    T('Chrome Classic Rod Red Line'),
-    T('Gold Classic Rod Red Line'),
-    T('Chrome Dollar Red Line'),
-    T('Gold Dollar Red Line'),
-    T('Chrome Mighty Star Red Line'),
-    T('Gold Mighty Star Red Line'),
-    T('Chrome Decadent Dish Red Line'),
-    T('Gold Decadent Dish Red Line'),
-    T('Gold Razor Style Red Line'),
-    T('Chrome Celtic Knot Red Line'),
-    T('Gold Celtic Knot Red Line'),
-    T('Chrome Warrior Dish Red Line'),
-    T('Gold Warrior Dish Red Line'),
-    T('Gold Big Dog Spokes Red Line'),
-    T('Chrome OG Hunnets Blue Line'),
-    T('Gold OG Hunnets Blue Line'),
-    T('Chrome Wires Blue Line'),
-    T('Gold Wires Blue Line'),
-    T('Chrome Spoked Out Blue Line'),
-    T('Gold Spoked Out Blue Line'),
-    T('Chrome Knock-Offs Blue Line'),
-    T('Gold Knock-Offs Blue Line'),
-    T('Chrome Bigger Worm Blue Line'),
-    T('Gold Bigger Worm Blue Line'),
-    T('Chrome Vintage Wire Blue Line'),
-    T('Gold Vintage Wire Blue Line'),
-    T('Chrome Classic Wire Blue Line'),
-    T('Gold Classic Wire Blue Line'),
-    T('GroundRide Blue Line'),
-    T('Chrome Smoothie Blue Line'),
-    T('Gold Smoothie Blue Line'),
-    T('Chrome Classic Rod Blue Line'),
-    T('Gold Classic Rod Blue Line'),
-    T('Chrome Dollar Blue Line'),
-    T('Gold Dollar Blue Line'),
-    T('Chrome Mighty Star Blue Line'),
-    T('Gold Mighty Star Blue Line'),
-    T('Chrome Decadent Dish Blue Line'),
-    T('Gold Decadent Dish Blue Line'),
-    T('Gold Razor Style Blue Line'),
-    T('Chrome Celtic Knot Blue Line'),
-    T('Gold Celtic Knot Blue Line'),
-    T('Chrome Warrior Dish Blue Line'),
-    T('Gold Warrior Dish Blue Line'),
-    T('Gold Big Dog Spokes Blue Line'),
-}
- Bow = {
-    T('OG Hunnets'),
-    T('OG Hunnets (Chrome Lip)'),
-    T('Knock-Offs'),
-    T('Knock-Offs (Chrome Lip)'),
-    T('Spoked Out'),
-    T('Spoked Out (Chrome Lip)'),
-    T('Vintage Wire'),
-    T('Vintage Wire (Chrome Lip)'),
-    T('Smoothie'),
-    T('Smoothie (Chrome Lip)'),
-    T('Smoothie (Solid Color)'),
-    T('Rod Me Up'),
-    T('Rod Me Up (Chrome Lip)'),
-    T('Rod Me Up (Solid Color)'),
-    T('Clean'),
-    T('Lotta Chrome'),
-    T('Spindles'),
-    T('Viking'),
-    T('Triple Spoke'),
-    T('Pharohe'),
-    T('Tiger Style'),
-    T('Three Wheelin'),
-    T('Big Bar'),
-    T('Biohazard'),
-    T('Waves'),
-    T('Lick Lick'),
-    T('Spiralizer'),
-    T('Hypnotics'),
-    T('Psycho-Delic'),
-    T('Half Cut'),
-    T('Super Electric'),
-    T('OG Hunnets Thin White'),
-    T('OG Hunnets (Chrome Lip) Thin White'),
-    T('Knock-Offs Thin White'),
-    T('Knock-Offs (Chrome Lip) Thin White'),
-    T('Spoked Out Thin White'),
-    T('Spoked Out (Chrome Lip) Thin White'),
-    T('Vintage Wire Thin White'),
-    T('Vintage Wire (Chrome Lip) Thin White'),
-    T('Smoothie Thin White'),
-    T('Smoothie (Chrome Lip) Thin White'),
-    T('Smoothie (Solid Color) Thin White'),
-    T('Rod Me Up Thin White'),
-    T('Rod Me Up (Chrome Lip) Thin White'),
-    T('Rod Me Up (Solid Color) Thin White'),
-    T('Clean Thin White'),
-    T('Lotta Chrome Thin White'),
-    T('Spindles Thin White'),
-    T('Viking Thin White'),
-    T('Triple Spoke Thin White'),
-    T('Pharohe Thin White'),
-    T('Tiger Style Thin White'),
-    T('Three Wheelin Thin White'),
-    T('Big Bar Thin White'),
-    T('Biohazard Thin White'),
-    T('Waves Thin White'),
-    T('Lick Lick Thin White'),
-    T('Spiralizer Thin White'),
-    T('Hypnotics Thin White'),
-    T('Psycho-Delic Thin White'),
-    T('Half Cut Thin White'),
-    T('Super Electric Thin White'),
-    T('OG Hunnets Medium White'),
-    T('OG Hunnets (Chrome Lip) Medium White'),
-    T('Knock-Offs Medium White'),
-    T('Knock-Offs (Chrome Lip) Medium White'),
-    T('Spoked Out Medium White'),
-    T('Spoked Out (Chrome Lip) Medium White'),
-    T('Vintage Wire Medium White'),
-    T('Vintage Wire (Chrome Lip) Medium White'),
-    T('Smoothie Medium White'),
-    T('Smoothie (Chrome Lip) Medium White'),
-    T('Smoothie (Solid Color) Medium White'),
-    T('Rod Me Up Medium White'),
-    T('Rod Me Up (Chrome Lip) Medium White'),
-    T('Rod Me Up (Solid Color) Medium White'),
-    T('Clean Medium White'),
-    T('Lotta Chrome Medium White'),
-    T('Spindles Medium White'),
-    T('Viking Medium White'),
-    T('Triple Spoke Medium White'),
-    T('Pharohe Medium White'),
-    T('Tiger Style Medium White'),
-    T('Three Wheelin Medium White'),
-    T('Big Bar Medium White'),
-    T('Biohazard Medium White'),
-    T('Waves Medium White'),
-    T('Lick Lick Medium White'),
-    T('Spiralizer Medium White'),
-    T('Hypnotics Medium White'),
-    T('Psycho-Delic Medium White'),
-    T('Half Cut Medium White'),
-    T('Super Electric Medium White'),
-    T('OG Hunnets Thick White'),
-    T('OG Hunnets (Chrome Lip) Thick White'),
-    T('Knock-Offs Thick White'),
-    T('Knock-Offs (Chrome Lip) Thick White'),
-    T('Spoked Out Thick White'),
-    T('Spoked Out (Chrome Lip) Thick White'),
-    T('Vintage Wire Thick White'),
-    T('Vintage Wire (Chrome Lip) Thick White'),
-    T('Smoothie Thick White'),
-    T('Smoothie (Chrome Lip) Thick White'),
-    T('Smoothie (Solid Color) Thick White'),
-    T('Rod Me Up Thick White'),
-    T('Rod Me Up (Chrome Lip) Thick White'),
-    T('Rod Me Up (Solid Color) Thick White'),
-    T('Clean Thick White'),
-    T('Lotta Chrome Thick White'),
-    T('Spindles Thick White'),
-    T('Viking Thick White'),
-    T('Triple Spoke Thick White'),
-    T('Pharohe Thick White'),
-    T('Tiger Style Thick White'),
-    T('Three Wheelin Thick White'),
-    T('Big Bar Thick White'),
-    T('Biohazard Thick White'),
-    T('Waves Thick White'),
-    T('Lick Lick Thick White'),
-    T('Spiralizer Thick White'),
-    T('Hypnotics Thick White'),
-    T('Psycho-Delic Thick White'),
-    T('Half Cut Thick White'),
-    T('Super Electric Thick White'),
-    T('OG Hunnets Red Line'),
-    T('OG Hunnets (Chrome Lip) Red Line'),
-    T('Knock-Offs Red Line'),
-    T('Knock-Offs (Chrome Lip) Red Line'),
-    T('Spoked Out Red Line'),
-    T('Spoked Out (Chrome Lip) Red Line'),
-    T('Vintage Wire Red Line'),
-    T('Vintage Wire (Chrome Lip) Red Line'),
-    T('Smoothie Red Line'),
-    T('Smoothie (Chrome Lip) Red Line'),
-    T('Smoothie (Solid Color) Red Line'),
-    T('Rod Me Up Red Line'),
-    T('Rod Me Up (Chrome Lip) Red Line'),
-    T('Rod Me Up (Solid Color) Red Line'),
-    T('Clean Red Line'),
-    T('Lotta Chrome Red Line'),
-    T('Spindles Red Line'),
-    T('Viking Red Line'),
-    T('Triple Spoke Red Line'),
-    T('Pharohe Red Line'),
-    T('Tiger Style Red Line'),
-    T('Three Wheelin Red Line'),
-    T('Big Bar Red Line'),
-    T('Biohazard Red Line'),
-    T('Waves Red Line'),
-    T('Lick Lick Red Line'),
-    T('Spiralizer Red Line'),
-    T('Hypnotics Red Line'),
-    T('Psycho-Delic Red Line'),
-    T('Half Cut Red Line'),
-    T('Super Electric Red Line'),
-    T('OG Hunnets Blue Line'),
-    T('OG Hunnets (Chrome Lip) Blue Line'),
-    T('Knock-Offs Blue Line'),
-    T('Knock-Offs (Chrome Lip) Blue Line'),
-    T('Spoked Out Blue Line'),
-    T('Spoked Out (Chrome Lip) Blue Line'),
-    T('Vintage Wire Blue Line'),
-    T('Vintage Wire (Chrome Lip) Blue Line'),
-    T('Smoothie Blue Line'),
-    T('Smoothie (Chrome Lip) Blue Line'),
-    T('Smoothie (Solid Color) Blue Line'),
-    T('Rod Me Up Blue Line'),
-    T('Rod Me Up (Chrome Lip) Blue Line'),
-    T('Rod Me Up (Solid Color) Blue Line'),
-    T('Clean Blue Line'),
-    T('Lotta Chrome Blue Line'),
-    T('Spindles Blue Line'),
-    T('Viking Blue Line'),
-    T('Triple Spoke Blue Line'),
-    T('Pharohe Blue Line'),
-    T('Tiger Style Blue Line'),
-    T('Three Wheelin Blue Line'),
-    T('Big Bar Blue Line'),
-    T('Biohazard Blue Line'),
-    T('Waves Blue Line'),
-    T('Lick Lick Blue Line'),
-    T('Spiralizer Blue Line'),
-    T('Hypnotics Blue Line'),
-    T('Psycho-Delic Blue Line'),
-    T('Half Cut Blue Line'),
-    T('Super Electric Blue Line'),
-}
-Bw = {
-    T('Speedway'),
-    T('Street Special'),
-    T('Racer'),
-    T('Track Star'),
-    T('Overlord'),
-    T('Trident'),
-    T('Triple Threat'),
-    T('Stilleto'),
-    T('Wires'),
-    T('Bobber'),
-    T('Solidus'),
-    T('Ice Shield'),
-    T('Loops'),
-    T('Chrome Speedway'),
-    T('Chrome Street Special'),
-    T('Chrome Racer'),
-    T('Chrome Track Star'),
-    T('Chrome Overlord'),
-    T('Chrome Trident'),
-    T('Chrome Triple Threat'),
-    T('Chrome Stilleto'),
-    T('Chrome Wires'),
-    T('Chrome Bobber'),
-    T('Chrome Solidus'),
-    T('Chrome Ice Shield'),
-    T('Chrome Loops'),
-    T('Romper Racing'),
-    T('Warp Drive'),
-    T('Snowflake'),
-    T('Holy Spoke'),
-    T('Old Skool Triple'),
-    T('Futura'),
-    T('Quarter Mile King'),
-    T('Cartwheel'),
-    T('Double Five'),
-    T('Shuriken'),
-    T('Simple Six'),
-    T('Celtic'),
-    T('Razer'),
-    T('Twisted'),
-    T('Morning Star'),
-    T('Jagged Spokes'),
-    T('Eidolon'),
-    T('Enigma'),
-    T('Big Spokes'),
-    T('Webs'),
-    T('Hotplate'),
-    T('Bobsta'),
-    T('Grouch'),
-}
-Hew = {
-    T('Shadow'),
-    T('Hyper'),
-    T('Blade'),
-    T('Diamond'),
-    T('Supa Gee'),
-    T('Chromatic Z '),
-    T('Mercie Ch.Lip'),
-    T('Obey RS'),
-    T('GT Chrome'),
-    T('Cheetah R'),
-    T('Solar'),
-    T('Split Ten'),
-    T('Dash VIP'),
-    T('LozSpeed Ten'),
-    T('Carbon Inferno'),
-    T('Carbon Shadow'),
-    T('Carbonic Z'),
-    T('Carbon Solar'),
-    T('Cheetah Carbon R'),
-    T('Carbon S Racer'),
-    T('Chrome Shadow'),
-    T('Chrome Hyper'),
-    T('Chrome Blade'),
-    T('Chrome Diamond'),
-    T('Chrome Supa Gee'),
-    T('Chrome Chromatic Z '),
-    T('Chrome Mercie Ch.Lip'),
-    T('Chrome Obey RS'),
-    T('Chrome GT Chrome'),
-    T('Chrome Cheetah R'),
-    T('Chrome Solar'),
-    T('Chrome Split Ten'),
-    T('Chrome Dash VIP'),
-    T('Chrome LozSpeed Ten'),
-    T('Chrome Carbon Inferno'),
-    T('Chrome Carbon Shadow'),
-    T('Chrome Carbonic Z'),
-    T('Chrome Carbon Solar'),
-    T('Chrome Cheetah Carbon R'),
-    T('Chrome Carbon S Racer'),
-}
- 
- Lw = {
-    T('Flares'),
-    T('Wired'),
-    T('Triple Golds'),
-    T('Big Worm'),
-    T('Seven Fives'),
-    T('Split Six'),
-    T('Fresh Mesh'),
-    T('Lead Sled'),
-    T('Turbine'),
-    T('Super Fin'),
-    T('Classic Rod'),
-    T('Dollar'),
-    T('Dukes'),
-    T('Low Five'),
-    T('Gooch'),
-    T('Chrome Flare'),
-    T('Chrome Wired'),
-    T('Chrome Triple Golds'),
-    T('Chrome Big Worm'),
-    T('Chrome Seven Fives'),
-    T('Chrome Split Six'),
-    T('Chrome Fresh Mesh'),
-    T('Chrome Lead Sled'),
-    T('Chrome Turbine'),
-    T('Chrome Super Fin'),
-    T('Chrome Classic Rod'),
-    T('Chrome Dollar'),
-    T('Chrome Dukes'),
-    T('Chrome Low Five'),
-    T('Chrome Gooch'),
-}
- 
- Mw = {
-    T('Classic Five'),
-    T('Dukes'),
-    T('Muscle Freak'),
-    T('Kracka'),
-    T('Azreal'),
-    T('Mecha'),
-    T('Black Top'),
-    T('Drag SPL'),
-    T('Revolver'),
-    T('Classic Rod '),
-    T('Fairlie'),
-    T('Spooner'),
-    T('Five Star'),
-    T('Old School'),
-    T('El Jefe'),
-    T('Dodman'),
-    T('Six Gun'),
-    T('Mercenary'),
-    T('Chrome Classic Five'),
-    T('Chrome Dukes'),
-    T('Chrome Muscle Freak'),
-    T('Chrome Kracka'),
-    T('Chrome Azreal'),
-    T('Chrome Mecha'),
-    T('Chrome Black Top'),
-    T('Chrome Drag SPL'),
-    T('Chrome Revolver'),
-    T('Chrome Classic Rod '),
-    T('Chrome Fairlie'),
-    T('Chrome Spooner'),
-    T('Chrome Five Star'),
-    T('Chrome Old School'),
-    T('Chrome El Jefe'),
-    T('Chrome Dodman'),
-    T('Chrome Six Gun'),
-    T('Chrome Mercenary'),
-
-}
- 
- Orw = {
-    T('Raider'),
-    T('Mudslinger'),
-    T('Nevis'),
-    T('Cairngorm'),
-    T('Amazon'),
-    T('Challenger'),
-    T('Dune Basher'),
-    T('Five Star'),
-    T('Rock Crawler'),
-    T('Mill Spec Steelie'),
-    T('Chrome Raider'),
-    T('Chrome Mudslinger'),
-    T('Chrome Nevis'),
-    T('Chrome Cairngorm'),
-    T('Chrome Amazon'),
-    T('Chrome Challenger'),
-    T('Chrome Dune Basher'),
-    T('Chrome Five Star'),
-    T('Chrome Rock Crawler'),
-    T('Chrome Mill Spec Steelie'),
-    T('Retro Steelie'),
-    T('Heavy Duty Steelie'),
-    T('Concave Steelie'),
-    T('Police Issue Steelie'),
-    T('Lightweight Steelie'),
-    T('Dukes'),
-    T('Avalanche'),
-    T('Mountain Man'),
-    T('Rigde Climber'),
-    T('Concave 5'),
-    T('Flat Six'),
-    T('All Terrain Monster'),
-    T('Drag SPL'),
-    T('Concave Rally Master'),
-    T('Rugged Snowflake'),
-}
- 
- Rw = {
-    T('Classic 5'),
-    T('Classic 5 (Striped)'),
-    T('Retro Star'),
-    T('Retro Star (Striped)'),
-    T('Triplex'),
-    T('Triplex (Striped)'),
-    T('70s Spec'),
-    T('70s Spec (Striped)'),
-    T('Super 5R'),
-    T('Super 5R (Striped)'),
-    T('Speedster'),
-    T('Speedster (Striped)'),
-    T('GP-90'),
-    T('GP-90 (Striped)'),
-    T('Superspoke'),
-    T('Superspoke (Striped)'),
-    T('Gridline'),
-    T('Gridline (Striped)'),
-    T('Snowflake'),
-    T('Snowflake (Striped)'),
-}
- 
- Spw = {
-    T('Inferno'),
-    T('Deep Five'),
-    T('Lozspeed Mk.V'),
-    T('Diamond Cut'),
-    T('Chrono'),
-    T('Feroci RR'),
-    T('FiftyNine'),
-    T('Mercie'),
-    T('Synthetic Z'),
-    T('Organic Type 0'),
-    T('Endo v.1'),
-    T('GT One'),
-    T('Duper 7'),
-    T('Uzer'),
-    T('GroundRide'),
-    T('S Racer'),
-    T('Venum'),
-    T('Cosmo'),
-    T('Dash VIP'),
-    T('Ice Kid'),
-    T('Ruff Weld'),
-    T('Wangan Master'),
-    T('Super Five'),
-    T('Endo v.2'),
-    T('Split Six'),
-    T('Chrome Inferno'),
-    T('Chrome Deep Five'),
-    T('Chrome Lozspeed Mk.V'),
-    T('Chrome Diamond Cut'),
-    T('Chrome Chrono'),
-    T('Chrome Feroci RR'),
-    T('Chrome FiftyNine'),
-    T('Chrome Mercie'),
-    T('Chrome Synthetic Z'),
-    T('Chrome Organic Type 0'),
-    T('Chrome Endo v.1'),
-    T('Chrome GT One'),
-    T('Chrome Duper 7'),
-    T('Chrome Uzer'),
-    T('Chrome GroundRide'),
-    T('Chrome S Racer'),
-    T('Chrome Venum'),
-    T('Chrome Cosmo'),
-    T('Chrome Dash VIP'),
-    T('Chrome Ice Kid'),
-    T('Chrome Ruff Weld'),
-    T('Chrome Wangan Master'),
-    T('Chrome Super Five'),
-    T('Chrome Endo v.2'),
-    T('Chrome Split Six'),
-}
-
- Stw = {
-    T('Retro Steelie'),
-    T('Poverty Spec Steelie'),
-    T('Concave Steelie'),
-    T('Nebula'),
-    T('Hotring Steelie'),
-    T('Cup Champion'),
-    T('Stanced EG Custom'),
-    T('Kracka Custom'),
-    T('Dukes Custom'),
-    T('Endo v.3 Custom'),
-    T('V8 Killer'),
-    T('Fujiwara Custom'),
-    T('Cosmo MKII'),
-    T('Aero Star'),
-    T('Hype Five'),
-    T('Ruff Weld Mega Deep '),
-    T('Mercie Concave'),
-    T('Sugoi Concave'),
-    T('Synthetic Z Concave'),
-    T('Endo v.4 Dished'),
-    T('Hyperfresh'),
-    T('Truffade Concave'),
-    T('Organic Type II'),
-    T('Big Mamba'),
-    T('Deep Flake'),
-    T('Cosmo MKIII'),
-    T('Concave Racer'),
-    T('Deep Flake Reverse'),
-    T('Wild Wagon'),
-    T('Concave Mega Mesh'),
-}
-
- Suw = {
-    T('VIP'),
-    T('Benefactor'),
-    T('Cosmo'),
-    T('Bippu'),
-    T('Royal Six '),
-    T('Fagorme'),
-    T('Deluxe'),
-    T('Iced Out'),
-    T('Cognoscenti'),
-    T('LozSpeed Ten'),
-    T('Supernova'),
-    T('Obey RS'),
-    T('LozSpeed Baller'),
-    T('Extravaganzo'),
-    T('Split Six'),
-    T('Empowered'),
-    T('Sunrise'),
-    T('Dash VIP'),
-    T('Cutter'),
-    T('Chrome VIP'),
-    T('Chrome Benefactor'),
-    T('Chrome Cosmo'),
-    T('Chrome Bippu'),
-    T('Chrome Royal Six '),
-    T('Chrome Fagorme'),
-    T('Chrome Deluxe'),
-    T('Chrome Iced Out'),
-    T('Chrome Cognoscenti'),
-    T('Chrome LozSpeed Ten'),
-    T('Chrome Supernova'),
-    T('Chrome Obey RS'),
-    T('Chrome LozSpeed Baller'),
-    T('Chrome Extravaganzo'),
-    T('Chrome Split Six'),
-    T('Chrome Empowered'),
-    T('Chrome Sunrise'),
-    T('Chrome Dash VIP'),
-    T('Chrome Cutter'),
-}
-
- Trw = {
-    T('Rally Throwback'),
-    T('Gravel Trap'),
-    T('Stove Top'),
-    T('Stove Top Mesh'),
-    T('Retro 3 Piece'),
-    T('Rally Monoblock'),
-    T('Forged 5'),
-    T('Split Star'),
-    T('Speed Boy'),
-    T('90s Running'),
-    T('Tropos'),
-    T('Exos'),
-    T('High Five'),
-    T('Super Luxe'),
-    T('Pure Business'),
-    T('Pepper Pot'),
-    T('Blacktop Blender'),
-    T('Throwback'),
-    T('Expressway'),
-    T('Hidden Six'),
-    T('Dinka SPL'),
-    T('Retro Turbofan'),
-    T('Conical Turbofan'),
-    T('Ice Storm'),
-    T('Super Turbine'),
-    T('Modern Mesh'),
-    T('Forged Star'),
-    T('Snowflake'),
-    T('Giga Mesh'),
-    T('Mesh Meister'),
-}
-
- Tuw = {
-    T('Cosmo'),
-    T('Super Mesh'),
-    T('Outsider'),
-    T('Rollas'),
-    T('Driftmeister'),
-    T('Slicer'),
-    T('El Quatro'),
-    T('Dubbed'),
-    T('Five Star'),
-    T('Slideways'),
-    T('Apex'),
-    T('Stanced EG'),
-    T('Countersteer'),
-    T('Endo v.1'),
-    T('Endo v.2 Dish'),
-    T('Gruppe Z'),
-    T('Choku-Dori'),
-    T( 'Chicane'),
-    T('Saisoku'),
-    T('Dished Eight'),
-    T('Fujiwara'),
-    T('Zokusha'),
-    T('Battle VIII'),
-    T('Rally Master'),
-    T('Chrome Cosmo'),
-    T('Chrome Super Mesh'),
-    T('Chrome Outsider'),
-    T('Chrome Rollas'),
-    T('Chrome Driftmeister'),
-    T('Chrome Slicer'),
-    T('Chrome El Quatro'),
-    T('Chrome Dubbed'),
-    T('Chrome Five Star'),
-    T('Chrome Slideways'),
-    T('Chrome Apex'),
-    T('Chrome Stanced EG'),
-    T('Chrome Countersteer'),
-    T('Chrome Endo v.1'),
-    T('Chrome Endo v.2 Dish'),
-    T('Chrome Gruppe Z'),
-    T('Chrome Choku-Dori'),
-    T('Chrome Chicane'),
-    T('Chrome Saisoku'),
-    T('Chrome Dished Eight'),
-    T('Chrome Fujiwara'),
-    T('Chrome Zokusha'),
-    T('Chrome Battle VIII'),
-    T('Chrome Rally Master'),
-}
-
-    Lighc = {
-        T('White'),
-        T('Blue'),
-        T('Electric Blue'),
-        T('Mint Green'),
-        T('Lime Green'),
-        T('Yellow'),
-        T('Golden Shower'),
-        T('Orange'),
-        T('Red'),
-        T('Pony Pink'),
-        T('Hot Pink'),
-        T('Purple'),
-        T('Blacklight')
-
-    }
-
-    Vehtogs = {
-    {19 , T("Turbo")},
-    {21 , T("Tire Smoke")},
-    {23 , T("Xenon Headlights")},
-    }
-
- Vehopts = { 
-    {1 , T("Spoilers")},
-    {2 , T("Front Bumper / Countermeasures")},
-    {3 , T("Rear Bumper")},
-    {4 , T("Side Skirt")},
-    {5 , T("Exhaust")},
-    {6 , T("Frame")},
-    {7 , T("Grille")},
-    {8 , T("Hood")},
-    {9 , T("Fender")},
-    {10 , T("Right Fender")},
-    {11 , T("Roof / Weapons")},
-    {12 , T("Engine")},
-    {13 , T("Brakes")},
-    {14 , T("Transmission")},
-    {15 , T("Horns")},
-    {16 , T("Suspension")},
-    {17 , T("Armour")},
-    {24 , T("Front Wheels")},
-    {25 , T("Motorcycle Back Wheel Design")},
-    {26 , T("Plate Holders")},
-    {28 , T("Trim Design")},
-    {29 , T("Ornaments")},
-    {31 , T("Dial Design")},
-    {34 , T("Steering Wheel")},
-    {35 , T("Shifter Leavers")},
-    {36 , T("Plaques")},
-    {39 , T("Hydraulics")},
-    {49 , T("Livery")},
-    }
-
-Leyen = {
-    T('Railgun'),
-    T('Tactical Rifle'),
-    T('Heavy Sniper MK2'),
-    T('Combat MG MK2'),
-    T('Special Carbine MK2'),
-    T('Rockets'),
-    T('原子能'),
-    T('手榴弹'),
-    T('烟雾弹'),
-    T('霰弹枪'),
-    T('雪球'),
-    T('烟花'),
-}
-Leyel = {
-    'weapon_railgun',
-    'WEAPON_TACTICALRIFLE',
-    'WEAPON_HEAVYSNIPER_MK2',
-    'WEAPON_COMBATMG_MK2',
-    'WEAPON_SPECIALCARBINE_MK2',
-    'WEAPON_RPG',
-    'weapon_raypistol',
-    'weapon_grenadelauncher',
-    'weapon_grenadelauncher_smoke',
-    'weapon_combatshotgun',
-    'weapon_snowball',
-    'weapon_firework',
-}
- Spw = {
-    T('Inferno'),
-    T('Deep Five'),
-    T('Lozspeed Mk.V'),
-    T('Diamond Cut'),
-    T('Chrono'),
-    T('Feroci RR'),
-    T('FiftyNine'),
-    T('Mercie'),
-    T('Synthetic Z'),
-    T('Organic Type 0'),
-    T('Endo v.1'),
-    T('GT One'),
-    T('Duper 7'),
-    T('Uzer'),
-    T('GroundRide'),
-    T('S Racer'),
-    T('Venum'),
-    T('Cosmo'),
-    T('Dash VIP'),
-    T('Ice Kid'),
-    T('Ruff Weld'),
-    T('Wangan Master'),
-    T('Super Five'),
-    T('Endo v.2'),
-    T('Split Six'),
-    T('Chrome Inferno'),
-    T('Chrome Deep Five'),
-    T('Chrome Lozspeed Mk.V'),
-    T('Chrome Diamond Cut'),
-    T('Chrome Chrono'),
-    T('Chrome Feroci RR'),
-    T('Chrome FiftyNine'),
-    T('Chrome Mercie'),
-    T('Chrome Synthetic Z'),
-    T('Chrome Organic Type 0'),
-    T('Chrome Endo v.1'),
-    T('Chrome GT One'),
-    T('Chrome Duper 7'),
-    T('Chrome Uzer'),
-    T('Chrome GroundRide'),
-    T('Chrome S Racer'),
-    T('Chrome Venum'),
-    T('Chrome Cosmo'),
-    T('Chrome Dash VIP'),
-    T('Chrome Ice Kid'),
-    T('Chrome Ruff Weld'),
-    T('Chrome Wangan Master'),
-    T('Chrome Super Five'),
-    T('Chrome Endo v.2'),
-    T('Chrome Split Six'),
-}
+end
 
 function Getmodcou(pid, mod)
     local pedm = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
@@ -4102,7 +1823,7 @@ function laser_eyes()
         MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS_IGNORE_ENTITY(boneCoord_R.x, boneCoord_R.y, boneCoord_R.z, camAim_x, camAim_y, camAim_z, 100, true, weaponHash, players.user_ped(), false, true, 100, players.user_ped(), 0)
     end
 end
---摇头丸
+-- 摇头丸
 function request_control_of_entity_once(ent)
     if not NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(ent) and util.is_session_started() then
         local netid = NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(ent)
@@ -4112,13 +1833,13 @@ function request_control_of_entity_once(ent)
 end
 local cur_state = 1
 function yaoptou()
-local all_peds = entities.get_all_peds_as_handles()
-    for k,ped in pairs(all_peds) do 
+    local all_peds = entities.get_all_peds_as_handles()
+    for k, ped in pairs(all_peds) do
         if not PED.IS_PED_A_PLAYER(ped) then
             request_control_of_entity_once(ped)
             TASK.CLEAR_PED_TASKS(ped)
             local c
-            if cur_state == 1 then 
+            if cur_state == 1 then
                 c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 1.0, 10.0)
             else
                 c = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(ped, 0.0, 1.0, -10.0)
@@ -4126,58 +1847,14 @@ local all_peds = entities.get_all_peds_as_handles()
             TASK.TASK_LOOK_AT_COORD(ped, c.x, c.y, c.z, -1, 0, 2)
         end
     end
-    if cur_state == 1 then 
-        cur_state = 2 
+    if cur_state == 1 then
+        cur_state = 2
     else
         cur_state = 1
     end
     wait(100)
-	end
---控制台
-function get_stand_stdout(tbl, n)
-    local all_lines = {}
-    local disp_lines = {}
-    local size = #tbl
-    local index = 1
-    if size >= n then 
-        index = #tbl - n
-    end
-
-    for i=index, size do 
-        local line = tbl[i]
-        local line_copy = line
-        if line ~= "" and line ~= '\n' then
-            all_lines[#all_lines + 1] = line
-            if not timestamp_toggle then
-               -- at this point, the line is already added to all lines, so we can just customize it and it wont affect STDOUT clipboard copy
-                local _, second_segment = string.partition(line, ']')
-                if second_segment ~= nil then
-                    line = second_segment
-                end
-            end
-            if string.len(line) > max_chars then
-                disp_lines[#disp_lines + 1] = line:sub(1, max_chars) .. ' ...'
-            else
-                disp_lines[#disp_lines + 1] = line
-            end
-        end
-    end
-
-    -- full_stdout exists so that we can copy the entire console output without "aesthetic" changes or trimming
-    -- disp_stdout is the aesthetic, possibly-formatted version that you actually see in-game, WITH trimming
-    full_stdout = table.concat(all_lines, '\n')
-    disp_stdout = table.concat(disp_lines, '\n')
 end
 
-function get_last_lines(file)
-    local f = io.open(file, "r")
-    local len = f:seek("end")
-    f:seek("set", len - max_lines*1000)
-    local text = f:read("*a")
-    lines = string.split(text, '\n')
-    f:close()
-    get_stand_stdout(lines, max_lines)
-end
 --阻止传出同步的信息
 function BlockSyncs(pid, callback)
 	for _, i in ipairs(players.list(false, true, true)) do
@@ -4355,7 +2032,7 @@ function initial_d_score_thread()
                 else
                     if is_drifting then
                         is_drifting = false
-                        notify("总漂移得分: " .. drift_score)
+                        gtoast("总漂移得分: " .. drift_score)
                     end
                     drift_score = 0
                 end
@@ -4369,7 +2046,7 @@ thrust_cam_dir_add = 1.25
 before_vel = {x = 1, y = 1, z = 1}
 function cam_direction()
 local camRot = CAM.GET_FINAL_RENDERED_CAM_ROT(2)
--- credits to jinxscript
+
 local inst = v3.new()
 v3.set(inst,CAM.GET_FINAL_RENDERED_CAM_ROT(2))
 local tmp = v3.toDir(inst)
@@ -5983,7 +3660,7 @@ function undead()
 end
 
 function autoaccept()
-    local message_hash = Jinx.GET_WARNING_SCREEN_MESSAGE_HASH()
+    local message_hash = HUD.GET_WARNING_SCREEN_MESSAGE_HASH()
     if message_hash == 15890625 or message_hash == -398982408 or message_hash == -587688989 then
         PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1.0)
         wait(50)
@@ -6341,43 +4018,8 @@ local anim2 = "trev_jerking_off_loop"
 local anim = "shit_loop_trev"
 local bigasscircle = util.joaat("ar_prop_ar_neon_gate4x_04a")
 local ufo = util.joaat("sum_prop_dufocore_01a")
-local num = {
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31",
-    "32",
-    "33",
-    "34",
-    "35"
-}
+local num = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+             "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35"}
 local c1
 local c2
 local c3
@@ -6495,8 +4137,8 @@ function jedmode()
 end
 
 object = 0
-local format0 = "按 W A S D 来使用地毯式骑行"
-local format1 = "按 Shift 以移动得更快"
+local format0 = "按WASD来使用地毯式移动"
+local format1 = "按Shift以移动得更快\n按空格上升,按Ctrl下降"
 function carpetridexx()
     if state == 0 then
         local objHash = util.joaat("p_cs_beachtowel_01_s")
@@ -6765,7 +4407,7 @@ end
 
 for _,id in ipairs(masterid) do
     if players.get_name(players.user()) == id.mid then
-        menu.set_menu_name(G, "GTLua VIP "..GT_version.." 大师星探版 (Beta Preview)")
+        menu.set_menu_name(G, "GTLua Preview Beta "..GT_version.." ")
     end
 end
 
@@ -7675,7 +5317,7 @@ function cargoodeffect()
 		for _, boneName in pairs({"wheel_lf", "wheel_lr", "wheel_rf", "wheel_rr"}) do
 			local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(vehicle, boneName)
 			GRAPHICS.USE_PARTICLE_FX_ASSET(effects[1])
-			WIRI_GRAPHICS.START_PARTICLE_FX_NON_LOOPED_ON_ENTITY_BONE(
+			GRAPHICS.START_PARTICLE_FX_NON_LOOPED_ON_ENTITY_BONE(
 				effects[2],
 				vehicle,
 				-0.05, 0.0, 0.0,
@@ -8547,7 +6189,452 @@ end
 
 --杂项
 -- 原创功能 缝合死妈
--- 
+Boolean = 0
+function moving_tube()
+    if Boolean == 0 then
+		local objHash = 2193278353
+		request_model(objHash)
+		request_anim_dict("missfbi3_sniping")
+		local localmyPed = players.user_ped()
+		local pos = ENTITY.GET_ENTITY_COORDS(localmyPed, false)
+		TASK.CLEAR_PED_TASKS_IMMEDIATELY(localmyPed)
+		loadobject = entities.create_object(objHash, pos)
+		ENTITY.ATTACH_ENTITY_TO_ENTITY(localmyPed, loadobject, 
+        0, 0, 0, 1.2, 1.0, 1.0,1, false, true, false, false, 0, true, false)
+		ENTITY.SET_ENTITY_COMPLETELY_DISABLE_COLLISION(loadobject, false, false)
+		TASK.TASK_PLAY_ANIM(localmyPed, "missfbi3_sniping", "prone_dave",
+        8.0, -8.0, -1, 1, 0.0, false, false, false)
+		Boolean = 1
+	elseif Boolean == 1 then
+		local objPos = ENTITY.GET_ENTITY_COORDS(loadobject, false)
+		local camrot = CAM.GET_GAMEPLAY_CAM_ROT(0)
+		ENTITY.SET_ENTITY_ROTATION(loadobject, camrot.x, camrot.y, camrot.z, 0, true)
+		local forwardV = ENTITY.GET_ENTITY_FORWARD_VECTOR(players.user_ped())
+		forwardV.z = 0.0
+		local rightV = v3.new(-forwardV.y, forwardV.x, 0.0) 
+		local delta = v3.new(0, 0, 0)
+		local speed = 0.2
+		if util.is_key_down(0x20) then
+			speed = 1.5
+		end
+        if util.is_key_down(0x45) then
+            local inst = v3.new()
+            v3.set(inst, CAM.GET_FINAL_RENDERED_CAM_ROT(2))
+            local tmp = v3.toDir(inst)
+            v3.set(inst, v3.get(tmp))
+            v3.mul(inst, 1000)
+            v3.set(tmp, CAM.GET_FINAL_RENDERED_CAM_COORD())
+            v3.add(inst, tmp)
+            local x, y, z = v3.get(inst)
+            local fingerPos = ENTITY.GET_ENTITY_COORDS(loadobject, false)
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS_IGNORE_ENTITY(fingerPos.x, fingerPos.y, fingerPos.z, x, y,
+            z, 1, true, util.joaat('vehicle_weapon_tank'), 0, true, false, 500.0, players.user_ped(), 0)
+        end
+		if util.is_key_down(0x57) then
+			delta = v3.new(forwardV)
+			delta:mul(speed)
+		end
+		if util.is_key_down(0x53)  then 
+			delta = v3.new(forwardV)
+			delta:mul(-speed)
+		end
+		if util.is_key_down(0x44)  then 
+			delta:add(rightV)
+			delta:mul(-speed)
+		end
+		if util.is_key_down(0x41) then 
+			delta:add(rightV)
+			delta:mul(speed)
+		end
+		if util.is_key_down(0x44) 
+        or util.is_key_down(0x41) then
+			delta.z = 0 
+		end
+		if util.is_key_down(0x10) then 
+			delta.z = speed
+		end
+		if util.is_key_down(0x11) then 
+			delta.z = -speed
+		end
+		local newPos = v3.new(objPos)
+		newPos:add(delta)
+		ENTITY.SET_ENTITY_COORDS(loadobject, newPos.x, newPos.y, newPos.z,
+        false, false, false, false)
+	end
+end
+
+function draw_centered_box()
+    local colors = {
+        {1, 0, 1, 1,0, 1, 1, 1}, 
+        {0, 1, 1, 1,1, 0, 1, 1},  
+        {1, 1, 0, 1,0, 1, 1, 1}  
+    }
+    for i = 1, 3 do 
+        local screen_width = 1 
+        local screen_height = 1 
+        local box_width = 0.005 * i 
+        local box_height = 0.009 * i 
+        local box_x = (screen_width - box_width) / 2 
+        local box_y = (screen_height - box_height) / 2 
+        directx.draw_line(box_x, box_y, box_x + box_width, box_y, table.unpack(colors[i])) 
+        directx.draw_line(box_x + box_width, box_y, box_x + box_width, box_y + box_height, table.unpack(colors[i])) 
+        directx.draw_line(box_x + box_width, box_y + box_height, box_x, box_y + box_height, table.unpack(colors[i])) 
+        directx.draw_line(box_x, box_y + box_height, box_x, box_y, table.unpack(colors[i])) -- 左边
+    end
+end
+
+try_spawned_entity = {}
+
+tableeVehicleClass = {
+        ["契约"] = 0,
+        ["轿车"] = 1,
+        ["SUV"] = 2,
+        ["轿跑"] = 3,
+        ["竞技"] = 4,
+        ["经典跑车"] = 5,
+        ["跑车"] = 6,
+        ["超跑"] = 7,
+        ["摩托"] = 8,
+        ["越野"] = 9,
+        ["工业"] = 10,
+        ["实用"] = 11,
+        ["货车"] = 12,
+        ["单车"] = 13,
+        ["船"] = 14,
+        ["直升机"] = 15,
+        ["飞机"] = 16,
+        ["服务"] = 17,
+        ["紧急"] = 18,
+        ["军事"] = 19,
+        ["商业"] = 20,
+        ["火车"] = 21,
+        ["开轮"] = 22,
+}
+
+function entity_owner_can_migrate(Entity, Toggle)
+    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(Entity), Toggle)
+end
+
+function table_remove(table_list, delete)
+    local table_delete <const> = {}
+    for k, v in pairs(table_list) do
+        if v == delete then
+            table.insert(table_delete, k)
+        end
+    end
+    table.sort(table_delete, function(a, b)
+        return a > b
+    end)
+    for _, index in ipairs(table_delete) do
+        table.remove(table_list, index)
+    end
+end
+
+local delete_entity_count = 0
+function entitydelete_entity(Entity)
+    if not PED.IS_PED_A_PLAYER(Entity) and not is_loading() then
+        if ENTITY.IS_ENTITY_A_VEHICLE(Entity) then
+            for pid in players.list(true, true, true) do
+                if is_ped_using_vehicle(PLAYER.PLAYER_PED_ID(pid), Entity) then
+                    return
+                end
+            end
+        end
+        delete_entity_count = delete_entity_count + 1
+        if entities.request_control(Entity, 2000) then
+            if ENTITY.IS_ENTITY_ATTACHED(Entity) then
+                ENTITY.DETACH_ENTITY(Entity)
+            end
+            if not ENTITY.IS_ENTITY_ATTACHED(Entity) then
+                if ENTITY.IS_ENTITY_A_VEHICLE(Entity) then
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Entity, true, true)
+                elseif ENTITY.IS_ENTITY_AN_OBJECT(Entity) then
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Entity, false, true)
+                elseif ENTITY.IS_ENTITY_A_PED(Entity) then
+                    ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Entity, false, false)
+                end
+                util.remove_blip(HUD.GET_BLIP_FROM_ENTITY(Entity))
+                entities.delete_by_handle(Entity)
+                STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(ENTITY.GET_ENTITY_MODEL(Entity))
+                table_remove(try_spawned_entity, Entity)
+            end
+        end
+    end
+    if delete_entity_count - 10 == 0 then
+        delete_entity_count = 0
+        wait()
+    end
+end
+
+function get_rgb(r, g, b, a)
+    return
+        r
+        | (g << 8)
+        | (b << 16)
+        | ((a or 0) << 24)
+end
+
+function random_rgb()
+    return get_rgb(math.random(0, 255), math.random(0, 255), math.random(0, 255))
+end
+
+function table_contains(table, element, mode)
+    for value_1, value_2 in pairs(table) do
+        if mode == "left" then
+            if value_1 == element then
+                return true
+            end
+        elseif mode == "right" then
+            if value_2 == element then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+function get_vehicle_model_name(veh)
+	local str = util.reverse_joaat(ENTITY.GET_ENTITY_MODEL(veh))
+	if str == "" then
+		return nil
+	end
+	return str
+end
+
+performance_mods = {11, 12, 13, 16}
+
+all_vehicle_mods = {}
+    for i = 0, 16 do
+        if not table_contains(performance_mods, i, "right") then
+            all_vehicle_mods[#all_vehicle_mods + 1] = i
+        end
+    end
+    for i = 23, 49 do
+        all_vehicle_mods[#all_vehicle_mods + 1] = i
+    end
+
+    local vehicle_wheel_types <const> = {}
+    for i = 0, 5 do
+        vehicle_wheel_types[#vehicle_wheel_types + 1] = i
+    end
+    for i = 7, 12 do
+    vehicle_wheel_types[#vehicle_wheel_types + 1] = i
+end
+
+function entityupgrade(Entity, only_perf)
+    VEHICLE.SET_VEHICLE_MOD_KIT(Entity, 0)
+        if not only_perf then
+            VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(Entity, "tryrun")
+            if not VEHICLE.IS_THIS_MODEL_A_BIKE(ENTITY.GET_ENTITY_MODEL(Entity)) then
+                VEHICLE.SET_VEHICLE_WHEEL_TYPE(Entity, vehicle_wheel_types[math.random(1, #vehicle_wheel_types)])
+            end
+            for _, mod in pairs(all_vehicle_mods) do
+                if VEHICLE.GET_NUM_VEHICLE_MODS(Entity, mod) > 0 then
+                    VEHICLE.SET_VEHICLE_MOD(Entity, mod, math.random(-1, VEHICLE.GET_NUM_VEHICLE_MODS(Entity, mod) - 1))
+                end
+            end
+            for neon_light = 0, 3 do
+                VEHICLE.SET_VEHICLE_NEON_ENABLED(Entity, neon_light, math.random(1, 2) == 1)
+            end
+            VEHICLE.SET_VEHICLE_NEON_COLOUR(Entity, random_rgb())
+            VEHICLE.SET_VEHICLE_WINDOW_TINT(Entity, math.random(0, 6))
+            VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(Entity, true)
+            VEHICLE.TOGGLE_VEHICLE_MOD(Entity, 22, math.random(1, 3) ~= 1)
+            if VEHICLE.IS_TOGGLE_MOD_ON(Entity, 22) then
+                VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(Entity, math.random(-1, 12))
+            end
+            VEHICLE.TOGGLE_VEHICLE_MOD(Entity, 20, math.random(1, 3) ~= 1)
+            if VEHICLE.IS_TOGGLE_MOD_ON(Entity, 20) then
+                if math.random(1, 3) == 1 then
+                    VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(Entity, 0, 0, 0)
+                else
+                    VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(Entity, math.random(0, 255), math.random(0, 255), math.random(0, 255))
+                end
+            end
+            VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(Entity, math.random(0, 5))
+            VEHICLE.SET_VEHICLE_MOD_COLOR_1(Entity, math.random(0, 6))
+            VEHICLE.SET_VEHICLE_MOD_COLOR_2(Entity, math.random(0, 6))
+            VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(Entity, random_rgb())
+            VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(Entity, random_rgb())
+            if not VEHICLE.IS_THIS_MODEL_A_HELI(ENTITY.GET_ENTITY_MODEL(Entity)) and not VEHICLE.IS_THIS_MODEL_A_PLANE(ENTITY.GET_ENTITY_MODEL(Entity)) then
+                for extra = 1, 14 do
+                    if VEHICLE.DOES_EXTRA_EXIST(Entity, extra) then
+                        VEHICLE.SET_VEHICLE_EXTRA(Entity, extra, math.random(1, 2) == 1)
+                    end
+                end
+            end
+            if VEHICLE.DOES_VEHICLE_HAVE_WEAPONS(Entity) then
+                if VEHICLE.GET_NUM_VEHICLE_MODS(Entity, 10) == 1 then
+                    VEHICLE.SET_VEHICLE_MOD(Entity, 10, 0)
+                else
+                    VEHICLE.SET_VEHICLE_MOD(Entity, 10, 1)
+                end
+            end
+        end
+        VEHICLE.TOGGLE_VEHICLE_MOD(Entity, 18, true)
+        for _, mod in pairs(performance_mods) do
+        VEHICLE.SET_VEHICLE_MOD(Entity, mod, VEHICLE.GET_NUM_VEHICLE_MODS(Entity, mod) - 1)
+    end
+end
+
+function fix_vehicle(Vehicle)
+    FIRE.STOP_ENTITY_FIRE(Vehicle)
+    GRAPHICS.REMOVE_DECALS_FROM_VEHICLE(Vehicle)
+    ENTITY.SET_ENTITY_RENDER_SCORCHED(Vehicle, false)
+    VEHICLE.SET_VEHICLE_BODY_HEALTH(Vehicle, 1000)
+    VEHICLE.SET_VEHICLE_DIRT_LEVEL(Vehicle, 0)
+    VEHICLE.SET_VEHICLE_PETROL_TANK_HEALTH(Vehicle, 1000)
+    VEHICLE.SET_VEHICLE_DEFORMATION_FIXED(Vehicle)
+    VEHICLE.SET_VEHICLE_ENGINE_HEALTH(Vehicle, 1000)
+    VEHICLE.SET_VEHICLE_FIXED(Vehicle)
+    VEHICLE.SET_VEHICLE_UNDRIVEABLE(Vehicle, false)
+end
+
+function entityspawn_entity(hash, pos, dir, can_migrate, invincible, visible, freeze, collision)
+    local spawn_entity, entity_type
+    request_model(hash)
+    local create_ped <const> = entities.create_ped(-1, hash, pos, dir)
+    if ENTITY.DOES_ENTITY_EXIST(create_ped) then
+        TASK.CLEAR_PED_TASKS_IMMEDIATELY(create_ped)
+        spawn_entity = create_ped
+        entity_type = 1
+    else
+        local create_vehicle <const> = entities.create_vehicle(hash, pos, dir)
+        if ENTITY.DOES_ENTITY_EXIST(create_vehicle) then
+            entityupgrade(create_vehicle, false)
+            fix_vehicle(create_vehicle)
+            spawn_entity = create_vehicle
+            entity_type = 2
+        else
+            local create_object <const> = entities.create_object(hash, pos)
+            if ENTITY.DOES_ENTITY_EXIST(create_object) then
+                spawn_entity = create_object
+                entity_type = 3
+            else
+                local create_world_object <const> = entities.create_object(hash, pos)
+                if ENTITY.DOES_ENTITY_EXIST(create_world_object) then
+                    spawn_entity = create_world_object
+                    entity_type = 4
+                end
+            end
+        end
+    end
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(spawn_entity, pos.x,pos.y,pos.z)
+    ENTITY.SET_ENTITY_ROTATION(spawn_entity, 0, 0, dir)
+    entity_owner_can_migrate(spawn_entity, can_migrate)
+    ENTITY.SET_ENTITY_INVINCIBLE(spawn_entity, invincible)
+    ENTITY.SET_ENTITY_VISIBLE(spawn_entity, visible)
+    if not visible then
+		entities.set_can_migrate(spawn_entity, 0)
+    end
+    if freeze then
+        ENTITY.FREEZE_ENTITY_POSITION(spawn_entity, true)
+    else
+        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(spawn_entity, 0, false)
+        PHYSICS.ACTIVATE_PHYSICS(spawn_entity)
+    end
+    ENTITY.SET_ENTITY_COLLISION(spawn_entity, collision, true)
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
+    try_spawned_entity[#try_spawned_entity + 1] = spawn_entity
+    return spawn_entity, entity_type
+end
+
+function is_loading()
+    return memory.read_int(memory.script_global(1575008)) ~= 66
+end
+
+function startExplosionEffect(aiment, aimpos)
+    if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_powerplay") then
+        STREAMING.REQUEST_NAMED_PTFX_ASSET("scr_powerplay")
+        while not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED("scr_powerplay") do
+            wait(0)
+        end
+    end
+    GRAPHICS.USE_PARTICLE_FX_ASSET("scr_powerplay")
+    GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(
+    'sp_powerplay_beast_appear_trails', aiment, 0, 0, 1, 0, 0, 0, 5)
+end
+
+function rotateAndMoveEntity(aiment)
+    local rot = 0
+    for time = 1, 100 do
+        ENTITY.SET_ENTITY_ROTATION(aiment, 0, 0, rot + time, 1, true)
+        ENTITY.SET_ENTITY_VELOCITY(aiment, 0, 0, time)
+        rot = rot + 20
+        wait()
+    end
+end
+
+G_GeneratedList = false
+function AddEntityToList(listName, handle, generatedCheck)
+    if ((not G_GeneratedList) and generatedCheck) or (not generatedCheck) then
+        G_GeneratedList = true
+        local lis = menu.list(menu.my_root(), listName .. " handle " .. handle, {}, "")
+        menu.action(lis, "Delete", {}, "", function()
+            entities.delete_by_handle(handle)
+            menu.delete(lis)
+            G_GeneratedList = false
+        end)
+        menu.action(lis, "Teleport to entity", {}, "", function()
+            local pos = ENTITY.GET_ENTITY_COORDS(handle)
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(GetLocalPed(), pos.x, pos.y, pos.z + 1, false, false, false)
+        end)
+        menu.action(lis, "Drive Entity", {}, "", function()
+            PED.SET_PED_INTO_VEHICLE(GetLocalPed(), handle, -1)
+        end)
+        menu.action(lis, "Teleport to you", {}, "", function()
+            local pos = ENTITY.GET_ENTITY_COORDS(GetLocalPed())
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(handle, pos.x, pos.y, pos.z + 1, false, false, false)
+        end)
+    end
+end
+--
+function yasha1(pid, model, position, heading)
+    STREAMING.REQUEST_MODEL(model)
+    while not STREAMING.HAS_MODEL_LOADED(model) do 
+        wait(25) 
+    end
+    local offset = {x = math.sin(math.rad(heading)) * 2, y = math.cos(math.rad(heading)) * 2, z = 3}
+    local spawnPos = {x = position.x - offset.x, y = position.y - offset.y, z = position.z - offset.z}
+    local khanjali = entities.create_vehicle(model, spawnPos, heading)
+    if not khanjali then 
+        return 
+    end
+    for i = 2, 4 do
+        local attachPos = (i == 2) and {x = 0, y = 0, z = 3} or {x = 0, y = 0, z = 0}
+        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(khanjali)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(khanjali, khanjali, 0, attachPos.x, attachPos.y, attachPos.z, 0, 0, 0, 
+        -180, false, true, false, false, 0, true)
+    end
+    ENTITY.SET_ENTITY_VISIBLE(khanjali, false)
+    wait(2300)
+    entities.delete_by_handle(khanjali)
+end
+
+function yasha2(pid, objectModel)
+    STREAMING.REQUEST_MODEL(objectModel)
+    while not STREAMING.HAS_MODEL_LOADED(objectModel) do
+        wait(0)
+    end
+    local pos = players.get_position(pid)
+    local vent_objs = {}
+    for i = -1.2, 1.2, 0.2 do
+        for j = -1.2, 1.2, 0.2 do
+            if i ~= 0 or j ~= 0 then
+                local vent = entities.create_object(objectModel, v3.new(pos.x + i, pos.y + j, pos.z - 2.4))
+                if vent then
+                    table.insert(vent_objs, vent)
+                    ENTITY.SET_ENTITY_VISIBLE(vent, false)
+                end
+            end
+        end
+    end
+    wait(275)
+    for _, obj in ipairs(vent_objs) do
+        entities.delete_by_handle(obj)
+    end
+end
+
 function loadModels(models)
     for _, model in ipairs(models) do
         STREAMING.REQUEST_MODEL(model)
@@ -8714,7 +6801,7 @@ spawnedObjects = {}
 spawnedVehicles = {}
 function deleteEntities(entitiesList)
     for _, entityID in ipairs(entitiesList) do
-            entities.delete_by_handle(entityID)
+        entities.delete_by_handle(entityID)
     end
     return {}
 end
@@ -8754,21 +6841,22 @@ function dectfadein(f)
     while sx do
 
         wait()
-
-        GRAPHICS.DRAW_RECT(.5, .01, 1, 0.01, 255, 80, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .02, 1, 0.01, 255, 100, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .03, 1, 0.01, 255, 120, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .04, 1, 0.01, 255, 140, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .05, 1, 0.01, 255, 160, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .06, 1, 0.01, 255, 180, 160, ctran)
-        GRAPHICS.DRAW_RECT(.5, .07, 1, 0.01, 255, 200, 160, ctran)
+        util.create_thread(function ()
+        
+            GRAPHICS.DRAW_RECT(.5, .01, 1, 0.01, 255, 80, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .02, 1, 0.01, 255, 100, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .03, 1, 0.01, 255, 120, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .04, 1, 0.01, 255, 140, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .05, 1, 0.01, 255, 160, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .06, 1, 0.01, 255, 180, 160, ctran)
+            GRAPHICS.DRAW_RECT(.5, .07, 1, 0.01, 255, 200, 160, ctran)
 
         ctran = ctran + 1
-
+        end)
     end
 end
 
-function master1(f)
+function master1(f, masterpid)
     starttime = os.time()
     --local ctran = 0
     local rainbowr = 255
@@ -8780,10 +6868,9 @@ function master1(f)
         util.create_thread(function ()
             dectfadein(f)
         end)
-
         wait()
         textX = lerp(textX, textEndPosition, speed)
-        local text = "~h~~italic~大师级星探 " .. mid
+        local text = "~h~~italic~GTLua Ultra VIP " .. masterpid
 
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -8812,7 +6899,7 @@ function master1(f)
     end
 end
 
-function master2(f)
+function master2(f, masterpid)
     starttime = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -8823,7 +6910,7 @@ function master2(f)
 
         wait()
         textX = lerp(textX, textEndPosition, speed)
-        local text = "~h~~italic~大师级星探 " .. mid .. " GTLua VIP"
+        local text = "~h~~italic~GTLua Ultra VIP " .. masterpid .. " 至臻皇榜"
 
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -8851,7 +6938,7 @@ function master2(f)
     end
 end
 
-function master3(f)
+function master3(f, masterpid)
     starttime = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -8861,7 +6948,7 @@ function master3(f)
 
         wait()
         textX = lerp(textX, textEndPosition, speed)
-        local text = "~h~~italic~大师级星探 " .. mid .. " 正在该战局"
+        local text = "~h~~italic~GTVIP 至臻皇榜 " .. masterpid .. " 正在该战局"
         HUD.SET_TEXT_SCALE(0.5, 0.4)
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -8889,7 +6976,7 @@ function master3(f)
     end
 end
 
-function master4(f)
+function master4(f, masterpid)
     starttime = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -8899,7 +6986,7 @@ function master4(f)
 
         wait()
         textX = lerp(textX - 0.0023, textEndPosition, speed)
-        local text = "~h~~italic~GRANDTOURINGVIP 大师级星探 " .. mid
+        local text = "~h~~italic~GRANDTOURINGVIP 至臻皇榜 " .. masterpid
 
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -8927,7 +7014,7 @@ function master4(f)
     end
 end
 
-function master5(f)
+function master5(f, masterpid)
     starttime = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -8937,7 +7024,7 @@ function master5(f)
 
         wait()
         textX = lerp(textX - 0.0050, textEndPosition, speed) -- 控制左滑出速度
-        local text = "~h~~italic~GRANDTOURINGVIP 星探大师 " .. mid
+        local text = "~h~~italic~GRANDTOURINGVIP 至臻皇榜会员 " .. masterpid
 
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -8987,7 +7074,7 @@ function dectfadeon(f)
     end
 end
 
-function master6(f)
+function master6(f, masterpid)
     starttime = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -9004,7 +7091,7 @@ function master6(f)
 
         wait()
         textX = lerp(textX + 0.0300, textEndPosition, speed) -- 控制左滑出速度
-        local text = "~h~~italic~GRANDTOURINGVIP 星探大师 " .. mid
+        local text = "~h~~italic~GRANDTOURINGVIP 至臻皇榜会员 " .. masterpid
 
         rainbowr = rainbowr + math.random(0, 3)
         rainbowg = rainbowg + math.random(0, 3)
@@ -9038,23 +7125,29 @@ function master6(f)
     end
 end
 
-function mastergt(f)
+function mastergt(f, masterpid)
     master = f
     while master do
-        
-        master1(f)
-        master2(f)
-        master3(f)
-        master4(f)
-        master5(f)
-        master6(f)
-        
+        wait()
+        master1(f, masterpid)
+
+        master2(f, masterpid)
+
+        master3(f, masterpid)
+
+        master4(f, masterpid)
+
+        master5(f, masterpid)
+
+        master6(f, masterpid)
+
         if master_index then
             master = false
         end
 
     end
 end
+
 --
 timerT = 0
 function InstantKillDoordrawText(text, x, y)
@@ -9544,7 +7637,7 @@ function renwuegaoqiang2()
 end    
 
 --至臻横幅
-function sxgt(f)
+function sxgt(f, sxpid)
     starttime8 = os.time()
     local rainbowr = 255
     local rainbowg = 255
@@ -9625,42 +7718,42 @@ function sxgt(f)
         HUD.SET_TEXT_OUTLINE(0)
         HUD.SET_TEXT_COLOUR(255, 255, 255, 255)
 
-        if playeridx == "hinrcituqzQZ" then
+        if sxpid == "hinrcituqzQZ" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 清歌 正在该战局")
-        elseif playeridx == "chen_you123" then
+        elseif sxpid == "chen_you123" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 辰悠 正在该战局")
-        elseif playeridx == "rudan891018" then
+        elseif sxpid == "rudan891018" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~湾湾 正在该战局")
-        elseif playeridx == "An_owQ" then
+        elseif sxpid == "An_owQ" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~Lin带着好大儿瑞思拜进入了战局")
-        elseif playeridx == "Mag7777V" or playeridx == "Magicswordstar" then
+        elseif sxpid == "Mag7777V" or sxpid == "Magicswordstar" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~闪耀至臻管理员 正在该战局")
-        elseif playeridx == "RhymeBear" then
+        elseif sxpid == "RhymeBear" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~italic~~h~~y~菲奥娜K1ng ~r~正在逆袭战局")
-        elseif playeridx == "Gods_daxiong" then
+        elseif sxpid == "Gods_daxiong" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 明月 正在该战局")
-        elseif playeridx == "YuukiAsuna17" then 
+        elseif sxpid == "YuukiAsuna17" then 
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~执掌神判的 YuukiAsuna17 在此降临")
-        elseif playeridx == "xyzkzero" then
+        elseif sxpid == "xyzkzero" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~执掌神判的 xyzkzero 在此降临")
-        elseif playeridx == "-ZackFair-" or playeridx == "Msinc" or playeridx == "Msincer" or playeridx == "WXH_666" then
+        elseif sxpid == "-ZackFair-" or sxpid == "Msinc" or sxpid == "Msincer" or sxpid == "WXH_666" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 人生若只如初见 正在逆袭战局")
-        elseif playeridx == "XiaoYuXin_qwq" then
+        elseif sxpid == "XiaoYuXin_qwq" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~italic~~h~~y~小~q~雨~b~祝~p~战~r~局~y~里~q~的~b~GT~p~玩~r~家~y~玩~q~的~r~开~b~心")
-        elseif playeridx == "ghosts_009" then
+        elseif sxpid == "ghosts_009" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~忽有故人心上过，回首山河已是冬")
-        elseif playeridx == "zxzppq" then
+        elseif sxpid == "zxzppq" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~r~中华人民共和国万岁")
-        elseif playeridx == "Doll0v0" then
+        elseif sxpid == "Doll0v0" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~妹妹最爱的Doll0v0正在此战局")
-        elseif playeridx == "Herykcz" then
+        elseif sxpid == "Herykcz" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~妹妹最爱的Herykcz正在此战局")
-        elseif playeridx == "kingpo030715" then
+        elseif sxpid == "kingpo030715" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~救世主kingpo加入了战局")
-        elseif playeridx == "sshanheya" then
+        elseif sxpid == "sshanheya" then
             util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~q~妹妹最爱的至臻皇榜在此战局")
         else
-            util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 "..playeridx.." 正在该战局")
+            util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~~y~至臻皇榜 "..sxpid.." 正在该战局")
         end
 
         HUD.END_TEXT_COMMAND_DISPLAY_TEXT(startX + 0.5, 0.380)
@@ -9671,13 +7764,14 @@ function sxgt(f)
     end
 end
 
-function hengfugt(f)
-    starttime = os.time()
+function hengfugt(f, targetplayer)
+    local starttime = os.time()
     local startX = -0.5
     local endX = 0.5
     local speed = 0.001
     hfgt = f
     while hfgt do
+
         wait()
         startX = startX + speed
         endX = endX + speed
@@ -9699,19 +7793,20 @@ function hengfugt(f)
         HUD.SET_TEXT_CENTRE(1)
         HUD.SET_TEXT_OUTLINE(0)
         HUD.SET_TEXT_COLOUR(255, 255, 255, 255)
-        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~GTVIP皇榜会员 " .. playerid .. " 正在该战局")
+        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~GTVIP皇榜会员 " .. targetplayer .. " 正在该战局")
         HUD.END_TEXT_COMMAND_DISPLAY_TEXT(startX + 0.5, 0.480)
 
         if os.time() - starttime >= 7 then
             hfgt = false
             return
         end
+
     end
 end
 
 --开发横幅
-function devhengfu(f)
-    starttime = os.time()
+function devhengfu(f, devt)
+    local starttime = os.time()
     local startX = -0.5
     local endX = 0.5
     local speed = 0.001
@@ -9724,7 +7819,7 @@ function devhengfu(f)
             startX = -0.5
             endX = 0.5
         end
-        
+
         GRAPHICS.DRAW_RECT(.5, .30, 1, 0.05, 255, 90, 160, 255)
         GRAPHICS.DRAW_RECT(.5, .31, 1, 0.05, 255, 160, 190, 255)
         GRAPHICS.DRAW_RECT(.5, .33, 1, 0.011, 255, 90, 160, 255)
@@ -9735,15 +7830,16 @@ function devhengfu(f)
         HUD.SET_TEXT_CENTRE(1)
         HUD.SET_TEXT_OUTLINE(0)
         HUD.SET_TEXT_COLOUR(255, 255, 255, 255)
-        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~GTVIP开发人员 " .. playerrid .. " 正在该战局")
+        util.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("~h~GTVIP开发人员 " .. devt .. " 正在该战局")
         HUD.END_TEXT_COMMAND_DISPLAY_TEXT(startX + 0.5, 0.285)
-        
-        if os.time() - starttime >= 7 then
-        devhf = false
+
+        if os.time() - starttime >= 6 then
+            devhf = false
+            return
         end
-        end
-        --devhf = false
     end
+end
+
 --入侵载具
 function control_vehicle(pid, output_toast, callback, opts)
     local vehicle = ent_func.get_player_vehicle_in_control(pid, opts)
@@ -9818,59 +7914,63 @@ function huanyingjiemian(f)
     end
 end
 --
-util.create_tick_handler(function()
+hyhandler = util.create_tick_handler(function()
     local alert_screen = GRAPHICS.REQUEST_SCALEFORM_MOVIE("MP_BIG_MESSAGE_FREEMODE")
-    
+
     local yPositionUp = -0.05
     local yPositionDown = 0.40
-    
+
     local i = 0
     while i < 300 do
-        local combinedText = "~h~~r~∑~y~G~g~R~q~A~p~N~f~D~p~T~g~O~b~U~q~R~p~I~k~N~g~G~p~V~y~I~g~P~r~∑~r~\n~h~~g~[".. PLAYER.GET_PLAYER_NAME(players.user()).. "]~y~VIP∑"
+        local combinedText =
+            "~h~~r~∑~y~G~g~R~q~A~p~N~f~D~p~T~g~O~b~U~q~R~p~I~k~N~g~G~p~V~y~I~g~P~r~∑~r~\n~h~~g~[" ..
+                PLAYER.GET_PLAYER_NAME(players.user()) .. "]~y~VIP∑"
         combinedText = combinedText:gsub("\n%s*", "\n") -- 移除换行后的空格
-        
+
         GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(alert_screen, "SHOW_SHARD_WASTED_MP_MESSAGE")
         GRAPHICS.DRAW_SCALEFORM_MOVIE(alert_screen, 0.5, yPositionUp, 1, 1, 255, 225, 255, 255)
         GRAPHICS.DRAW_SCALEFORM_MOVIE(alert_screen, 0.5, yPositionUp, 1, 1, 255, 225, 255, 255)
         GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING(combinedText)
         GRAPHICS.END_SCALEFORM_MOVIE_METHOD(alert_screen)
-        
+
         i = i + 1
         yPositionUp = yPositionUp + 0.0015
         wait()
     end
-    
-    
+
     local i = 0
     while i < 300 do
-        local combinedText = "~h~~r~∑~y~G~g~R~q~A~p~N~f~D~p~T~g~O~b~U~q~R~p~I~k~N~g~G~p~V~y~I~g~P~r~∑~r~\n~h~~g~[".. PLAYER.GET_PLAYER_NAME(players.user()).. "]~y~VIP∑"
+        local combinedText =
+            "~h~~r~∑~y~G~g~R~q~A~p~N~f~D~p~T~g~O~b~U~q~R~p~I~k~N~g~G~p~V~y~I~g~P~r~∑~r~\n~h~~g~[" ..
+                PLAYER.GET_PLAYER_NAME(players.user()) .. "]~y~VIP∑"
         combinedText = combinedText:gsub("\n%s*", "\n") -- 移除换行后的空格
-        
+
         GRAPHICS.BEGIN_SCALEFORM_MOVIE_METHOD(alert_screen, "SHOW_SHARD_WASTED_MP_MESSAGE")
         GRAPHICS.DRAW_SCALEFORM_MOVIE(alert_screen, 0.5, yPositionDown, 1, 1, 255, 225, 255, 255)
         GRAPHICS.DRAW_SCALEFORM_MOVIE(alert_screen, 0.5, yPositionDown, 1, 1, 255, 225, 255, 255)
         GRAPHICS.SCALEFORM_MOVIE_METHOD_ADD_PARAM_TEXTURE_NAME_STRING(combinedText)
         GRAPHICS.END_SCALEFORM_MOVIE_METHOD(alert_screen)
-        
+
         i = i + 1
         yPositionDown = yPositionDown - 0.0015
         wait()
     end
-    
-    
-    wait(1000000000)
+
+    wait()
+    util.stop_thread()
 end)
+
 --hundouluo
 function hunhuan9()
-hunhuan()
-hunhuan1()
-hunhuan2()
-hunhuan3()
-hunhuan4()
-hunhuan5()
-hunhuan6()
-hunhuan7()
-hunhuan8()
+    hunhuan()
+    hunhuan1()
+    hunhuan2()
+    hunhuan3()
+    hunhuan4()
+    hunhuan5()
+    hunhuan6()
+    hunhuan7()
+    hunhuan8()
 end
 --强制云保存
 function savedata()
@@ -10171,15 +8271,15 @@ function fku()
 if PED.IS_PED_A_PLAYER(players.user_ped()) then
     pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
     local c = players.get_position(players.user())
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 1, 1, 1, 255, 0, 0, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 2, 2, 2,  255, 128, 0, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 3, 3, 3, 255, 255, 0, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 5, 5, 5, 0, 255, 0, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 8, 8, 8, 0, 255, 255, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 13, 13, 13, 0, 75, 255, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 21, 21, 21, 128, 0, 255, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 34, 34, 34, 255, 0, 0, 255, false, true, 2, 0, 0, 0, false)
-    WIRI_GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 55, 55, 1, 255, 255, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 1, 1, 1, 255, 0, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 2, 2, 2,  255, 128, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 3, 3, 3, 255, 255, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 5, 5, 5, 0, 255, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 8, 8, 8, 0, 255, 255, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 13, 13, 13, 0, 75, 255, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 21, 21, 21, 128, 0, 255, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 34, 34, 34, 255, 0, 0, 255, false, true, 2, 0, 0, 0, false)
+    GRAPHICS.DRAW_MARKER(25, c.x, c.y, c.z-0.85, 0, 180, 0, 0, 180, 0, 55, 55, 1, 255, 255, 0, 255, false, true, 2, 0, 0, 0, false)
     end
 end
 --sb
@@ -10190,7 +8290,7 @@ function woshishabi(f)
     end
     wait()
     local pedp  = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-    gametag = WIRI_HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
+    gametag = HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
 end
 --上岛
 function sendscriptevent_three()--上岛
@@ -10652,7 +8752,7 @@ function topless(pid)
 --
 function biaoji(f)
     local pedp  = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-    gametag = WIRI_HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
+    gametag = HUD.CREATE_FAKE_MP_GAMER_TAG(pedp,"我是傻逼",false,false,"flakin",0)
 end
 --
 function first_to_upper(str)
@@ -10713,11 +8813,11 @@ BOATS = {}
     for _, veh in pairs(util.get_vehicles()) do 
         local mdl = first_to_upper(veh.name)
         local v_hash = util.joaat(mdl)
-        if WIRI_VEHICLE.IS_THIS_MODEL_A_CAR(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_A_BIKE(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_A_BICYCLE(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_A_QUADBIKE(v_hash) then
+        if VEHICLE.IS_THIS_MODEL_A_CAR(v_hash) or VEHICLE.IS_THIS_MODEL_A_BIKE(v_hash) or VEHICLE.IS_THIS_MODEL_A_BICYCLE(v_hash) or VEHICLE.IS_THIS_MODEL_A_QUADBIKE(v_hash) then
         CARS[#CARS+1] = mdl
-        elseif WIRI_VEHICLE.IS_THIS_MODEL_A_PLANE(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_A_HELI(v_hash) then 
+        elseif VEHICLE.IS_THIS_MODEL_A_PLANE(v_hash) or VEHICLE.IS_THIS_MODEL_A_HELI(v_hash) then 
         PLANES[#PLANES+1] = mdl
-        elseif WIRI_VEHICLE.IS_THIS_MODEL_A_BOAT(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_AN_AMPHIBIOUS_CAR(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_AN_AMPHIBIOUS_QUADBIKE(v_hash) or WIRI_VEHICLE.IS_THIS_MODEL_A_JETSKI(v_hash) then 
+        elseif VEHICLE.IS_THIS_MODEL_A_BOAT(v_hash) or VEHICLE.IS_THIS_MODEL_AN_AMPHIBIOUS_CAR(v_hash) or VEHICLE.IS_THIS_MODEL_AN_AMPHIBIOUS_QUADBIKE(v_hash) or VEHICLE.IS_THIS_MODEL_A_JETSKI(v_hash) then 
         BOATS[#BOATS+1] = mdl
     end
 end
@@ -10834,19 +8934,19 @@ end
 --
 function Quick_Enable(on)
     if on then
-        G_Self = GTluaScript.attach_before(GTluaScript.ref_by_path('Self>Movement'),GTluaScript.action(GTluaScript.shadow_root(), 'GTVIP自我选项', {""}, '', function()
+        G_Self = GTluaScript.attach_before(GTluaScript.ref_by_path('Self>Movement'),GTluaScript.action(GTluaScript.shadow_root(), 'GTLua 自我选项', {""}, '', function()
             menu.trigger_command(selflist)
         end))
-        G_Veh = GTluaScript.attach_before(GTluaScript.ref_by_path('Vehicle>Spawner'),GTluaScript.action(GTluaScript.shadow_root(), 'GTVIP载具选项', {""}, '', function()
+        G_Veh = GTluaScript.attach_before(GTluaScript.ref_by_path('Vehicle>Spawner'),GTluaScript.action(GTluaScript.shadow_root(), 'GTLua 载具选项', {""}, '', function()
             menu.trigger_command(carfly)
         end))
-        G_Online = GTluaScript.attach_before(GTluaScript.ref_by_path('Online>New Session'),GTluaScript.action(GTluaScript.shadow_root(), 'GTVIP线上选项', {""}, '', function()
+        G_Online = GTluaScript.attach_before(GTluaScript.ref_by_path('Online>New Session'),GTluaScript.action(GTluaScript.shadow_root(), 'GTLua 线上选项', {""}, '', function()
             menu.trigger_command(onlinemode)
         end))
-        G_World = GTluaScript.attach_before(GTluaScript.ref_by_path('World>Places'),GTluaScript.action(GTluaScript.shadow_root(), 'GTVIP世界选项', {""}, '', function()
+        G_World = GTluaScript.attach_before(GTluaScript.ref_by_path('World>Places'),GTluaScript.action(GTluaScript.shadow_root(), 'GTLua 世界选项', {""}, '', function()
             menu.trigger_command(lobbyFeats)
         end))
-        G_Game = GTluaScript.attach_before(GTluaScript.ref_by_path('Game>Disables'),GTluaScript.action(GTluaScript.shadow_root(), 'GTVIP游戏娱乐', {""}, '', function()
+        G_Game = GTluaScript.attach_before(GTluaScript.ref_by_path('Game>Disables'),GTluaScript.action(GTluaScript.shadow_root(), 'GTLua 游戏娱乐', {""}, '', function()
             menu.trigger_command(funfeatures)
         end))
     else
@@ -11273,7 +9373,7 @@ function sugercrash(pid)
     local old_pos = ENTITY.GET_ENTITY_COORDS(user, false)
     WEAPON.GIVE_DELAYED_WEAPON_TO_PED(user, 0xFBAB5776, 100, false)
     PLAYER.SET_PLAYER_HAS_RESERVE_PARACHUTE(players.user())
-    Jinx.SET_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user(), mdl)
+    PLAYER.SET_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user(), mdl)
     wait(50)
     local pos = players.get_position(pid)
     pos.z += 300
@@ -11291,7 +9391,7 @@ function sugercrash(pid)
         wait()
     until PED.GET_PED_PARACHUTE_STATE(user) ~= 1
     pcall(TASK.CLEAR_PED_TASKS_IMMEDIATELY, user)
-    Jinx.CLEAR_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user())
+    PLAYER.CLEAR_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user())
     pcall(ENTITY.SET_ENTITY_COORDS, user, old_pos.x, old_pos.y, old_pos.z, false, false)
     end)
 end
@@ -12328,7 +10428,7 @@ if players.exists(pid) then
                 wait()
             until PED.GET_PED_PARACHUTE_STATE(user) ~= 1
             pcall(TASK.CLEAR_PED_TASKS_IMMEDIATELY, user)
-            Jinx.CLEAR_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user())
+            PLAYER.CLEAR_PLAYER_RESERVE_PARACHUTE_MODEL_OVERRIDE(players.user())
             pcall(ENTITY.SET_ENTITY_COORDS, user, old_pos.x,old_pos.y,old_pos.z, false, false)
         end)
     end
@@ -12667,7 +10767,7 @@ wait(0)
 entities.delete_by_handle(vehicle1)
 end
 
---无效载具小飞机
+-- 无效载具小飞机
 function BadOutfitCrashV2(pid)
     local getEntityCoords = ENTITY.GET_ENTITY_COORDS
     local getPlayerPed = PLAYER.GET_PLAYER_PED
@@ -12677,8 +10777,11 @@ function BadOutfitCrashV2(pid)
         util.create_thread(function()
             RqModel(hashes[i])
             local pcoords = getEntityCoords(getPlayerPed(pid))
-            local veh =  VEHICLE.CREATE_VEHICLE(hashes[i], pcoords.x + 1000, pcoords.y + 1000, pcoords.z + 1000, math.random(0, 360), true, true, false)
-            for a = 1, 20 do NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh) end
+            local veh = VEHICLE.CREATE_VEHICLE(hashes[i], pcoords.x + 1000, pcoords.y + 1000, pcoords.z + 1000,
+                math.random(0, 360), true, true, false)
+            for a = 1, 20 do
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+            end
             VEHICLE.SET_VEHICLE_MOD_KIT(veh, 0)
             for j = 0, 49 do
                 local mod = VEHICLE.GET_NUM_VEHICLE_MODS(veh, j) - 1
@@ -12686,7 +10789,9 @@ function BadOutfitCrashV2(pid)
                 VEHICLE.TOGGLE_VEHICLE_MOD(veh, mod, true)
             end
             for j = 0, 20 do
-                if VEHICLE.DOES_EXTRA_EXIST(veh, j) then VEHICLE.SET_VEHICLE_EXTRA(veh, j, true) end
+                if VEHICLE.DOES_EXTRA_EXIST(veh, j) then
+                    VEHICLE.SET_VEHICLE_EXTRA(veh, j, true)
+                end
             end
             VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(veh, false)
             VEHICLE.SET_VEHICLE_WINDOW_TINT(veh, 1)
@@ -12698,29 +10803,30 @@ function BadOutfitCrashV2(pid)
                 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(veh, pcoords.x, pcoords.y, pcoords.z, false, false, false)
                 wait()
             end
-            vehicles[#vehicles+1] = veh
+            vehicles[#vehicles + 1] = veh
         end)
     end
     wait(500)
-    menu.trigger_commands("explode" ..  players.get_name(pid))
+    menu.trigger_commands("explode" .. players.get_name(pid))
     for _, v in pairs(vehicles) do
         NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(v)
         entities.delete_by_handle(v)
     end
 end
-        function RqModel (hash)
-            STREAMING.REQUEST_MODEL(hash)
-            local count = 0
-            notification("正在请求模型...")
-            while not STREAMING.HAS_MODEL_LOADED(hash) and count < 100 do
-                STREAMING.REQUEST_MODEL(hash)
-                count = count + 1
-                wait(10)
-            end
-            if not STREAMING.HAS_MODEL_LOADED(hash) then
-                notification("已尝试1秒,无法加载此指定模型!")
-            end
-        end
+function RqModel(hash)
+    STREAMING.REQUEST_MODEL(hash)
+    local count = 0
+    notification("正在请求...")
+    while not STREAMING.HAS_MODEL_LOADED(hash) and count < 100 do
+        STREAMING.REQUEST_MODEL(hash)
+        count = count + 1
+        wait(10)
+    end
+    if not STREAMING.HAS_MODEL_LOADED(hash) then
+        notification("已尝试但无法加载,请重试")
+    end
+end
+
 --火车
 function BadNetVehicleCrashV2(pid)
     local hashes = {184361638,642617954,586013744,920453016,3186376089,1030400667,240201337}
@@ -12751,7 +10857,7 @@ function BadNetVehicleCrashV2(pid)
             VEHICLE.SET_RANDOM_TRAINS(veh, 1)
             for ai = 1, 50 do
                 NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
-                ENTITYJINX.ATTACH_ENTITY_BONE_TO_ENTITY_BONE_Y_FORWARD(veh)
+                ENTITY.ATTACH_ENTITY_BONE_TO_ENTITY_BONE_Y_FORWARD(veh)
                 pcoords = getEntityCoords(getPlayerPed(pid))
                 ENTITY.SET_ENTITY_COORDS_NO_OFFSET(veh, pcoords.x, pcoords.y, pcoords.z, false, false, false)
                 wait()
@@ -13284,16 +11390,16 @@ function free_cam()
     for _, pid in players.list(false, true, true) do
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local ped_ptr = entities.handle_to_pointer(ped)
-        local vehicle = WIRI_PED.GET_VEHICLE_PED_IS_USING(ped)
+        local vehicle = PED.GET_VEHICLE_PED_IS_USING(ped)
         local oldpos = players.get_position(pid)
         wait()
         local currentpos = players.get_position(pid)
         local vel = ENTITY.GET_ENTITY_VELOCITY(ped)
         if not util.is_session_transition_active() and players.exists(pid)
         and GetInteriorPlayerIsIn(pid) == 0 and GetSpawnState(pid) ~= 0
-        and not WIRI_PED.IS_PED_IN_ANY_VEHICLE(ped, false) -- too many false positives occured when players where driving. so fuck them. lol.
-        and not NETWORK.NETWORK_IS_PLAYER_FADING(pid) and ENTITY.IS_ENTITY_VISIBLE(ped) and not WIRI_PED.IS_PED_DEAD_OR_DYING(ped)
-        and not WIRI_PED.IS_PED_CLIMBING(ped) and not WIRI_PED.IS_PED_VAULTING(ped) and not WIRI_PED.IS_PED_USING_SCENARIO2(ped)
+        and not PED.IS_PED_IN_ANY_VEHICLE(ped, false) -- too many false positives occured when players where driving. so fuck them. lol.
+        and not NETWORK.NETWORK_IS_PLAYER_FADING(pid) and ENTITY.IS_ENTITY_VISIBLE(ped) and not PED.IS_PED_DEAD_OR_DYING(ped)
+        and not PED.IS_PED_CLIMBING(ped) and not PED.IS_PED_VAULTING(ped) and not PED.IS_PED_USING_SCENARIO2(ped)
         and not TASK.GET_IS_TASK_ACTIVE(ped, 160) and not TASK.GET_IS_TASK_ACTIVE(ped, 2)
         and v3.distance(players.get_position(players.user()), players.get_position(pid)) <= 395.0 -- 400 was causing false positives
         and ENTITY.GET_ENTITY_HEIGHT_ABOVE_GROUND(ped) > 5.0 and not ENTITY.IS_ENTITY_IN_AIR(ped) and entities.player_info_get_game_state(ped_ptr) == 0
@@ -13555,14 +11661,14 @@ function GTPlayer(ped, loop, expSettings)
             wait(3500)
             PHYSICS.DELETE_CHILD_ROPE(ropec)
             entities.delete_by_handle(pedc)
-end]]
+end
 
 function sendallplayercrash()
     local userPed = players.user_ped()
     if playerIsTargetingEntity(userPed) and karma[userPed] then
         GTPlayer(karma[userPed].ped, true, expSettings)
     end
-end
+end]]
 
 function explosion(pos, expSettings)
     if expSettings.currentFx then
@@ -14039,8 +12145,8 @@ function jesus_help_me()
         PED.SET_PED_INTO_VEHICLE(SelfPlayerPed, Ruiner2, -1)
         ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Ruiner2, SelfPlayerPos.x, SelfPlayerPos.y, 1000, false, true, true)
         wait(200)
-        WIRI_VEHICLE.VEHICLE_SET_PARACHUTE_MODEL_OVERRIDE(Ruiner2, util.joaat("prop_beach_parasol_05"))
-        WIRI_VEHICLE.VEHICLE_START_PARACHUTING(Ruiner2, true)
+        VEHICLE.VEHICLE_SET_PARACHUTE_MODEL_OVERRIDE(Ruiner2, util.joaat("prop_beach_parasol_05"))
+        VEHICLE.VEHICLE_START_PARACHUTING(Ruiner2, true)
         wait(200)
         entities.delete_by_handle(Ruiner2)
         entities.delete_by_handle(SelfPlayerPed)
@@ -14526,8 +12632,8 @@ function tp_bsupplies()
     end
 
 function tp_payphone()
-    local payPhon = GENERIC_HUD.GET_BLIP_COORDS(GENERIC_HUD.GET_NEXT_BLIP_INFO_ID(817))
-    GENERIC_HUD.GET_BLIP_COORDS(GENERIC_HUD.GET_NEXT_BLIP_INFO_ID(817))
+    local payPhon = HUD.GET_BLIP_COORDS(HUD.GET_NEXT_BLIP_INFO_ID(817))
+    HUD.GET_BLIP_COORDS(HUD.GET_NEXT_BLIP_INFO_ID(817))
         if payPhon.x == 0 and payPhon.y == 0 and payPhon.z == 0 then
             if set.alert then
                 util.toast('未找到公共电话亭')
@@ -14538,8 +12644,8 @@ function tp_payphone()
     end
 
 function tp_eed()
-    if GENERIC_HUD.DOES_BLIP_EXIST(GENERIC_HUD.GET_CLOSEST_BLIP_INFO_ID(780)) then
-        local eDock = GENERIC_HUD.GET_BLIP_COORDS(GENERIC_HUD.GET_CLOSEST_BLIP_INFO_ID(780))
+    if HUD.DOES_BLIP_EXIST(HUD.GET_CLOSEST_BLIP_INFO_ID(780)) then
+        local eDock = HUD.GET_BLIP_COORDS(HUD.GET_CLOSEST_BLIP_INFO_ID(780))
         if  eDock.x == 0 and eDock.y == 0 and eDock.z == 0
         then
          if set.alert then
@@ -15438,8 +13544,7 @@ function clearall(index, name)
     util.toast("正在清除"..name:lower().."...")
     local counter = 0
     local player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user())
-    pluto_switch index do
-        case 1:
+    if index == 1 then
             for _, ped in ipairs(entities.get_all_peds_as_handles()) do
                 if ped ~= players.user_ped() and not PED.IS_PED_A_PLAYER(ped) and (not NETWORK.NETWORK_IS_ACTIVITY_SESSION() or NETWORK.NETWORK_IS_ACTIVITY_SESSION() and not ENTITY.IS_ENTITY_A_MISSION_ENTITY(ped)) then
                     entities.delete_by_handle(ped)
@@ -15447,8 +13552,7 @@ function clearall(index, name)
                     wait()
                 end
             end
-            break
-        case 2:
+        elseif index == 2 then
             for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
                 if vehicle ~= PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false) and DECORATOR.DECOR_GET_INT(vehicle, "Player_Vehicle") == 0 and NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(vehicle) then
                     entities.delete_by_handle(vehicle)
@@ -15456,22 +13560,19 @@ function clearall(index, name)
                 end
                 wait(25)
             end
-            break
-        case 3:
+        elseif index == 3 then
             for _, object in ipairs(entities.get_all_objects_as_handles()) do
                 entities.delete_by_handle(object)
                 counter += 1
                 wait()
             end
-            break
-        case 4:
+        elseif index == 4 then
             for _, pickup in ipairs(entities.get_all_pickups_as_handles()) do
                 entities.delete_by_handle(pickup)
                 counter += 1
                 wait()
             end
-            break
-        case 5:
+        elseif index == 5 then
             local temp = memory.alloc(4)
             for i = 0, 101 do
                 memory.write_int(temp, i)
@@ -15481,18 +13582,15 @@ function clearall(index, name)
                 end
                 wait()
             end
-            break
-        case 6:
+        elseif index == 6 then
             local coords = players.get_position(players.user())
             MISC.CLEAR_AREA_OF_PROJECTILES(coords.x, coords.y, coords.z, 1000, 0)
             counter = "所有"
-            break
-        case 4:
+        elseif index == 4 then
             for i = 0, 99 do
                 AUDIO.STOP_SOUND(i)
                 wait()
             end
-        break
     end
     util.toast("已清除"..tostring(counter).."个"..name:lower()..".")
 end
@@ -15578,7 +13676,7 @@ function blockfireeffect()
 end
 
 function antianimal()
-    if Jinx.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_beast")) > 0 then
+    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat("am_hunt_the_beast")) > 0 then
         local host
         repeat
             host = NETWORK.NETWORK_GET_HOST_OF_SCRIPT("am_hunt_the_beast", -1, 0)
@@ -16952,7 +15050,7 @@ function Save_Weapon_Profile()
     for _, weapon in weapons_table do
         local weapon_hash = weapon.hash
 
-        if WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON(player, weapon_hash, false) then
+        if WEAPON.HAS_PED_GOT_WEAPON(player, weapon_hash, false) then
             num_weapons = num_weapons + 1
             if num_weapons > 1 then
                 file:write("," .. charE)
@@ -16961,9 +15059,9 @@ function Save_Weapon_Profile()
             --WEAPON.SET_CURRENT_PED_WEAPON(player, weapon_hash, true)
             local num_attachments = 0
             for attachment_hash, _ in attachments_dict do
-                if (WEAPON_SAVE_WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, attachment_hash)) then
+                if (WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, attachment_hash)) then
                     --wait(10)
-                    if WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, attachment_hash) then
+                    if WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, attachment_hash) then
                         num_attachments = num_attachments + 1
                         if num_attachments == 1 then
                             file:write("{")
@@ -16975,7 +15073,7 @@ function Save_Weapon_Profile()
                     end
                 end
             end
-            local cur_tint = WEAPON_SAVE_WEAPON.GET_PED_WEAPON_TINT_INDEX(player, weapon_hash)
+            local cur_tint = WEAPON.GET_PED_WEAPON_TINT_INDEX(player, weapon_hash)
             if num_attachments > 0 then
                 file:write(charE .. charS .. charS .. "},")
             else
@@ -16984,8 +15082,8 @@ function Save_Weapon_Profile()
             file:write(charE .. charS .. charS .. "[\"tint\"] = " .. cur_tint)
             --- Livery
             for livery_hash, _ in liveries_dict do
-                if WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, livery_hash) then
-                    local colour = WEAPON_SAVE_WEAPON.GET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery_hash)
+                if WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, livery_hash) then
+                    local colour = WEAPON.GET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery_hash)
                     file:write("," .. charE .. charS .. charS .. "[\"livery\"] = {")
                     file:write(charE .. charS .. charS .. charS .. "[\"hash\"] = " .. livery_hash .. ",")
                     file:write(charE .. charS .. charS .. charS .. "[\"colour\"] = " .. colour)
@@ -17004,20 +15102,20 @@ end
 function Load_Out_Weapon()
     if filesystem.exists(STOREDIR .. "loadout.lua") then
         player = players.user_ped()
-        WEAPON_SAVE_WEAPON.REMOVE_ALL_PED_WEAPONS(player, false)
-        WEAPON_SAVE_WEAPON.SET_CAN_PED_SELECT_ALL_WEAPONS(player, true)
+        WEAPON.REMOVE_ALL_PED_WEAPONS(player, false)
+        WEAPON.SET_CAN_PED_SELECT_ALL_WEAPONS(player, true)
         local loadout = require("/lib/" .. '/GTSCRIPTS/' .. '/GTW/' .. "loadout")
         for w_hash, attach_dict in loadout do
-            WEAPON_SAVE_WEAPON.GIVE_WEAPON_TO_PED(player, w_hash, 10, false, true)
+            WEAPON.GIVE_WEAPON_TO_PED(player, w_hash, 10, false, true)
             if attach_dict.attachments ~= nil then
                 for _, hash in attach_dict.attachments do
-                    WEAPON_SAVE_WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(player, w_hash, hash)
+                    WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(player, w_hash, hash)
                 end
             end
-            WEAPON_SAVE_WEAPON.SET_PED_WEAPON_TINT_INDEX(player, w_hash, attach_dict["tint"])
+            WEAPON.SET_PED_WEAPON_TINT_INDEX(player, w_hash, attach_dict["tint"])
             if attach_dict.livery ~= nil then
-                WEAPON_SAVE_WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(player, w_hash, attach_dict.livery.hash)
-                WEAPON_SAVE_WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, w_hash, attach_dict.livery.hash, attach_dict.livery.colour)
+                WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(player, w_hash, attach_dict.livery.hash)
+                WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, w_hash, attach_dict.livery.hash, attach_dict.livery.colour)
             end
         end
         regen_menu()
@@ -17034,7 +15132,7 @@ function Auto_Load_Out_Weapon(on)
 end
 
 function Dele_All_Weapon()
-    WEAPON_SAVE_WEAPON.REMOVE_ALL_PED_WEAPONS(players.user_ped(), false)
+    WEAPON.REMOVE_ALL_PED_WEAPONS(players.user_ped(), false)
     regen_menu()
     util.toast("你的武器被人用了！")
 end
@@ -17061,7 +15159,7 @@ function regen_menu()
         local category = weapon.category
         local weapon_name = util.get_label_text(weapon.label_key)
         local weapon_hash = weapon.hash
-        if WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON(players.user_ped(), weapon_hash, false) then
+        if WEAPON.HAS_PED_GOT_WEAPON(players.user_ped(), weapon_hash, false) then
             generate_for_new_weapon(category, weapon_name, weapon_hash, false)
         else
             weapons_action[weapon_hash] = categories[category]:action(weapon_name .. " (未配备)", {}, "配备 " .. weapon_name,
@@ -17071,16 +15169,16 @@ function regen_menu()
                     end
             )
         end
-        WEAPON_SAVE_WEAPON.ADD_AMMO_TO_PED(players.user_ped(), weapon_hash, 10) --- if a special ammo type has been equipped.. it should get some ammo
+        WEAPON.ADD_AMMO_TO_PED(players.user_ped(), weapon_hash, 10) --- if a special ammo type has been equipped.. it should get some ammo
     end
 end
 
 function equip_comp(category, weapon_name, weapon_hash, attachment_hash)
-    WEAPON_SAVE_WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(players.user_ped(), weapon_hash, attachment_hash)
+    WEAPON.GIVE_WEAPON_COMPONENT_TO_PED(players.user_ped(), weapon_hash, attachment_hash)
 end
 
 function equip_weapon(category, weapon_name, weapon_hash)
-    WEAPON_SAVE_WEAPON.GIVE_WEAPON_TO_PED(players.user_ped(), weapon_hash, 10, false, true)
+    WEAPON.GIVE_WEAPON_TO_PED(players.user_ped(), weapon_hash, 10, false, true)
     wait(10)
     weapon_deletes[weapon_name] = nil
     generate_for_new_weapon(category, weapon_name, weapon_hash, true)
@@ -17089,7 +15187,7 @@ end
 function generate_for_new_weapon(category, weapon_name, weapon_hash, focus)
     weapons_action[weapon_hash] = categories[category]:list(weapon_name, {}, "编辑的附件 " .. weapon_name,
             function()
-                WEAPON_SAVE_WEAPON.SET_CURRENT_PED_WEAPON(players.user_ped(), weapon_hash, true)
+                WEAPON.SET_CURRENT_PED_WEAPON(players.user_ped(), weapon_hash, true)
                 generate_attachments(category, weapon_name, weapon_hash)
             end
     )
@@ -17114,13 +15212,13 @@ function generate_cosmetics(weapon_hash, weapon_name)
     end
     cosmetics_list[weapon_hash] = weapons_action[weapon_hash]:list("表面", {}, "",
             function()
-                local tint_count = WEAPON_SAVE_WEAPON.GET_WEAPON_TINT_COUNT(weapon_hash)
-                local cur_tint = WEAPON_SAVE_WEAPON.GET_PED_WEAPON_TINT_INDEX(player, weapon_hash)
+                local tint_count = WEAPON.GET_WEAPON_TINT_COUNT(weapon_hash)
+                local cur_tint = WEAPON.GET_PED_WEAPON_TINT_INDEX(player, weapon_hash)
 
                 if tints_slider[weapon_hash] == nil then
                     tints_slider[weapon_hash] = cosmetics_list[weapon_hash]:slider("色调", {}, "选择适合你的色调 " .. weapon_name, 0, tint_count - 1, cur_tint, 1,
                             function(change)
-                                WEAPON_SAVE_WEAPON.SET_PED_WEAPON_TINT_INDEX(player, weapon_hash, change)
+                                WEAPON.SET_PED_WEAPON_TINT_INDEX(player, weapon_hash, change)
                             end
                     )
                 end
@@ -17128,7 +15226,7 @@ function generate_cosmetics(weapon_hash, weapon_name)
                 --- livery colour
                 local has_liveries = false
                 for livery_hash, _ in liveries_dict do
-                    if WEAPON_SAVE_WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) then
+                    if WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) then
                         has_liveries = true
                         break
                     end
@@ -17138,21 +15236,21 @@ function generate_cosmetics(weapon_hash, weapon_name)
                 if has_liveries then
                     --- get current camo component
                     for hash, _ in liveries_dict do
-                        if WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, hash) then
+                        if WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(player, weapon_hash, hash) then
                             livery[weapon_hash] = hash
                             break
                         end
                     end
                     --- livery colour slider
                     if livery_colour_slider[weapon_hash] == nil then
-                        local cur_ctint_colour = WEAPON_SAVE_WEAPON.GET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash])
+                        local cur_ctint_colour = WEAPON.GET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash])
                         if cur_ctint_colour == -1 then cur_ctint_colour = 0 end
                         livery_colour_slider[weapon_hash] = cosmetics_list[weapon_hash]:slider("皮肤颜色", {}, "改变你的皮肤颜色", 0, 31, cur_ctint_colour, 1,
                                 function(index)
                                     if livery[weapon_hash] == nil then
                                         util.toast("你的武器上没有皮肤")
                                     else
-                                        WEAPON_SAVE_WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash], index)
+                                        WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash], index)
                                     end
                                 end
                         )
@@ -17163,12 +15261,12 @@ function generate_cosmetics(weapon_hash, weapon_name)
                     end
                     --- livery equip actions
                     for livery_hash, label in liveries_dict do
-                        if WEAPON_SAVE_WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) and livery_actions[weapon_hash..livery_hash] == nil then
+                        if WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) and livery_actions[weapon_hash..livery_hash] == nil then
                             livery_actions[weapon_hash .. livery_hash] = cosmetics_list[weapon_hash]:action(util.get_label_text(label), {}, "",
                                     function()
                                         livery[weapon_hash] = livery_hash
                                         equip_comp(category, weapon_name, weapon_hash, livery_hash)
-                                        WEAPON_SAVE_WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash], livery_colour_slider[weapon_hash].value)
+                                        WEAPON.SET_PED_WEAPON_COMPONENT_TINT_INDEX(player, weapon_hash, livery[weapon_hash], livery_colour_slider[weapon_hash].value)
                                     end
                             )
                         end
@@ -17182,7 +15280,7 @@ function generate_attachments(category, weapon_name, weapon_hash)
     if weapon_deletes[weapon_name] == nil then
         weapon_deletes[weapon_name] = weapons_action[weapon_hash]:action("删去 " .. weapon_name, {}, "",
                 function()
-                    WEAPON_SAVE_WEAPON.REMOVE_WEAPON_FROM_PED(players.user_ped(), weapon_hash)
+                    WEAPON.REMOVE_WEAPON_FROM_PED(players.user_ped(), weapon_hash)
                     cosmetics_list[weapon_hash]:delete()
                     cosmetics_list[weapon_hash] = nil
                     livery_action_divider[weapon_hash] = nil
@@ -17208,7 +15306,7 @@ function generate_attachments(category, weapon_name, weapon_hash)
 
     local has_attachments = false
     for livery_hash, _ in attachments_dict do
-        if WEAPON_SAVE_WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) then
+        if WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, livery_hash) then
             has_attachments = true
             break
         end
@@ -17223,13 +15321,13 @@ function generate_attachments(category, weapon_name, weapon_hash)
 
     for attachment_hash, attachment_label in attachments_dict do
         local attachment_name = util.get_label_text(attachment_label)
-        if (WEAPON_SAVE_WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, attachment_hash)) then
+        if (WEAPON.DOES_WEAPON_TAKE_WEAPON_COMPONENT(weapon_hash, attachment_hash)) then
             if (attachments_action[weapon_hash .. " " .. attachment_hash] ~= nil) then attachments_action[weapon_hash .. " " .. attachment_hash]:delete() end
             attachments_action[weapon_hash .. " " .. attachment_hash] = weapons_action[weapon_hash]:action(attachment_name, {}, "配备 " .. attachment_name .. " 在您的 " .. weapon_name,
                     function()
                         equip_comp(category, weapon_name, weapon_hash, attachment_hash)
-                        if (string.find(attachment_label, "弹夹") ~= nil or string.find(attachment_label, "炮弹") ~= nil) and WEAPON_SAVE_WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(players.user_ped(), weapon_hash, attachment_hash) then
-                            WEAPON_SAVE_WEAPON.ADD_AMMO_TO_PED(players.user_ped(), weapon_hash, 10)
+                        if (string.find(attachment_label, "弹夹") ~= nil or string.find(attachment_label, "炮弹") ~= nil) and WEAPON.HAS_PED_GOT_WEAPON_COMPONENT(players.user_ped(), weapon_hash, attachment_hash) then
+                            WEAPON.ADD_AMMO_TO_PED(players.user_ped(), weapon_hash, 10)
                         end
                     end
             )
@@ -17991,7 +16089,6 @@ function throwablebullet(toggle)
     end)
 end
 
---this function is from wiriScripts functions
     local function pairsByKeys(t, f)
         local a = {}
         for n in pairs(t) do table.insert(a, n) end
@@ -18339,9 +16436,10 @@ function get_waypoint_v3()
     end
 end
 
+--[[
 object = 0
-local format0 = "按 ~%s~ ~%s~ ~%s~ ~%s~ 来使用地毯式骑行"
-local format1 = "按 ~%s~ 以移动得更快"
+local format0 = "按 W A S D 来使用地毯式骑行"
+local format1 = "按 Shift 以移动得更快"
 function carpetridexx()
     if state == 0 then
 		local objHash = util.joaat("p_cs_beachtowel_01_s")
@@ -18394,7 +16492,7 @@ function carpetridexx()
 		newPos:add(delta)
 		ENTITY.SET_ENTITY_COORDS(object, newPos.x,newPos.y,newPos.z, false, false, false, false)
 	end
-end
+end]]
 --定点轰炸
 function lhbj()
     local waypointPos = get_waypoint_v3()
@@ -18637,14 +16735,14 @@ local shootingEffects <const> = {
 
 function shootingeffect()
     local effect = shootingEffects[selectedOpt]
-	if not WIRI.HAS_NAMED_PTFX_ASSET_LOADED(effect.asset) then
-		WIRI.REQUEST_NAMED_PTFX_ASSET(effect.asset)
+	if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(effect.asset) then
+		STREAMING.REQUEST_NAMED_PTFX_ASSET(effect.asset)
 
 	elseif PED.IS_PED_SHOOTING(players.user_ped()) then
-		local weapon = GET_CURRENT_PED_WEAPON_ENTITY_INDEX(players.user_ped(), false)
-		local boneId = WIRI.GET_ENTITY_BONE_INDEX_BY_NAME(weapon, "gun_muzzle")
-		WIRI.USE_PARTICLE_FX_ASSET(effect.asset)
-		WIRI.START_PARTICLE_FX_NON_LOOPED_ON_ENTITY_BONE(
+		local weapon = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(players.user_ped(), false)
+		local boneId = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(weapon, "gun_muzzle")
+		GRAPHICS.USE_PARTICLE_FX_ASSET(effect.asset)
+		GRAPHICS.START_PARTICLE_FX_NON_LOOPED_ON_ENTITY_BONE(
 			effect.name,
 			weapon,
 			0.0, 0.0, 0.0,
@@ -18867,7 +16965,7 @@ function airstgun()
 	local raycastResult = get_raycast_result(1000.0)
 	if raycastResult.didHit and PED.IS_PED_SHOOTING(players.user_ped()) then
 		local pos = raycastResult.endCoords
-		WIRI_MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+		MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
 			pos.x, pos.y, pos.z + 35.0,
 			pos.x, pos.y, pos.z,
 			200,
@@ -18900,10 +16998,10 @@ function bulletchanger()
 	PLAYER.IS_PLAYER_FREE_AIMING(players.user()) and timer.elapsed() > math.max(get_time_between_shots(), 80.0) then
 		local weapon = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(localPed, false)
 		local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(weapon, "gun_muzzle")
-		local bonePos = WIRI_ENTITY.GET_ENTITY_BONE_POSTION(weapon, bone)
+		local bonePos = ENTITY.GET_ENTITY_BONE_POSTION(weapon, bone)
 		local offset = get_offset_from_cam(30.0)
 
-		WIRI_MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+		MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
 			bonePos.x, bonePos.y, bonePos.z,
 			offset.x, offset.y, offset.z,
 			200,
@@ -18911,89 +17009,15 @@ function bulletchanger()
 			selectedBullet,
 			localPed, true, false, 2000.0
 		)
-		WIRI_PAD.SET_CONTROL_SHAKE(0, 50, 100)
+		PAD.SET_CONTROL_SHAKE(0, 50, 100)
 		timer.reset()
 
 	elseif PAD.IS_DISABLED_CONTROL_JUST_RELEASED(0, 24) then
-		WIRI_PAD.STOP_CONTROL_SHAKE(0)
+		PAD.STOP_CONTROL_SHAKE(0)
 	end
 end
 
 function bulletchanger_set(opt)
-    selectedOpt = opt
-end
-
-local HitEffect = {colorCanChange = false}
-HitEffect.__index = HitEffect
-setmetatable(HitEffect, Effect)
-
-function HitEffect.new(asset, name, colorCanChange)
-	local inst = setmetatable({}, HitEffect)
-	inst.name = name
-	inst.asset = asset
-	inst.colorCanChange = colorCanChange or false
-	return inst
-end
-
-local hitEffects <const> = {
-	HitEffect.new("scr_rcbarry2", "scr_exp_clown"),
-	HitEffect.new("scr_rcbarry2", "scr_clown_appears"),
-	HitEffect.new("scr_rcpaparazzo1", "scr_mich4_firework_trailburst_spawn", true),
-	HitEffect.new("scr_indep_fireworks", "scr_indep_firework_starburst", true),
-	HitEffect.new("scr_indep_fireworks", "scr_indep_firework_fountain", true),
-	HitEffect.new("scr_rcbarry1", "scr_alien_disintegrate"),
-	HitEffect.new("scr_rcbarry2", "scr_clown_bul"),
-	HitEffect.new("proj_indep_firework", "scr_indep_firework_grd_burst"),
-	HitEffect.new("scr_rcbarry2", "muz_clown"),
-    HitEffect.new("scr_sum2_hal", "scr_sum2_hal_rider_death_green"),
-    HitEffect.new("scr_sum2_hal", "scr_sum2_hal_rider_weak_green"),
-    HitEffect.new("scr_agencyheistb", "scr_agency3b_heli_exp_trail"),
-    HitEffect.new("scr_agencyheistb", "scr_agency3b_elec_box"),
-    HitEffect.new("scr_rcpaparazzo1", "scr_mich4_firework_burst_spawn"),
-    HitEffect.new("core", "ent_dst_elec_fire_sp")
-}
-hiteffectchinese = {
-	{"猛女子弹"},
-	{"小丑出现"},
-	{"开拓者FW"},
-	{"星爆FW"},
-	{"喷泉FW"},
-	{"外星解体"},
-	{"小丑花"},
-	{"地面冲击波FW"},
-	{"小丑木兹"},
-    {"毒气"},
-    {"旋风子弹"},
-    {"战火子弹"},
-    {"烟雾子弹"},
-    {"星星子弹"},
-    {"电光子弹"}
-}
-
-effectColour = {r = 0.5, g = 0.0, b = 0.5, a = 1.0}
-
-function hittingeffect()
-    local effect = hitEffects[selectedOpt]
-	if not STREAMING.HAS_NAMED_PTFX_ASSET_LOADED(effect.asset) then
-		return STREAMING.REQUEST_NAMED_PTFX_ASSET(effect.asset)
-	end
-
-	local hitCoords = v3.new()
-	if WEAPON.GET_PED_LAST_WEAPON_IMPACT_COORD(players.user_ped(), memory.addrof(hitCoords)) then
-		local raycastResult = get_raycast_result(1000.0)
-		local rot = raycastResult.surfaceNormal:toRot()
-		GRAPHICS.USE_PARTICLE_FX_ASSET(effect.asset)
-
-		if effect.colorCanChange then
-			local colour = effectColour
-			GRAPHICS.SET_PARTICLE_FX_NON_LOOPED_COLOUR(colour.r, colour.g, colour.b)
-		end
-		GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
-			effect.name, hitCoords.x,hitCoords.y,hitCoords.z, rot.x - 90.0, rot.y, rot.z, 1.0, false, false, false, false)
-	end
-end
-
-function sethiteffect(opt)
     selectedOpt = opt
 end
 
@@ -19468,7 +17492,7 @@ local rgb = {cus = 100}
 function RGBNeonKit(pedm)
     local vmod = PED.GET_VEHICLE_PED_IS_IN(pedm, false)
     for i = 0, 3 do
-        WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vmod, i, true)
+        VEHICLE.SET_VEHICLE_NEON_ENABLED(vmod, i, true)
     end
 end
 
@@ -19479,9 +17503,9 @@ function rainbow_car()
         local red = (math.random(0, 255))
         local green = (math.random(0, 255))
         local blue = (math.random(0, 255))
-        WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vmod, red, green, blue)
-        WIRI_VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vmod, red, green, blue)
-        WIRI_VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vmod, red, green, blue)
+        VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vmod, red, green, blue)
         wait(rgb.cus)
        end
     end
@@ -19511,12 +17535,12 @@ function rainbow_car_light()
       local vmod = PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), true)
       RGBNeonKit(players.user_ped())
       local rcolor = math.random(1, 12)
-      WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
-      WIRI_VEHICLE.SET_VEHICLE_NEON_INDEX_COLOUR(vmod, color[rcolor][1])
-      WIRI_VEHICLE.SET_VEHICLE_COLOURS(vmod, color[rcolor][1], color[rcolor][1])
-      WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vmod, 0, color[rcolor][1])
-      WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vmod, color[rcolor][1])
-      WIRI_VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vmod, color[rcolor][2])
+      VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
+      VEHICLE.SET_VEHICLE_NEON_INDEX_COLOUR(vmod, color[rcolor][1])
+      VEHICLE.SET_VEHICLE_COLOURS(vmod, color[rcolor][1], color[rcolor][1])
+      VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vmod, 0, color[rcolor][1])
+      VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vmod, color[rcolor][1])
+      VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vmod, color[rcolor][2])
       wait(srgb.cus)
     end
 end
@@ -19949,32 +17973,26 @@ function npcfillthecar(pid, index,value)
             local ped
             if VEHICLE.IS_VEHICLE_SEAT_FREE(veh, i) then
                 local c = ENTITY.GET_ENTITY_COORDS(veh)
-                pluto_switch index do
-                    case 1:
+                    if index == 1 then
                         ped = PED.CREATE_RANDOM_PED(c.x, c.y, c.z)
-                        break
-                    case 2:
+                    elseif index == 2 then
                         local cops = {'s_f_y_cop_01', 's_m_m_snowcop_0', 's_m_y_hwaycop_01', 'csb_cop', 's_m_y_cop_01'}
                         local pick = cops[math.random(1, #cops)]
                         request_model_load(util.joaat(pick))
                         ped = entities.create_ped(6, util.joaat(pick), c, 0)
                         PED.SET_PED_AS_COP(ped, true)
                         WEAPON.GIVE_WEAPON_TO_PED(ped, util.joaat("weapon_pistol"), 1000, false, false)
-                        break
-                    case 3:
+                    elseif index == 3 then
                         local strippers = {'csb_stripper_01', 'csb_stripper_02', 's_f_y_stripper_01', 's_f_y_stripper_02', 's_f_y_stripperlite'}
                         local pick = strippers[math.random(1, #strippers)]
                         request_model_load(util.joaat(pick))
                         ped = entities.create_ped(6, util.joaat(pick), c, 0)
-                        break
-                    case 4:
+                    elseif index == 4 then
                         request_model_load(util.joaat('ig_lamardavis'))
                         ped = entities.create_ped(6, util.joaat('ig_lamardavis'), c, 0)
-                        break 
-                    case 5:
+                    elseif index == 5 then
                         request_model_load(util.joaat('ig_lestercrest'))
                         ped = entities.create_ped(6, util.joaat('ig_lestercrest'), c, 0)
-                        break 
                 end
                 PED.SET_PED_INTO_VEHICLE(ped, veh, i)
                 PED.SET_PED_COMBAT_ATTRIBUTES(ped, 5, true)
@@ -20221,32 +18239,32 @@ function SFlsd()
     memory.write_int(memory.script_global(1645739+1121), 1)
     sf.CLEAR_ALL()
     sf.TOGGLE_MOUSE_BUTTONS(false)
-    sf.SET_DATA_SLOT(0,WIRI_PAD.GET_CONTROL_INSTRUCTIONAL_BUTTONS_STRING(0, 86, true), '镭射')
+    sf.SET_DATA_SLOT(0,PAD.GET_CONTROL_INSTRUCTIONAL_BUTTONS_STRING(0, 86, true), '镭射')
     sf.DRAW_INSTRUCTIONAL_BUTTONS()
     sf:draw_fullscreen()
 end
 
 function Vmod(vmod, plate)
-    WIRI_VEHICLE.SET_VEHICLE_FIXED(vmod)
+    VEHICLE.SET_VEHICLE_FIXED(vmod)
     for M=0, 49 do
-        local modn =  WIRI_VEHICLE.GET_NUM_VEHICLE_MODS(vmod, M)
-        WIRI_VEHICLE.SET_VEHICLE_MOD(vmod, M, modn -1, false)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vmod, plate)
-        WIRI_VEHICLE.GET_VEHICLE_MOD_KIT(vmod, 0)
-        WIRI_VEHICLE.SET_VEHICLE_MOD_KIT(vmod, 0)
-        WIRI_VEHICLE.SET_VEHICLE_MOD(vmod, 14, 0)
-        WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
-        WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 18, true)
-        WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 20, true)
-        WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vmod, 0, 0, 0)
-        WIRI_VEHICLE.SET_VEHICLE_MAX_SPEED(vmod, 100)
-        WIRI_VEHICLE.MODIFY_VEHICLE_TOP_SPEED(vmod, 40)
-        WIRI_VEHICLE.SET_VEHICLE_BURNOUT(vmod, false)
+        local modn =  VEHICLE.GET_NUM_VEHICLE_MODS(vmod, M)
+        VEHICLE.SET_VEHICLE_MOD(vmod, M, modn -1, false)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vmod, plate)
+        VEHICLE.GET_VEHICLE_MOD_KIT(vmod, 0)
+        VEHICLE.SET_VEHICLE_MOD_KIT(vmod, 0)
+        VEHICLE.SET_VEHICLE_MOD(vmod, 14, 0)
+        VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 22, true)
+        VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 18, true)
+        VEHICLE.TOGGLE_VEHICLE_MOD(vmod, 20, true)
+        VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vmod, 0, 0, 0)
+        VEHICLE.SET_VEHICLE_MAX_SPEED(vmod, 100)
+        VEHICLE.MODIFY_VEHICLE_TOP_SPEED(vmod, 40)
+        VEHICLE.SET_VEHICLE_BURNOUT(vmod, false)
     end
 end
 
 local function SDcreate(pCoor, pedSi)
-    Lsdcar = WIRI_VEHICLE.CREATE_VEHICLE(lsd.hash, pCoor.x, pCoor.y, pCoor.z, 0, true, true, false)
+    Lsdcar = VEHICLE.CREATE_VEHICLE(lsd.hash, pCoor.x, pCoor.y, pCoor.z, 0, true, true, false)
     PED.SET_PED_INTO_VEHICLE(pedSi, Lsdcar, -1)
     Vmod(Lsdcar, '镭射')
    local CV = CAM.GET_GAMEPLAY_CAM_RELATIVE_HEADING()
@@ -20258,9 +18276,9 @@ end)
  
 util.create_tick_handler(function ()
         if PED.IS_PED_IN_VEHICLE(players.user_ped(), Lsdcar, false) ==true then
-        WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(Lsdcar, 0)
+        VEHICLE.SET_VEHICLE_DIRT_LEVEL(Lsdcar, 0)
         ENTITY.SET_ENTITY_INVINCIBLE(Lsdcar, true)
-        WIRI_VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(Lsdcar, false)
+        VEHICLE.SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(Lsdcar, false)
         SFlsd()
         end
     end)
@@ -20394,14 +18412,14 @@ function Lazer_Space_Car()
             end
 
 
-        elseif WIRI_PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) ==false and not WIRI_ENTITY.DOES_ENTITY_EXIST(Lsdcar) then
+        elseif PED.IS_PED_IN_ANY_VEHICLE(players.user_ped()) ==false and not ENTITY.DOES_ENTITY_EXIST(Lsdcar) then
             SDcreate(pCoor, pedSi)
                  if set.alert then
                     util.toast('生成了魔幻激光战马')
                  end
         end
 
-if WIRI_PED.IS_PED_GETTING_INTO_A_VEHICLE(players.user_ped()) ==false and WIRI_PED.IS_PED_IN_VEHICLE(players.user_ped(), Lsdcar , false) ==false
+if PED.IS_PED_GETTING_INTO_A_VEHICLE(players.user_ped()) ==false and PED.IS_PED_IN_VEHICLE(players.user_ped(), Lsdcar , false) ==false
             then
                 if set.alert then
                     util.toast('玩家已离开魔幻激光战马，它已被删除')
@@ -20750,7 +18768,7 @@ end
 
 function IPM(targets, tar1, pname, cage_table, pid)
     local tar2 = ENTITY.GET_ENTITY_COORDS(targets)
-    local disbet = GENERIC_SYSTEM.VDIST2(tar2.x, tar2.y, tar2.z, tar1.x, tar1.y, tar1.z)
+    local disbet = SYSTEM.VDIST2(tar2.x, tar2.y, tar2.z, tar1.x, tar1.y, tar1.z)
     if disbet <= 0.5  then
     if set.alert then
         util.toast(pname..' 已被笼子困住')
@@ -20861,7 +18879,7 @@ function creep(pid)
 
 		request_fx_asset(appears.asset)
 		GRAPHICS.USE_PARTICLE_FX_ASSET(appears.asset)
-		WIRI_GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(
+		GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(
 			appears.name,
 			ped,
 			0.0, 0.0, -1.0,
@@ -20886,7 +18904,7 @@ function creep(pid)
 			elseif pos:distance(targetPos) < 3.0 and request_control(ped) then
 				request_fx_asset(explosion.asset)
 				GRAPHICS.USE_PARTICLE_FX_ASSET(explosion.asset)
-				WIRI_GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
+				GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD(
 					explosion.name,
 					pos.x, pos.y, pos.z,
 					0.0, 0.0, 0.0,
@@ -21034,7 +19052,7 @@ function TELEPORT(X, Y, Z)
 end
 function cshj()
     if STAT_GET_INT("IH_SUB_OWNED") == 0 then
-        NOTIFY(TRANSLATE("You have not bought Kosatka yet. Buy it first to teleport!"))
+        NOTIFY(TRANSLATE("先把虎鲸喊出来！"))
     else
         TELEPORT(1561.2369, 385.8771, -49.689915)
         SET_HEADING(175)
@@ -21499,7 +19517,7 @@ function menyoo_preprocess_car(vehicle, data)
             -- fucking menyoo.. here they go mixing up wheel indexes with strings
             k = k:gsub('_', '')
             local cure_menyoo_aids = {['FrontLeft'] = 0, ['FrontRight'] = 1, [2] = 2, [3] = 3, ['BackLeft'] = 4, ['BackRight'] = 5, [6]=6, [7]=7, [8]=8}
-            --修复 WIRI_VEHICLE.SET_VEHICLE_TYRE_BURST(vehicle, cure_menyoo_aids[k], false, 0.0)
+            --修复 VEHICLE.SET_VEHICLE_TYRE_BURST(vehicle, cure_menyoo_aids[k], false, 0.0)
         end
     end
     local mods = menyoo_build_properties_table(data['Mods'].kids)
@@ -21507,20 +19525,20 @@ function menyoo_preprocess_car(vehicle, data)
     if mod_extras ~= nil then 
         for k,v in pairs(mod_extras) do
             k = k:gsub('_', '')
-            WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, k, not to_boolean(v))
+            VEHICLE.SET_VEHICLE_EXTRA(vehicle, k, not to_boolean(v))
         end
     end
     
     for k,v in pairs(neons) do
         local comp = {['Left']=0, ['Right']=1, ['Front']=2, ['Back']=3}
-        WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, comp[k], to_boolean(v))
+        VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, comp[k], to_boolean(v))
     end
 
-    WIRI_VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, tonumber(data['WheelType']))
+    VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, tonumber(data['WheelType']))
     for k,v in pairs(mods) do
         k = k:gsub('_', '')
         v = split_str(v, ',')
-        WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, tonumber(k), tonumber(v[1]), to_boolean(v[2]))
+        VEHICLE.SET_VEHICLE_MOD(vehicle, tonumber(k), tonumber(v[1]), to_boolean(v[2]))
     end
 
 
@@ -21528,30 +19546,30 @@ function menyoo_preprocess_car(vehicle, data)
         colors[k] = tonumber(v)
     end
 
-    WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, colors['Primary'], colors['Secondary'])
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, colors['Pearl'], colors['Rim'])
-    WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, colors['tyreSmoke_R'], colors['tyreSmoke_G'], colors['tyreSmoke_B'])
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, colors['LrInterior'])
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, colors['LrDashboard'])
+    VEHICLE.SET_VEHICLE_COLOURS(vehicle, colors['Primary'], colors['Secondary'])
+    VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, colors['Pearl'], colors['Rim'])
+    VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, colors['tyreSmoke_R'], colors['tyreSmoke_G'], colors['tyreSmoke_B'])
+    VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, colors['LrInterior'])
+    VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, colors['LrDashboard'])
     local livery = tonumber(data['Livery'])
     if livery == -1 then
         livery = 0
     end
-    WIRI_VEHICLE.SET_VEHICLE_LIVERY(vehicle, livery)
-    WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, data['NumberPlateText'])
-    WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, tonumber(data['NumberPlateTextIndex']))
-    WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, tonumber(data['WindowTint']))
-    WIRI_VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, to_boolean(data['BulletProofTyres']))
-    WIRI_VEHICLE. SET_VEHICLE_DIRT_LEVEL(vehicle, tonumber(data['DirtLevel']))
-    WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, tonumber(data['PaintFade']))
-    WIRI_VEHICLE.SET_CONVERTIBLE_ROOF_LATCH_STATE(vehicle, tonumber(data['RoofState']))
-    WIRI_VEHICLE.SET_VEHICLE_SIREN(vehicle, to_boolean(data['SirenActive']))
-    WIRI_VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, to_boolean(data['EngineOn']), true, false)
+    VEHICLE.SET_VEHICLE_LIVERY(vehicle, livery)
+    VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, data['NumberPlateText'])
+    VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, tonumber(data['NumberPlateTextIndex']))
+    VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, tonumber(data['WindowTint']))
+    VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, to_boolean(data['BulletProofTyres']))
+    VEHICLE. SET_VEHICLE_DIRT_LEVEL(vehicle, tonumber(data['DirtLevel']))
+    VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, tonumber(data['PaintFade']))
+    VEHICLE.SET_CONVERTIBLE_ROOF_LATCH_STATE(vehicle, tonumber(data['RoofState']))
+    VEHICLE.SET_VEHICLE_SIREN(vehicle, to_boolean(data['SirenActive']))
+    VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, to_boolean(data['EngineOn']), true, false)
 
     AUDIO.SET_VEHICLE_RADIO_LOUD(vehicle, to_boolean(data['IsRadioLoud']))
-    WIRI_VEHICLE.SET_VEHICLE_DOORS_LOCKED(vehicle, tonumber(data['LockStatus']))
+    VEHICLE.SET_VEHICLE_DOORS_LOCKED(vehicle, tonumber(data['LockStatus']))
     if data['EngineHealth'] ~= nil then
-        WIRI_VEHICLE.SET_VEHICLE_ENGINE_HEALTH(vehicle, tonumber(data['EngineHealth']))
+        VEHICLE.SET_VEHICLE_ENGINE_HEALTH(vehicle, tonumber(data['EngineHealth']))
     end
 end
 
@@ -21826,34 +19844,34 @@ end
 function ini_preprocess_vehicle(vehicle, data, ini_type, veh_index) 
     -- vehicle is a handle to an already-spawned vehicle
     if ini_type == 1 then
-        WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, data.Primary or 0, data.Secondary or 0)
-        WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data.SmokeR or 0, data.SmokeG or 0, data.SmokeB or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data.NeonR or 0, data.NeonG or 0, data.NeonB or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
-        WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
-        WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data.Wheels or 0)
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data.Pearl or 0, data.WheelColor or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data.Tint or 0)
+        VEHICLE.SET_VEHICLE_COLOURS(vehicle, data.Primary or 0, data.Secondary or 0)
+        VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data.SmokeR or 0, data.SmokeG or 0, data.SmokeB or 0)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data.NeonR or 0, data.NeonG or 0, data.NeonB or 0)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
+        VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
+        VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
+        VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data.Wheels or 0)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data.Pearl or 0, data.WheelColor or 0)
+        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data.Tint or 0)
 
         if data['BulletProofTires'] == 1 then 
-            WIRI_VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
+            VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
         end
         for i=1, 4 do 
             if data['Neon' .. i] == 1 then 
-                WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
+                VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
             end
         end
 
         for i=0, 48 do
             if data[i] ~= nil then 
                 -- idk how we even determine if a car has custom tires in this format
-                WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, i, data[i], false)
+                VEHICLE.SET_VEHICLE_MOD(vehicle, i, data[i], false)
             end
         end
 
         for i=1, 9 do 
-            WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if data['extra' .. i] == 0 then true else false)
+            VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if data['extra' .. i] == 0 then true else false)
         end
 
     elseif ini_type == 2 then
@@ -21861,90 +19879,90 @@ function ini_preprocess_vehicle(vehicle, data, ini_type, veh_index)
         local v_extras = data['Vehicle Extras']
         local v_toggles = data['Vehicle Toggles']
         local data = data.Vehicle 
-        WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, data['primary paint'] or 0, data['secondary paint'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data['tyre smoke red'] or 0, data['tyre smoke green'] or 0, data['tyre smoke blue'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data['neon red'] or 0, data['neon green'] or 0, data['neon blue'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
-        WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data['dirt level'] or 0)
-        --WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data['wheel type'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data['pearlescent colour'] or 0, data['wheel colour'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data['window tint'] or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, data['plate index'] or 0)
+        VEHICLE.SET_VEHICLE_COLOURS(vehicle, data['primary paint'] or 0, data['secondary paint'] or 0)
+        VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data['tyre smoke red'] or 0, data['tyre smoke green'] or 0, data['tyre smoke blue'] or 0)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data['neon red'] or 0, data['neon green'] or 0, data['neon blue'] or 0)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
+        VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data['dirt level'] or 0)
+        --VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
+        VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data['wheel type'] or 0)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data['pearlescent colour'] or 0, data['wheel colour'] or 0)
+        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data['window tint'] or 0)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT_INDEX(vehicle, data['plate index'] or 0)
 
         if data['bulletproof tyres'] == 1 then 
-            WIRI_VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
+            VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
         end
 
         for i=1, 4 do 
             if data['neon ' .. i] == 1 then 
-                WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
+                VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
             end
         end
 
         for i= 1, 7 do 
             if data['door ' .. i .. ' state'] == 1 then
-                WIRI_VEHICLE.SET_VEHICLE_DOOR_OPEN(vehicle, i, false, true)
+                VEHICLE.SET_VEHICLE_DOOR_OPEN(vehicle, i, false, true)
             end
         end
 
         for i=0, 48 do
             if v_mods[i] ~= nil then 
                 -- idk how we even determine if a car has custom tires in this format
-                WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, i, v_mods[i], false)
+                VEHICLE.SET_VEHICLE_MOD(vehicle, i, v_mods[i], false)
             end
         end
 
         for i=1, 9 do 
-            WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if v_extras[i] == 0 then true else false)
+            VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if v_extras[i] == 0 then true else false)
         end
 
         for i=17, 22 do 
-            WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, if v_toggles[i] == 1 then true else false)
+            VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, if v_toggles[i] == 1 then true else false)
         end
 
     elseif ini_type == 3 then
-        WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, data.PrimaryPaint or 0, data.SecondaryPaint or 0)
+        VEHICLE.SET_VEHICLE_COLOURS(vehicle, data.PrimaryPaint or 0, data.SecondaryPaint or 0)
         if data.PrimaryPaint == -1 then 
-            WIRI_VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, data.PrimaryR or 0, data.PrimaryG or 0, data.PrimaryB or 0)
+            VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, data.PrimaryR or 0, data.PrimaryG or 0, data.PrimaryB or 0)
         end 
         if data.SecondaryPaint == -1 then 
-            WIRI_VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, data.SecondaryR, data.SecondaryG, data.SecondaryB)
+            VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, data.SecondaryR, data.SecondaryG, data.SecondaryB)
         end
-        WIRI_VEHICLE.SET_VEHICLE_MOD_COLOR_1(vehicle, data.PrimaryPaintT or 0, data.PrimaryPaint or 0, data.Pearlescent or 0)
-        WIRI_VEHICLE.SET_VEHICLE_MOD_COLOR_2(vehicle, data.SecondaryPaintT or 0, data.SecondaryPaint or 0)
-        WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data.SmokeR or 0, data.SmokeG or 0, data.SmokeB or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data.NeonR or 0, data.NeonG or 0, data.NeonB or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
-        --WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
-        WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data.Wheels or 0)
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data.Pearlescent or 0, data.WheelsColor or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data.WindowTint or 0)
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, data.DashColor)
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, data.DashLightColor)
+        VEHICLE.SET_VEHICLE_MOD_COLOR_1(vehicle, data.PrimaryPaintT or 0, data.PrimaryPaint or 0, data.Pearlescent or 0)
+        VEHICLE.SET_VEHICLE_MOD_COLOR_2(vehicle, data.SecondaryPaintT or 0, data.SecondaryPaint or 0)
+        VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, data.SmokeR or 0, data.SmokeG or 0, data.SmokeB or 0)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, data.NeonR or 0, data.NeonG or 0, data.NeonB or 0)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
+        --VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
+        VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, data.PaintFade or 0)
+        VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, data.Wheels or 0)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, data.Pearlescent or 0, data.WheelsColor or 0)
+        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, data.WindowTint or 0)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, data.DashColor)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, data.DashLightColor)
 
         if data.BulletProof == 1 then 
-            WIRI_VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
+            VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, false)
         end
         if data.NeonEnabled == 1 then
             for i=1, 4 do 
-                WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
+                VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, true)
             end
         end
 
         for i=0, 48 do
             if data[i] ~= nil then 
-                WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, i, data[i], data.CustomTyres)
+                VEHICLE.SET_VEHICLE_MOD(vehicle, i, data[i], data.CustomTyres)
             end
         end
 
         for i=17, 22 do 
-            WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, if data['TOGGLE_' .. i] == 1 then true else false)
+            VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, if data['TOGGLE_' .. i] == 1 then true else false)
         end
 
         for i=1, 9 do 
-            WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if data['Extra_' .. i] == 0 then true else false)
+            VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, if data['Extra_' .. i] == 0 then true else false)
         end
 
     elseif ini_type == 4 then 
@@ -21970,51 +19988,51 @@ function ini_preprocess_vehicle(vehicle, data, ini_type, veh_index)
 
         for i=0, 49 do
             if data['M' .. tostring(i)] ~= nil then 
-                WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, i, v_mods['M' .. i], false)
+                VEHICLE.SET_VEHICLE_MOD(vehicle, i, v_mods['M' .. i], false)
             end
         end
 
         for i=0, 49 do 
-            WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, v_toggles['T' .. i])
+            VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, i, v_toggles['T' .. i])
         end
 
         for i=1, 13 do 
-            WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, v_extras['E' .. i])
+            VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, v_extras['E' .. i])
         end
 
         for i=1, 4 do 
-            WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, v_neon["Enabled" .. i])
+            VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, i, v_neon["Enabled" .. i])
         end
 
         ENTITY.SET_ENTITY_DYNAMIC(vehicle, v_root.Dynamic)
         ENTITY.SET_ENTITY_VISIBLE(vehicle, v_root.Visible, 0)
-        WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, v_color_main.Primary or 0, v_color_main.Secondary or 0)
+        VEHICLE.SET_VEHICLE_COLOURS(vehicle, v_color_main.Primary or 0, v_color_main.Secondary or 0)
         if v_is_custom_primary['bool'] then 
-            WIRI_VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(v_color_custom_p.r or 0, v_color_custom_p.g or 0, v_color_custom_p.b or 0)
+            VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(v_color_custom_p.r or 0, v_color_custom_p.g or 0, v_color_custom_p.b or 0)
         end
 
         if v_is_custom_secondary['bool'] then 
-            WIRI_VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(v_color_custom_s.r or 0, v_color_custom_s.g or 0, v_color_custom_s.b or 0)
+            VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(v_color_custom_s.r or 0, v_color_custom_s.g or 0, v_color_custom_s.b or 0)
         end
 
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, v_color_extra.Pearl or 0, v_color_extra.Wheel or 0)
+        VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, v_color_extra.Pearl or 0, v_color_extra.Wheel or 0)
 
     
-        WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, v_smoke.R or 0, v_smoke.G or 0, v_smoke.B or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, v_neon_color.R or 0, v_neon_color.G or 0, v_neon_color.B or 0)
-        WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
-        --WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
-        WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, v_paintfade.PaintFade or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, v_wheel_type or 0)
-        WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, v_window_tint or 0)
+        VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, v_smoke.R or 0, v_smoke.G or 0, v_smoke.B or 0)
+        VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, v_neon_color.R or 0, v_neon_color.G or 0, v_neon_color.B or 0)
+        VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
+        --VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, data.Dirt or 0)
+        VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, v_paintfade.PaintFade or 0)
+        VEHICLE.SET_VEHICLE_WHEEL_TYPE(vehicle, v_wheel_type or 0)
+        VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, v_window_tint or 0)
         ENTITY.SET_ENTITY_INVINCIBLE(vehicle, v_root.Invincible or false)
         ENTITY.SET_ENTITY_HAS_GRAVITY(vehicle, v_root.Gravity or true)
         ENTITY.FREEZE_ENTITY_POSITION(vehicle, v_root.Freeze or false)
         ENTITY.SET_ENTITY_RENDER_SCORCHED(vehicle, v_root.ScorchedRender or false)
         ENTITY.SET_ENTITY_ALPHA(vehicle, v_root.Alpha or 255, false) 
-        WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, v_root.Dirt or 0.0) 
-        WIRI_VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, v_root.IsEngineOn, true, false)
-        WIRI_VEHICLE.SET_VEHICLE_LIGHT_MULTIPLIER(vehicle, v_root.HeadlightMultiplier or 1.0)
+        VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, v_root.Dirt or 0.0) 
+        VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, v_root.IsEngineOn, true, false)
+        VEHICLE.SET_VEHICLE_LIGHT_MULTIPLIER(vehicle, v_root.HeadlightMultiplier or 1.0)
     end
 end
 
@@ -22296,76 +20314,76 @@ function json_preprocess_vehicle(vehicle, data, initial_vehicle)
     -- for some reason jackz used the name of the mod instead of the mod index / mod type lol
     -- otherwise, this code couldve taken up just 3 lines
     -- not like i couldnt have used a table, but still, come on...
-    WIRI_VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, sd['Tire Smoke'].r, sd['Tire Smoke'].g, sd['Tire Smoke'].b)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 0, mods['Spoilers'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 1, mods['Ornaments'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 2, mods['Front Bumper'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 3, mods['Side Skirt'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 4, mods['Exhaust'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 5, mods['Frame'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 6, mods['Grille'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 7, mods['Hood'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 8, mods['Fender'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 9, mods['Right Fender'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 10, mods['Roof'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 11, mods['Engine'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 12, mods['Brakes'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 13, mods['Transmission'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 14, mods['Horns'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 15, mods['Suspension'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 16, mods['Armor'], false)
+    VEHICLE.SET_VEHICLE_TYRE_SMOKE_COLOR(vehicle, sd['Tire Smoke'].r, sd['Tire Smoke'].g, sd['Tire Smoke'].b)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 0, mods['Spoilers'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 1, mods['Ornaments'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 2, mods['Front Bumper'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 3, mods['Side Skirt'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 4, mods['Exhaust'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 5, mods['Frame'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 6, mods['Grille'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 7, mods['Hood'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 8, mods['Fender'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 9, mods['Right Fender'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 10, mods['Roof'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 11, mods['Engine'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 12, mods['Brakes'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 13, mods['Transmission'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 14, mods['Horns'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 15, mods['Suspension'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 16, mods['Armor'], false)
     -- no front wheels in spec? lol?
-    --WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 23, mods['Front Wheels'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 24, mods["Motorcycle Back Wheel Design"], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 25, mods['Plate Holders'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 27, mods['Trim Design'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 28, mods['Ornaments'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 28, mods['Ornaments'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 30, mods['Dial Design'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 33, mods['Steering Wheel'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 34, mods['Shifter Leavers'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 35, mods['Plaques'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 36, mods['Hydraulics'], false)
-    WIRI_VEHICLE.SET_VEHICLE_MOD(vehicle, 48, mods['Livery'], false)
+    --VEHICLE.SET_VEHICLE_MOD(vehicle, 23, mods['Front Wheels'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 24, mods["Motorcycle Back Wheel Design"], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 25, mods['Plate Holders'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 27, mods['Trim Design'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 28, mods['Ornaments'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 28, mods['Ornaments'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 30, mods['Dial Design'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 33, mods['Steering Wheel'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 34, mods['Shifter Leavers'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 35, mods['Plaques'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 36, mods['Hydraulics'], false)
+    VEHICLE.SET_VEHICLE_MOD(vehicle, 48, mods['Livery'], false)
 
     -- toggle 
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 17, mods.Toggles.UNK17)
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 17, mods.Toggles.UNK17)
     -- typo here in the jackz json spec btw, not my fault :|
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 18, mods.Toggles['Turbo Turning'])
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 19, mods.Toggles['UNK19'])
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 20, mods.Toggles['Tire Smoke'])
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 21, mods.Toggles['UNK21'])
-    WIRI_VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 22, mods.Toggles['Xenon Headlights'])
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 18, mods.Toggles['Turbo Turning'])
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 19, mods.Toggles['UNK19'])
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 20, mods.Toggles['Tire Smoke'])
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 21, mods.Toggles['UNK21'])
+    VEHICLE.TOGGLE_VEHICLE_MOD(vehicle, 22, mods.Toggles['Xenon Headlights'])
     -------
-    WIRI_VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, not sd['Bulletproof Tires'])
-    WIRI_VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, sd['Dirt Level'])
-    WIRI_VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, sd['Window Tint'])
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, sd['Dashboard Color'])
+    VEHICLE.SET_VEHICLE_TYRES_CAN_BURST(vehicle, not sd['Bulletproof Tires'])
+    VEHICLE.SET_VEHICLE_DIRT_LEVEL(vehicle, sd['Dirt Level'])
+    VEHICLE.SET_VEHICLE_WINDOW_TINT(vehicle, sd['Window Tint'])
+    VEHICLE.SET_VEHICLE_EXTRA_COLOUR_6(vehicle, sd['Dashboard Color'])
     for i=10, 11 do 
-        WIRI_VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, not sd.Extras[i])
+        VEHICLE.SET_VEHICLE_EXTRA(vehicle, i, not sd.Extras[i])
     end
     -- lights
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, sd['Interior Color'])
-    WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 0, sd.Lights.Neon.Left)
-    WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 1, sd.Lights.Neon.Right)
-    WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 2, sd.Lights.Neon.Front)
-    WIRI_VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 3, sd.Lights.Neon.back)
-    WIRI_VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, sd.Lights.Neon.Color.r, sd.Lights.Neon.Color.g, sd.Lights.Neon.Color.b) 
-    WIRI_VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, sd.Lights['Xenon Color'])
-    WIRI_VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, sd['Engine Running'], true, false) 
+    VEHICLE.SET_VEHICLE_EXTRA_COLOUR_5(vehicle, sd['Interior Color'])
+    VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 0, sd.Lights.Neon.Left)
+    VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 1, sd.Lights.Neon.Right)
+    VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 2, sd.Lights.Neon.Front)
+    VEHICLE.SET_VEHICLE_NEON_ENABLED(vehicle, 3, sd.Lights.Neon.back)
+    VEHICLE.SET_VEHICLE_NEON_COLOUR(vehicle, sd.Lights.Neon.Color.r, sd.Lights.Neon.Color.g, sd.Lights.Neon.Color.b) 
+    VEHICLE.SET_VEHICLE_XENON_LIGHT_COLOR_INDEX(vehicle, sd.Lights['Xenon Color'])
+    VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, sd['Engine Running'], true, false) 
     -- colors 
     local colors = sd.Colors
     -- why is there a custom rgb color in the "vehicle" colors but also in both primary and secondary fields? what is the point?
-    WIRI_VEHICLE.SET_VEHICLE_COLOURS(vehicle, colors.Vehicle.Primary, colors.Vehicle.Secondary)
+    VEHICLE.SET_VEHICLE_COLOURS(vehicle, colors.Vehicle.Primary, colors.Vehicle.Secondary)
     if colors.Primary.Custom then 
-        WIRI_VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, colors.Primary['Custom Color'].r, colors.Primary['Custom Color'].g, colors.Primary['Custom Color'].b)
+        VEHICLE.SET_VEHICLE_CUSTOM_PRIMARY_COLOUR(vehicle, colors.Primary['Custom Color'].r, colors.Primary['Custom Color'].g, colors.Primary['Custom Color'].b)
     end
     if colors.Secondary.Custom then 
-        WIRI_VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, colors.Secondary['Custom Color'].r, colors.Secondary['Custom Color'].g, colors.Secondary['Custom Color'].b)
+        VEHICLE.SET_VEHICLE_CUSTOM_SECONDARY_COLOUR(vehicle, colors.Secondary['Custom Color'].r, colors.Secondary['Custom Color'].g, colors.Secondary['Custom Color'].b)
     end
-    WIRI_VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, colors.Extras.pearlescent, colors.Extras.wheel)
-    WIRI_VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, colors['Paint Fade'])
-    WIRI_VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
+    VEHICLE.SET_VEHICLE_EXTRA_COLOURS(vehicle, colors.Extras.pearlescent, colors.Extras.wheel)
+    VEHICLE.SET_VEHICLE_ENVEFF_SCALE(vehicle, colors['Paint Fade'])
+    VEHICLE.SET_VEHICLE_NUMBER_PLATE_TEXT(vehicle, "LANCE")
 end
 
 local supported_jackz_versions = {'1.1.0', '1.3.0', '1.3.1', '1.4.0'}
@@ -22601,7 +20619,6 @@ end
     end
 
     function Cama()
-                -- credits to jinxscript
         local inst = v3.new()
         local cama = {}
         v3.set(inst,CAM.GET_FINAL_RENDERED_CAM_ROT(2))
@@ -22897,25 +20914,25 @@ opt_pp = {"小鸡巴", "大鸡巴", "超级鸡巴","小鸡巴V2", "删除"}
 
 function getbigjb(index, value, click_type)
     pluto_switch index do
-        case 1:
-            attach_to_player("prop_cs_dildo_01", 57597, -0.1, 0.15, 0, 0, 90, 90)
-            break
-        case 2:
-            attach_to_player("prop_ld_bomb_01", 57597, -0.1, 0.6, 0, 0, 180, 180)
-            break
-        case 3:
-            attach_to_player("prop_sam_01", 57597, -0.1, 1.7, 0, 0, 180, 180)
-            break
-        case 4:
-            attach_to_player("prop_mk_plane", 57597, -0.25, 0.55, 0, 0, -90, 180)
-            break
-        case 5:
-            for k, model in pairs(obj_pp) do 
-                delete_object(model)
-            end
-            break
+    case 1:
+        attach_to_player("prop_cs_dildo_01", 57597, -0.1, 0.15, 0, 0, 90, 90)
+        break
+    case 2:
+        attach_to_player("prop_ld_bomb_01", 57597, -0.1, 0.6, 0, 0, 180, 180)
+        break
+    case 3:
+        attach_to_player("prop_sam_01", 57597, -0.1, 1.7, 0, 0, 180, 180)
+        break
+    case 4:
+        attach_to_player("prop_mk_plane", 57597, -0.25, 0.55, 0, 0, -90, 180)
+        break
+    case 5:
+        for k, model in pairs(obj_pp) do 
+            delete_object(model)
         end
+        break
     end
+end
 
 
 function ufffo()
@@ -23205,7 +21222,7 @@ function Disbet(pid)
     local targets = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
     local tar1 = ENTITY.GET_ENTITY_COORDS(targets, true)
     local play = ENTITY.GET_ENTITY_COORDS(players.user_ped(), true)
-    local disbet = GENERIC_SYSTEM.VDIST2(play.x, play.y, play.z, tar1.x, tar1.y, tar1.z)
+    local disbet = SYSTEM.VDIST2(play.x, play.y, play.z, tar1.x, tar1.y, tar1.z)
     return disbet
 end
 
@@ -23765,7 +21782,7 @@ pedToggleLoops = {
         if PED.IS_PED_A_PLAYER(ped) or not PED.IS_PED_IN_ANY_VEHICLE(ped, true) or not VEHICLE.IS_VEHICLE_SIREN_ON(vehicle) then return end
         VEHICLE.SET_VEHICLE_FORWARD_SPEED(vehicle, ENTITY.GET_ENTITY_SPEED(vehicle) + 1.2)
     end},
-    {name = '自动杀死敌人', command = 'JSautokill', description = '立即击杀对您有敌意的NPC', action = function(ped) --basically copy pasted form wiri script
+    {name = '自动杀死敌人', command = 'JSautokill', description = '立即击杀对您有敌意的NPC', action = function(ped)
         local rel = PED.GET_RELATIONSHIP_BETWEEN_PEDS(players.user_ped(), ped)
         if PED.IS_PED_A_PLAYER(ped) or ENTITY.IS_ENTITY_DEAD(ped) or not( (rel == 4 or rel == 5) or PED.IS_PED_IN_COMBAT(ped, players.user_ped()) ) then return end
         ENTITY.SET_ENTITY_HEALTH(ped, 0, 0)
@@ -23810,7 +21827,7 @@ Silent_Aimbot = {
 }
 
 function pid_to_handle(pid)
-    WIRI_NETWORK.NETWORK_HANDLE_FROM_PLAYER(pid, memory.alloc(13*8), 13)
+    NETWORK.NETWORK_HANDLE_FROM_PLAYER(pid, memory.alloc(13*8), 13)
     return memory.alloc(13*8)
 end
 
@@ -23906,7 +21923,7 @@ function GetSuitableAimbotTarget(fov, fovcheck, dist, loscheck)
 
         local entpos = entities.get_position(entity)
 
-            if PVP_SYSTEM.VDIST2(ourc.x, ourc.y, ourc.z, entpos.x, entpos.y, entpos.z) <= distsq then --distance check
+            if SYSTEM.VDIST2(ourc.x, ourc.y, ourc.z, entpos.x, entpos.y, entpos.z) <= distsq then --distance check
 
                 local handle = entities.pointer_to_handle(entity)
                 if (handle ~= ourped) then
@@ -23931,7 +21948,7 @@ function GetSuitableAimbotTarget(fov, fovcheck, dist, loscheck)
     if #inRange ~= 0 then
         for _, ped in pairs(inRange) do
             local tc = ENTITY.GET_ENTITY_COORDS(ped)
-            local vidsti = PVP_SYSTEM.VDIST2(ourc.x, ourc.y, ourc.z, tc.x, tc.y, tc.z)
+            local vidsti = SYSTEM.VDIST2(ourc.x, ourc.y, ourc.z, tc.x, tc.y, tc.z)
             if vidsti < d then
                 retplayer = ped
                 d = vidsti
@@ -23957,7 +21974,7 @@ function GetClosestPlayerWithRange_Whitelist_DisallowEntities(range, disallowedE
     local closest_player = 0
     for i = 1, #pedPointers do
         local tarcoords = entities.get_position(pedPointers[i])
-        local vdist = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+        local vdist = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
         if vdist <= rangesq then
             local handle = entities.pointer_to_handle(pedPointers[i])
             local playerID = NETWORK.NETWORK_GET_PLAYER_INDEX_FROM_PED(handle)
@@ -23976,7 +21993,7 @@ function GetClosestPlayerWithRange_Whitelist_DisallowEntities(range, disallowedE
             if tbl[i] ~= GetLocalPed() then
                 if PED.IS_PED_A_PLAYER(tbl[i]) then
                     local tarcoords = ENTITY.GET_ENTITY_COORDS(tbl[i])
-                    local e = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+                    local e = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
                     if e < dist then
                         dist = e
                         closest_player = tbl[i]
@@ -24007,7 +22024,7 @@ function GetClosestPlayerWithRange_Whitelist(range, inair) --variation of getClo
     local closest_player = 0
     for i = 1, #pedPointers do
         local tarcoords = entities.get_position(pedPointers[i])
-        local vdist = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+        local vdist = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
         if vdist <= rangesq then
             local handle = entities.pointer_to_handle(pedPointers[i])
             if (inair and (ENTITY.GET_ENTITY_HEIGHT_ABOVE_GROUND(handle) >= 9)) or (not inair) then --air check
@@ -24024,7 +22041,7 @@ function GetClosestPlayerWithRange_Whitelist(range, inair) --variation of getClo
             if tbl[i] ~= GetLocalPed() then
                 if PED.IS_PED_A_PLAYER(tbl[i]) then
                     local tarcoords = ENTITY.GET_ENTITY_COORDS(tbl[i])
-                    local e = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+                    local e = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
                     if e < dist then
                         dist = e
                         closest_player = tbl[i]
@@ -24048,7 +22065,7 @@ function GetClosestNonPlayerPedWithRange_DisallowedEntities(range, disallowedEnt
     local closest_ped = 0
     for i = 1, #pedPointers do
         local tarcoords = entities.get_position(pedPointers[i])
-        local vdist = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+        local vdist = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
         if vdist <= rangesq then
             local handle = entities.pointer_to_handle(pedPointers[i])
             if (inair and (ENTITY.GET_ENTITY_HEIGHT_ABOVE_GROUND(handle) >= 9)) or (not inair) then
@@ -24064,7 +22081,7 @@ function GetClosestNonPlayerPedWithRange_DisallowedEntities(range, disallowedEnt
             if tbl[i] ~= GetLocalPed() then
                 if not PED.IS_PED_A_PLAYER(tbl[i]) then
                     local tarcoords = getEntityCoords(tbl[i])
-                    local e = PVP_SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
+                    local e = SYSTEM.VDIST2(ourCoords.x, ourCoords.y, ourCoords.z, tarcoords.x, tarcoords.y, tarcoords.z)
                     if e < dist then
                         dist = e
                         closest_ped = tbl[i]
@@ -24133,6 +22150,375 @@ function start_silent_aimbot()
 end)
 end
 
+function allplayEvents(events)
+    for _, event in ipairs(events) do
+        util.trigger_script_event(util.get_session_players_bitflag(), event)
+    end
+end
+
+function func388()
+    GTD(mastervip, "Ultra 会员级功能")
+    GTD(mastervip, "请随时关注这里的新功能")
+
+    GTAC(mastervip, '全局忧郁踢', {}, '', function()
+        allplayEvents(kickevents)
+        for _, pid in players.list(false,true, true) do
+            menu.trigger_commands("kick" .. PLAYER.GET_PLAYER_NAME(pid))
+        end
+    end)
+
+    GTTG(mastervip, "武器追踪炮弹", {},'射击武器生效.',function(toggle)
+        gUsingValkRocket = toggle
+        if gUsingValkRocket then
+            local rocket = 0
+            local cam = 0
+            local blip = 0
+            local init = false
+            local timer <const> = newTimer()
+            local draw_rect = function(x, y, z, w)
+                GRAPHICS.DRAW_RECT(x, y, z, w, 255, 255, 255, 255, false)
+            end
+    
+            while gUsingValkRocket do
+                util.yield_once()
+                if PED.IS_PED_SHOOTING(players.user_ped()) and not init then
+                    init = true
+                    timer.reset()
+                elseif init then
+                    if not ENTITY.DOES_ENTITY_EXIST(rocket) then
+                        local offset = get_offset_from_cam(10)
+                        rocket = entities.create_object(util.joaat("w_lr_rpg_rocket"), offset)
+                        ENTITY.SET_ENTITY_INVINCIBLE(rocket, true)
+                        ENTITY.SET_ENTITY_LOAD_COLLISION_FLAG(rocket, true, 1)
+                        NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(NETWORK.OBJ_TO_NET(rocket), true)
+                        NETWORK.SET_NETWORK_ID_CAN_MIGRATE(NETWORK.OBJ_TO_NET(rocket), false)
+                        ENTITY.SET_ENTITY_RECORDS_COLLISIONS(rocket, true)
+                        ENTITY.SET_ENTITY_HAS_GRAVITY(rocket, false)
+    
+                        CAM.DESTROY_ALL_CAMS(true)
+                        cam = CAM.CREATE_CAM("DEFAULT_SCRIPTED_CAMERA", true)
+                        CAM.SET_CAM_NEAR_CLIP(cam, 0.01)
+                        CAM.SET_CAM_NEAR_DOF(cam, 0.01)
+                        GRAPHICS.CLEAR_TIMECYCLE_MODIFIER()
+                        GRAPHICS.SET_TIMECYCLE_MODIFIER("CAMERA_secuirity")
+                        CAM.HARD_ATTACH_CAM_TO_ENTITY(cam, rocket, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true)
+                        CAM.SET_CAM_ACTIVE(cam, true)
+                        CAM.RENDER_SCRIPT_CAMS(true, false, 0, true, true, 0)
+    
+                        PLAYER.DISABLE_PLAYER_FIRING(players.user_ped(), true)
+                        ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
+                    else
+                        local rot = CAM.GET_GAMEPLAY_CAM_ROT(0)
+                        local coords = ENTITY.GET_ENTITY_COORDS(rocket, false)
+                        local force = rot:toDir()
+                        force:mul(40.0)
+    
+                        ENTITY.SET_ENTITY_ROTATION(rocket, rot.x, rot.y, rot.z, 0, true)
+                        STREAMING.SET_FOCUS_POS_AND_VEL(coords.x, coords.y, coords.z, rot.x, rot.y, rot.z)
+                        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(rocket, 1, force.x, force.y, force.z, false, false, false, false)
+    
+                        HUD.HIDE_HUD_AND_RADAR_THIS_FRAME()
+                        PLAYER.DISABLE_PLAYER_FIRING(players.user_ped(), true)
+                        ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), true)
+                        HUD.HUD_SUPPRESS_WEAPON_WHEEL_RESULTS_THIS_FRAME()
+                        draw_rect(0.5, 0.5 - 0.025, 0.050, 0.002)
+                        draw_rect(0.5, 0.5 + 0.025, 0.050, 0.002)
+                        draw_rect(0.5 - 0.025, 0.5, 0.002, 0.052)
+                        draw_rect(0.5 + 0.025, 0.5, 0.002, 0.052)
+                        draw_rect(0.5 + 0.050, 0.5, 0.050, 0.002)
+                        draw_rect(0.5 - 0.050, 0.5, 0.050, 0.002)
+                        draw_rect(0.5, 0.500 + 0.05, 0.002, 0.05)
+                        draw_rect(0.5, 0.500 - 0.05, 0.002, 0.05)
+                        local maxTime = 7000 
+                        local length = 0.5 - 0.5 * (timer.elapsed() / maxTime) 
+                        local perc = length / 0.5
+                        local color = get_blended_colour(perc)
+                        GRAPHICS.DRAW_RECT(0.25, 0.5, 0.03, 0.5, 255, 255, 255, 120, false)
+                        GRAPHICS.DRAW_RECT(0.25, 0.75 - length / 2, 0.03, length, color.r, color.g, color.b, color.a, false)
+    
+                        if ENTITY.HAS_ENTITY_COLLIDED_WITH_ANYTHING(rocket) or length <= 0 then
+                            local impactCoord = ENTITY.GET_ENTITY_COORDS(rocket, false)
+                            FIRE.ADD_EXPLOSION(impactCoord.x, impactCoord.y, impactCoord.z, 32, 1.0, true, false, 0.4, false)
+                            entities.delete_by_handle(rocket)
+                            CAM.RENDER_SCRIPT_CAMS(false, false, 0, true, false, 0)
+                            GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
+                            STREAMING.CLEAR_FOCUS()
+                            CAM.DESTROY_CAM(cam, true)
+                            PLAYER.DISABLE_PLAYER_FIRING(players.user_ped(), false)
+                            ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
+                            rocket = 0
+                            init = false
+                        end
+                    end
+                end
+            end
+            if rocket and ENTITY.DOES_ENTITY_EXIST(rocket) then
+                local impactCoord = ENTITY.GET_ENTITY_COORDS(rocket, false)
+                FIRE.ADD_EXPLOSION(impactCoord.x, impactCoord.y, impactCoord.z, 32, 1.0, true, false, 0.4, false)
+                entities.delete_by_handle(rocket)
+                STREAMING.CLEAR_FOCUS()
+                CAM.RENDER_SCRIPT_CAMS(false, false, 0, true, false, 0)
+                CAM.DESTROY_CAM(cam, true)
+                GRAPHICS.SET_TIMECYCLE_MODIFIER("DEFAULT")
+                ENTITY.FREEZE_ENTITY_POSITION(players.user_ped(), false)
+                PLAYER.DISABLE_PLAYER_FIRING(players.user_ped(), false)
+                if HUD.DOES_BLIP_EXIST(blip) then util.remove_blip(blip) end
+                HUD.UNLOCK_MINIMAP_ANGLE()
+                HUD.UNLOCK_MINIMAP_POSITION()
+            end
+        end
+    end)
+
+    kongx1 = GTTG(mastervip, '模式1',{},'',function(lsqs)
+        luanshes = lsqs
+        while luanshes do wait()
+            local hash<const> = util.joaat("weapon_hominglauncher")
+            local raycastResult = get_raycast_result(1000.0)
+            WEAPON.REQUEST_WEAPON_ASSET(hash, 31, 0)
+            if raycastResult.didHit and PED.IS_PED_SHOOTING(
+                players.user_ped()) then
+            local pos = raycastResult.endCoords
+                for angle = 0, 359, 10 do
+                    local radians = math.rad(angle)
+                    local radius = 7 
+                    local offsetX = radius * math.cos(radians)
+                    local offsetY = radius * math.sin(radians)
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+                        pos.x + offsetX, pos.y + offsetY, pos.z + 35.0,
+                        pos.x + offsetX, pos.y + offsetY, pos.z, 0,
+                        true, hash, players.user_ped(),
+                        true, false, 0)
+                    wait(50)
+                end
+            end
+        end 
+        luanshes = false
+    end)
+    
+    kongx2 = GTTG(mastervip, '模式2',{},'',function(lsq1)
+        luanshe1 = lsq1
+        while luanshe1 do wait()
+            local hash1<const> = util.joaat("weapon_hominglauncher")
+            local raycastResult1 = get_raycast_result(1000.0)
+            WEAPON.REQUEST_WEAPON_ASSET(hash1, 31, 0)
+            if raycastResult1.didHit and PED.IS_PED_SHOOTING(
+                players.user_ped()) then
+            local pos1 = raycastResult1.endCoords
+                for i = 1, 40 do
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+                        pos1.x + math.random(-10, 10),
+                    pos1.y + math.random(-10, 10), pos1.z + 35.0
+                    + math.random(-10, 10), pos1.x
+                    + math.random(-10, 10),pos1.y
+                    + math.random(-10, 10), pos1.z
+                    + math.random(-10, 10), 0,
+                    true, hash1,players.user_ped(),
+                    true, false, 0)
+                    wait(50)
+                end
+            end
+        end luanshe1 = false
+    end)
+    
+    kongx3 = GTTG(mastervip, '模式3',{""},'',function(lsq2)
+        luanshe2 = lsq2
+        while luanshe2 do wait()
+            local hash2<const> = util.joaat("weapon_hominglauncher")
+            local raycastResult2 = get_raycast_result(1000.0)
+            WEAPON.REQUEST_WEAPON_ASSET(hash2, 31, 0)
+            if raycastResult2.didHit and PED.IS_PED_SHOOTING(
+                players.user_ped()) then
+                local pos2 = raycastResult2.endCoords
+                for offset = 1, 20, 1 do
+                    local offsetX1 = offset
+                    local offsetY1 = offset
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+                        pos2.x, pos2.y, pos2.z + 35.0,
+                        pos2.x - offsetX1, pos2.y - offsetY1, pos2.z, 0,
+                        true, hash2, players.user_ped(),
+                        true, false, 0)
+                    MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+                        pos2.x, pos2.y, pos2.z + 35.0,
+                        pos2.x + offsetX1, pos2.y + offsetY1, pos2.z, 0,
+                        true, hash2, players.user_ped(),
+                        true, false, 0)
+                    wait(50)
+                end
+            end
+        end 
+        luanshe2 = false
+    end)
+    menu.set_visible(kongx1, false)
+    menu.set_visible(kongx2, false)
+    menu.set_visible(kongx3, false)
+    
+    local func_mode = 1
+    local last_key_state = false
+    local circle_size = {
+        {x = .75, y = .9, radius = 0.025},
+        {x = .8, y = .9, radius = 0.02},
+        {x = .85, y = .9, radius = 0.02}
+    }
+    
+    kxpress = GTLP(mastervip, '空袭枪[功能模式]', {}, '按E切换模式类型\n三种模式三种不同的空袭效果', function()
+
+        for i = 1, 3 do
+            directx.draw_circle(circle_size[i].x, circle_size[i].y, 
+            circle_size[i].radius, 0, 0, 1, 1, -1)
+            directx.draw_text(circle_size[i].x-0.01, circle_size[i].y, '模式' .. i,
+            ALIGN_TOP_LEFT, circle_size[i].radius + 0.48, 0, 1, 0, 1)
+        end
+
+        local current_key_state = util.is_key_down(0x45)
+        if current_key_state and not last_key_state then
+            func_mode = func_mode + 1
+            if func_mode > 3 then
+                func_mode = 1
+            end
+            for i = 1, 3 do
+                circle_size[i].radius = 0.02 
+            end
+            if func_mode == 1 then
+                gtoast("模式1已启用")
+                menu.set_value(kongx1, true)
+                menu.set_value(kongx2, false)
+                menu.set_value(kongx3, false)
+            elseif func_mode == 2 then
+                gtoast("模式2已启用")
+                menu.set_value(kongx1, false)
+                menu.set_value(kongx2, true)
+                menu.set_value(kongx3, false)
+            elseif func_mode == 3 then
+                gtoast("模式3已启用")
+                menu.set_value(kongx1, false)
+                menu.set_value(kongx2, false)
+                menu.set_value(kongx3, true)
+            end
+    
+            circle_size[func_mode].radius = 0.025 
+        end
+        
+        last_key_state = current_key_state
+    end)
+
+    util.create_tick_handler(function ()
+        wait()
+        if menu.get_value(kxpress) == false then
+            kongx1.value = false
+            kongx2.value = false
+            kongx3.value = false
+        end
+    end)
+
+    GTTG(mastervip, '骑妹妹', {}, '可操控走路,按W移动方向即可行走\n妹妹是无敌的', function(on)
+        if on then
+            request_model(0x9CF26183)
+            local mypid = PLAYER.PLAYER_PED_ID()
+            local coods = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+            Mounts1 = PED.CREATE_PED(26, 0x9CF26183, coods.x, coods.y + 1, coods.z, 0, true, false)
+            while not STREAMING.HAS_ANIM_DICT_LOADED("rcmjosh2") do
+                STREAMING.REQUEST_ANIM_DICT("rcmjosh2")
+                wait()
+            end
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(mypid, Mounts1, PED.GET_PED_BONE_INDEX(Mounts1, 0), 0.0, -0.2, 0.60, 0.0, 0.0,
+                180, true, true, true, true, 2, true)
+            ENTITY.SET_ENTITY_INVINCIBLE(Mounts1, true)
+            TASK.TASK_PLAY_ANIM(mypid, "rcmjosh2", "josh_sitting_loop", 3.0, 2.0, -1, 3, 1.0, false, false, false)
+            util.create_tick_handler(function()
+                if (util.is_key_down(0x57)) then
+                    local location = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+                    local CamRot = CAM.GET_GAMEPLAY_CAM_ROT(2)
+                    local Distance = 5
+                    local SpawnPosition = location
+                    SpawnPosition.x = location.x - (math.sin(math.rad(CamRot.z)) * Distance)
+                    SpawnPosition.y = location.y + (math.cos(math.rad(CamRot.z)) * Distance)
+                    SpawnPosition.z = location.z
+                    TASK.TASK_GO_STRAIGHT_TO_COORD(Mounts1, SpawnPosition.x, SpawnPosition.y, SpawnPosition.z, 120, 10,
+                        CamRot.z, 0)
+                end
+            end)
+        else
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            entities.delete_by_handle(Mounts1)
+        end
+    end)
+
+    GTTG(mastervip, '鬼上身', {}, '被鬼附体', function(on)
+        if on then
+            request_model(0x9CF26183)
+            mypid1 = PLAYER.PLAYER_PED_ID()
+            local ghost_hashes = {util.joaat('m23_1_prop_m31_ghostzombie_01a'),
+                                util.joaat('m23_1_prop_m31_ghostjohnny_01a'),
+                                util.joaat('m23_1_prop_m31_ghostrurmeth_01a'),
+                                util.joaat('m23_1_prop_m31_ghostsalton_01a'),
+                                util.joaat('m23_1_prop_m31_ghostskidrow_01a')}
+            local ghost_hash = ghost_hashes[math.random(#ghost_hashes)]
+            request_model(ghost_hash)
+            local coos<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(players.user_ped()), true)
+            nvgui = PED.CREATE_PED(26, 0x9CF26183, coos.x, coos.y, coos.z, 0, true, false)
+            ghost1 = OBJECT.CREATE_OBJECT(ghost_hash, coos.x, coos.y, coos.z - 1, true, true, false)
+            ENTITY.SET_ENTITY_VISIBLE(nvgui, false)
+            ENTITY.SET_ENTITY_VISIBLE(mypid1, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(ghost1, nvgui, 0, 0, 0, 0, 0, 0, 180, false, false, false, true, 0, true, true)
+            while not STREAMING.HAS_ANIM_DICT_LOADED("rcmjosh2") do
+                STREAMING.REQUEST_ANIM_DICT("rcmjosh2")
+                wait()
+            end
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(nvgui, mypid1, 0, 0.0, 0, 0, 0.0, 0.0, 0, true, true, true, true, 2, true)
+
+        else
+            entities.delete_by_handle(ghost1)
+            entities.delete_by_handle(nvgui)
+            ENTITY.SET_ENTITY_VISIBLE(mypid1, true)
+        end
+    end)
+
+    GTTG(mastervip, '上鬼身', {}, '鬼成为你的座驾', function(on)
+        if on then
+            request_model(0x9CF26183)
+            local mypid = PLAYER.PLAYER_PED_ID()
+            local ghost_hashes = {util.joaat('m23_1_prop_m31_ghostzombie_01a'),
+                                util.joaat('m23_1_prop_m31_ghostjohnny_01a'),
+                                util.joaat('m23_1_prop_m31_ghostrurmeth_01a'),
+                                util.joaat('m23_1_prop_m31_ghostsalton_01a'),
+                                util.joaat('m23_1_prop_m31_ghostskidrow_01a')}
+            local ghost_hash = ghost_hashes[math.random(#ghost_hashes)]
+            request_model(ghost_hash)
+            local coos<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(players.user_ped()), true)
+            meimei = PED.CREATE_PED(26, 0x9CF26183, coos.x, coos.y, coos.z, 0, true, false)
+            ghost = OBJECT.CREATE_OBJECT(ghost_hash, coos.x, coos.y, coos.z, true, true, false)
+            ENTITY.SET_ENTITY_VISIBLE(meimei, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(ghost, meimei, 0, 0, 0, -1, 0, 0, 180, 180, false, false, false, true, 0, true,
+                true)
+            while not STREAMING.HAS_ANIM_DICT_LOADED("rcmjosh2") do
+                STREAMING.REQUEST_ANIM_DICT("rcmjosh2")
+                wait()
+            end
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(mypid, meimei, PED.GET_PED_BONE_INDEX(meimei, 0), 0.0, -0.2, 0.60, 0.0, 0.0, 180,
+                true, true, true, true, 2, true)
+            TASK.TASK_PLAY_ANIM(mypid, "rcmjosh2", "josh_sitting_loop", 3.0, 2.0, -1, 3, 1.0, false, false, false)
+            util.create_tick_handler(function()
+                if (util.is_key_down(0x57)) then
+                    local location = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+                    local CamRot = CAM.GET_GAMEPLAY_CAM_ROT(2)
+                    local Distance = 5
+                    local SpawnPosition = location
+                    SpawnPosition.x = location.x - (math.sin(math.rad(CamRot.z)) * Distance)
+                    SpawnPosition.y = location.y + (math.cos(math.rad(CamRot.z)) * Distance)
+                    SpawnPosition.z = location.z
+                    TASK.TASK_GO_STRAIGHT_TO_COORD(meimei, SpawnPosition.x, SpawnPosition.y, SpawnPosition.z, 120, 10,
+                        CamRot.z, 0)
+                end
+            end)
+        else
+            TASK.CLEAR_PED_TASKS(players.user_ped())
+            entities.delete_by_handle(meimei)
+            entities.delete_by_handle(ghost)
+        end
+    end)
+
+end
+
 function egaoxuanxianggongneng()
 
 function playerActionsSetup(pid)
@@ -24142,10 +22528,340 @@ GTD(GTROOT, "GRANDTOURINGVIP")
 
 GT = GTluaScript.list
 
-local name = WIRI_SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
+local name = SOCIALCLUB.SC_ACCOUNT_INFO_GET_NICKNAME()
 
-for _,id in ipairs(spid) do
-    if name == id.playerid then
+local sxid = {1}
+
+for _, idx in ipairs(sxid) do
+    if 1 == 1 then
+        
+        SxMainMenu = GT(GTROOT, "GTVIP Ultra VIP 無你有我  ~>'.'<~")
+        GTD(SxMainMenu, "随时关注这里")
+
+        GTAC(SxMainMenu,'何度未简',{},'',function()
+            util.create_thread(function ()
+                local weapon_ped <const> = entityspawn_entity(joaat("A_C_Rat"), players.get_position(pid), 0, false, false, false, false, true)
+                WEAPON.GIVE_WEAPON_TO_PED(weapon_ped, joaat("WEAPON_GRENADE"), 1, true, true)
+                local pos <const> = players.get_position(pid)
+                TASK.TASK_THROW_PROJECTILE(weapon_ped, pos.x, pos.y, pos.z, 0, false)
+                wait(1000)
+                entitydelete_entity(weapon_ped)
+            end)
+
+            util.create_thread(function ()
+                local pos <const> = players.get_position(pid)
+                pos.z = pos.z + 10
+                local A_C_Rat <const> = entityspawn_entity(joaat("A_C_Rat"), pos, 0, false, true, true, false, true)
+                local BMX <const> = entityspawn_entity(joaat("thruster"), pos, 0, false, true, true, true, true)
+                local time <const> = util.current_time_millis() + 2500
+                while time > util.current_time_millis() do
+                    PED.SET_PED_INTO_VEHICLE(A_C_Rat, BMX, -1)
+                    ENTITY.SET_ENTITY_HEALTH(A_C_Rat, 0, 0)
+                    TASK.TASK_LEAVE_VEHICLE(A_C_Rat, BMX, 0)
+                    wait(100)
+                    ENTITY.SET_ENTITY_HEALTH(A_C_Rat, 0, 100.0)
+                end
+                entitydelete_entity(A_C_Rat)
+                entitydelete_entity(BMX)
+            end)
+
+            util.create_thread(function ()
+                local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+                pos.z += 10
+                local ranger <const> = entityspawn_entity(joaat("u_m_y_rsranger_01"), pos, 0, true, true, true, true, true)
+                local time <const> = util.current_time_millis() + 5000
+                while time > util.current_time_millis() do
+                    local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+                    pos.z += 10
+                    TASK.TASK_SWEEP_AIM_POSITION(ranger, "anim@mp_player_intupperstinker", "", "", "", -1, 0.0, 0.0, 0.0, 0.0, 0.0)
+                    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ranger, pos.x,pos.y,pos.z + 10)
+                    entities.request_control(ranger)
+                    if entities.get_owner(ranger) == pid then
+                        wait(1000)
+                        entitydelete_entity(ranger)
+                        return
+                    end
+                    wait()
+                end
+                entitydelete_entity(ranger)
+            end)
+
+            util.create_thread(function ()
+                local pos <const> = players.get_position(pid)
+                pos.z = pos.z + 10
+                local ranger <const> = entityspawn_entity(joaat("u_m_y_rsranger_01"), pos, 0, true, true, true, true, false)
+                local time <const> = util.current_time_millis() + 5000
+                while time > util.current_time_millis() do
+                    local pos <const> = players.get_position(pid)
+                    pos.z = pos.z + 10
+                    TASK.TASK_SWEEP_AIM_ENTITY(ranger, "anim@mp_player_intupperstinker", "", "", "", -1, ranger, 0.0, 0.0)
+                    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(ranger, pos.x, pos.y, pos.z)
+                    entities.request_control(ranger)
+                    if entities.get_owner(ranger) == pid then
+                        wait(1000)
+                        entitydelete_entity(ranger)
+                        return
+                    end
+                    wait()
+                end
+            end)
+
+            util.create_thread(function ()
+                local weapon_ped <const> = entityspawn_entity(joaat("cs_taostranslator2"), players.get_position(pid), 0, false, false, false, false, true)
+                WEAPON.GIVE_DELAYED_WEAPON_TO_PED(weapon_ped, joaat("WEAPON_KNUCKLE"), 0, true)
+                WEAPON.SET_PED_GADGET(weapon_ped, joaat("WEAPON_KNUCKLE"), true)
+                ENTITY.SET_ENTITY_HEALTH(weapon_ped, 0)
+                wait(1000)
+                entitydelete_entity(weapon_ped)
+            end)
+
+        end)
+
+        GTAC(SxMainMenu, '激流神様',{},'',function(f)
+            util.create_thread(function()
+            local a = 1 while a <= 5 do wait() 
+            local player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            local hash = util.joaat('cs_taostranslator')
+                while not STREAMING.HAS_MODEL_LOADED(hash) do
+                    STREAMING.REQUEST_MODEL(hash)
+                wait(5)
+            end
+            local ped = {}
+                for i = 0, 40 do
+            local coord = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                player, 0.0, 5.0, 0.0)
+                ped[i] = entities.create_ped(0, hash, coord, 0)
+            local pedcoords = ENTITY.GET_ENTITY_COORDS(player, false)
+                WEAPON.GIVE_DELAYED_WEAPON_TO_PED(ped[i], 0xDBBD7280, 0, true)
+                WEAPON.SET_PED_GADGET(ped[i], 0xDBBD7280, true)
+                WEAPON.SET_PED_CURRENT_WEAPON_VISIBLE(ped[i], not f, 
+                false, false, false)
+                MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(
+                    pedcoords.x, pedcoords.y, pedcoords.z,
+                pedcoords.x, pedcoords.y, pedcoords.z, 0, true, 
+                util.joaat("vehicle_weapon_trailer_dualaa"),players.user_ped(), true, true, 0)
+                ENTITY.SET_ENTITY_VISIBLE(ped[i], false)
+                TASK.SET_HIGH_FALL_TASK(ped[i],0,0,406)
+                wait(25)
+            end
+                wait(2500)
+            for i = 0, 10 do
+                entities.delete_by_handle(ped[i])
+                wait(10)
+            end
+            a += 1
+            end
+            end)
+            util.create_thread(function()
+            local b = 1 while b <= 10 do wait() 
+            local all_vehicles = entities.get_all_vehicles_as_handles()
+            for i = 1, #all_vehicles do
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(all_vehicles[i])
+                PED.SET_PED_INTO_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 
+                all_vehicles[i], 1)
+                TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 
+                all_vehicles[i], 33, 1)
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(all_vehicles[i], 
+                ENTITY.GET_ENTITY_COORDS(pid).x,
+                ENTITY.GET_ENTITY_COORDS(pid).y,ENTITY.GET_ENTITY_COORDS(pid).z, 
+                ENTITY.GET_ENTITY_HEADING(pid))
+                wait(5)
+            end
+            for i = 1, #all_vehicles do
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(all_vehicles[i])
+                PED.SET_PED_INTO_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 
+                all_vehicles[i], 1)
+                TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 
+                all_vehicles[i], 17, 1)
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(all_vehicles[i], 
+                ENTITY.GET_ENTITY_COORDS(pid).x,
+                ENTITY.GET_ENTITY_COORDS(pid).y,ENTITY.GET_ENTITY_COORDS(pid).z+0.5, 
+                ENTITY.GET_ENTITY_HEADING(pid))
+                wait(5)
+            end
+            b += 1
+            end
+            end)
+            util.create_thread(function()
+            local c = 1 while c <= 10 do wait() 
+                local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+                local pos = players.get_position(pid)
+                local mdl = util.joaat("u_m_o_filmnoir")
+                local veh_mdl = 788747387
+                request_model(veh_mdl)
+                request_model(mdl)
+                    for i = 1, 10 do
+                        if not players.exists(pid) then
+                            return
+                        end
+                        local veh = entities.create_vehicle(veh_mdl, pos, 0)
+                        local jesus = entities.create_ped(2, mdl, pos, 0)
+                        ENTITY.SET_ENTITY_VISIBLE(jesus, false)
+                        ENTITY.SET_ENTITY_VISIBLE(veh, false)
+                        PED.SET_PED_INTO_VEHICLE(jesus, veh, -1)
+                        wait(100)
+                        TASK.TASK_PLANE_LAND(jesus, veh, ped, 10.0, 0, 10, 0, 0)
+                        wait(1000)
+                        entities.delete_by_handle(jesus)
+                        entities.delete_by_handle(veh)
+                    end  
+                STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(mdl)
+                STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(veh_mdl)
+            c += 1
+            end
+            end)
+            util.create_thread(function()
+            local d = 1 while d <= 10 do wait() 
+            local player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            local pos = ENTITY.GET_ENTITY_COORDS(player)
+            local mdl = util.joaat("u_m_y_rsranger_01")
+            local veh_mdl = util.joaat("technical2")
+            request_model(veh_mdl)
+            request_model(mdl)
+            local veh = entities.create_vehicle(veh_mdl, pos, 0)
+            local ped = entities.create_ped(26, mdl, pos, 0)
+            ENTITY.FREEZE_ENTITY_POSITION(veh, true)
+            ENTITY.SET_ENTITY_COLLISION(veh, false)
+            ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
+            PED.SET_PED_INTO_VEHICLE(ped, veh, 1)
+            wait(100)
+            TASK.CONTROL_MOUNTED_WEAPON(ped)
+            TASK.SET_MOUNTED_WEAPON_TARGET(ped, ped, 0,
+            pos.x,pos.y,pos.z, 5, true)
+            entities.give_control_by_handle(veh, pid)
+            wait(5000)
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+            entities.delete_by_handle(ped)
+            entities.delete_by_handle(veh)
+            d += 1
+            end
+            end)
+
+            util.create_thread(function()
+            local e = 1 while e <= 10 do wait() 
+            local pos <const> = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0, 3.0, 0.0)
+            pos.x = pos.x
+            pos.y = pos.y
+            pos.z = pos.z + 1
+            local ped_crash <const> = entities.create_ped(26,
+            util.joaat("S_M_M_Janitor"), pos, 0)
+            local obj_crash <const> = entities.create_object(
+                util.joaat("v_ilev_gunhook"), pos,0)
+            local veh_crash <const> = CreateVehicle(
+                util.joaat("fixter"), pos, 0)
+            PED.SET_PED_TO_RAGDOLL(ped_crash, 99999, 
+            0, 0, false, false, false)
+            wait(500)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(obj_crash, ped_crash, 
+            0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, 
+            true, true, false, 0, true)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(veh_crash,
+            obj_crash, 
+            0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, true, 
+            true, true, false, 0, true)
+            wait(1000)
+            entities.delete_by_handle(ped_crash)
+            entities.delete_by_handle(obj_crash)
+            entities.delete_by_handle(veh_crash)
+            e += 1
+            end
+            end)
+        end)
+
+        GTLP(SxMainMenu, "浮世回生", {""}, "", function(on_loop)
+            local mdl = util.joaat('a_c_poodle')
+            local mdl1 = util.joaat('a_c_poodle')
+            local mdl2 = util.joaat('a_c_poodle')
+            if request_model(mdl, mdl1, mdl2, 2) then
+                local pos = players.get_position(pid)
+                local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+                local ped1 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+                local ped2 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+
+                ped1 = entities.create_ped(26, mdl, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                    PLAYER.GET_PLAYER_PED(pid), 3, 0, 0), 0)
+                ped1 = entities.create_ped(26, mdl, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                    PLAYER.GET_PLAYER_PED(pid), -3, 0, 0), 0)
+                local coords = ENTITY.GET_ENTITY_COORDS(ped1, true)
+                WEAPON.GIVE_WEAPON_TO_PED(ped1, util.joaat('WEAPON_HOMINGLAUNCHER'), 9999, true, true)
+                local obj
+                repeat
+
+                    ped2 = entities.create_ped(26, mdl1, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                        PLAYER.GET_PLAYER_PED(pid), 0, 3, 0), 0)
+                    ped2 = entities.create_ped(26, mdl1, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                        PLAYER.GET_PLAYER_PED(pid), 0, -3, 0), 0)
+                    local coords = ENTITY.GET_ENTITY_COORDS(ped2, true)
+                    WEAPON.GIVE_WEAPON_TO_PED(ped2, util.joaat('WEAPON_HOMINGLAUNCHER'), 9999, true, true)
+                    local obj
+                    repeat
+
+                        ped2 = entities.create_ped(26, mdl2, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                            PLAYER.GET_PLAYER_PED(pid), 0, 0, 3), 0)
+                        ped2 = entities.create_ped(26, mdl2, ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(
+                            PLAYER.GET_PLAYER_PED(pid), 0, 0, -3), 0)
+                        local coords = ENTITY.GET_ENTITY_COORDS(ped2, true)
+                        WEAPON.GIVE_WEAPON_TO_PED(ped2, util.joaat('WEAPON_HOMINGLAUNCHER'), 9999, true, true)
+                        local obj
+                        repeat
+
+                            obj = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(ped1, 0)
+                        until obj ~= 0 or util.yield()
+                        ENTITY.DETACH_ENTITY(obj, true, true)
+                        util.yield(0)
+                        FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1.0, false, true, 0.0, false)
+                        entities.delete_by_handle(ped1)
+                        util.yield(0)
+
+                        obj = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(ped2, 0)
+                    until obj ~= 0 or util.yield()
+                    ENTITY.DETACH_ENTITY(obj, true, true)
+                    util.yield(0)
+                    FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1.0, false, true, 0.0, false)
+                    entities.delete_by_handle(ped2)
+                    util.yield(0)
+
+                    obj = WEAPON.GET_CURRENT_PED_WEAPON_ENTITY_INDEX(ped2, 0)
+                until obj ~= 0 or util.yield()
+                ENTITY.DETACH_ENTITY(obj, true, true)
+                util.yield(0)
+                FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 0, 1.0, false, true, 0.0, false)
+                entities.delete_by_handle(ped2)
+                util.yield(0)
+            end
+        end)
+
+        GTAC(SxMainMenu, "間欲三度", {""}, "", function()
+            local TargetPlayerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+            local plauuepos = ENTITY.GET_ENTITY_COORDS(TargetPlayerPed, true)
+            plauuepos.x = plauuepos.x + 5
+            plauuepos.z = plauuepos.z + 5
+            local hunter = {}
+            for i = 1, 3 do
+                for n = 0, 120 do
+                    hunter[n] = CreateVehicle(0x82CAC433, plauuepos, 0)
+                    util.yield(0)
+                    ENTITY.FREEZE_ENTITY_POSITION(hunter[n], true)
+                    util.yield(0)
+                    VEHICLE.EXPLODE_VEHICLE(hunter[n], true, true)
+                end
+                util.yield(190)
+                for i = 1, #hunter do
+                    if hunter[i] ~= nil then
+                        entities.delete_by_handle(hunter[i])
+                    end
+                end
+            end
+            hunter = nil
+            plauuepos = nil
+        end)
+
+    end 
+end
+
+for _,id in ipairs(sxid) do
+    if 1 == 1 then
         HbMainMenu = GT(GTROOT, "GTVIP Pro Features ~(>.<)~", {}, "此选项允许两个相同的皇榜用户互相攻击")
         tobe = GTD(HbMainMenu, "请尽情享用")
 
@@ -24215,7 +22931,7 @@ for _,id in ipairs(spid) do
                 TASK.SET_MOUNTED_WEAPON_TARGET(ped, ped, 0, pos.x,pos.y,pos.z, 5, true)
                 entities.give_control_by_handle(veh, pid)
                 wait(5000)
-                WIRI_NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
                 entities.delete_by_handle(ped)
                 entities.delete_by_handle(veh)
             end)
@@ -25634,677 +24350,443 @@ GTAC(lovecrash, "一见钟情", {'loveclick'}, "一次次的孤独", function()
     end
 end)
 
-    GTTG(PlayerMainMenu, '怒不可遏5.0', {"unableanger5th"}, '让您的对手怒不可遏!!!\nGRANDTOURINGVIP经典崩溃', function (on)
+    GTTG(PlayerMainMenu, '怒不可遏5.0', {"unableanger5th"},
+    '让您的对手怒不可遏!!!\nGRANDTOURINGVIP经典崩溃', function(on)
         if on then
             util.toast("你正在让他们怒不可遏 (请稍后...)")
-            menu.trigger_commands("rockcrash".. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("rockcrash" .. PLAYER.GET_PLAYER_NAME(pid))
             wait(100)
-            menu.trigger_commands("flowerdance".. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("flowerdance" .. PLAYER.GET_PLAYER_NAME(pid))
             wait(100)
-            menu.trigger_commands("nsacrash".. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("nsacrash" .. PLAYER.GET_PLAYER_NAME(pid))
             wait(100)
-            menu.trigger_commands("loveclick".. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("loveclick" .. PLAYER.GET_PLAYER_NAME(pid))
             wait(100)
-            menu.trigger_commands("rockets".. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("rockets" .. PLAYER.GET_PLAYER_NAME(pid))
             util.toast("怒不可遏: 崩溃已发出")
-            else
-            menu.trigger_commands("rockcrash".. PLAYER.GET_PLAYER_NAME(pid))
-            menu.trigger_commands("flowerdance".. PLAYER.GET_PLAYER_NAME(pid))
-            menu.trigger_commands("nsacrash".. PLAYER.GET_PLAYER_NAME(pid))
-            menu.trigger_commands("loveclick".. PLAYER.GET_PLAYER_NAME(pid))
-            menu.trigger_commands("rockets".. PLAYER.GET_PLAYER_NAME(pid))
+        else
+            menu.trigger_commands("rockcrash" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("flowerdance" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("nsacrash" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("loveclick" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("rockets" .. PLAYER.GET_PLAYER_NAME(pid))
             util.toast("崩溃已被用户手动停止")
         end
     end)
 
-    GTAC(other_crash, "改进的懂哥", {}, "", function()
-        PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(),0xE5022D03)
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
-        wait(20)
-        local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
-        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),p_pos.x,p_pos.y,p_pos.z,false,true,true)
-        WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), 0xFBAB5776, 1000, false)
-        TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()),-1087,-3012,13.94)
-        wait(500)
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
-        wait(1000)
-        PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID())
-        TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
-    end)
+GTAC(other_crash, "改进的懂哥", {}, "", function()
+    PLAYER.SET_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID(), 0xE5022D03)
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
+    wait(20)
+    local p_pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), p_pos.x, p_pos.y, p_pos.z,
+        false, true, true)
+    WEAPON.GIVE_DELAYED_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), 0xFBAB5776, 1000, false)
+    TASK.TASK_PARACHUTE_TO_TARGET(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()), -1087, -3012, 13.94)
+    wait(500)
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
+    wait(1000)
+    PLAYER.CLEAR_PLAYER_PARACHUTE_PACK_MODEL_OVERRIDE(PLAYER.PLAYER_ID())
+    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user()))
+end)
 
-    GTAC(other_crash, "碎片崩溃", {"fragment"}, "", function()
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        entities.delete_by_handle(object)
-        local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"), ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
-        OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
-        wait(1000)
-        entities.delete_by_handle(object)
-    end)
+GTAC(other_crash, "碎片崩溃", {"fragment"}, "", function()
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    entities.delete_by_handle(object)
+    local object = entities.create_object(util.joaat("prop_fragtest_cnst_04"),
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+    OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object, 1, false)
+    wait(1000)
+    entities.delete_by_handle(object)
+end)
 
-    function entity_vehicle(hash,coords,dir) 
+function entity_vehicle(hash, coords, dir)
     STREAMING.REQUEST_MODEL(hash)
     while not STREAMING.HAS_MODEL_LOADED(hash) do
-    wait()
+        wait()
     end
-    vehicle = entities.create_vehicle(hash,coords,dir,true,false)
+    vehicle = entities.create_vehicle(hash, coords, dir, true, false)
     STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
     return vehicle
-    end
+end
 
-    GTAC(other_crash, "马哥崩溃", {"gtgvs"}, "", function()
-        menu.trigger_commands("planecrash " .. players.get_name(pid))
-        menu.trigger_commands("ChernobogCrash " .. players.get_name(pid).. " 1")
-        menu.trigger_commands("dh " .. players.get_name(pid))
-    end)
+GTAC(other_crash, "马哥崩溃", {"gtgvs"}, "", function()
+    menu.trigger_commands("planecrash " .. players.get_name(pid))
+    menu.trigger_commands("ChernobogCrash " .. players.get_name(pid) .. " 1")
+    menu.trigger_commands("dh " .. players.get_name(pid))
+end)
 --
-    local all_peds_list = {
-        "ig_siemonyetarian",
-    }
-    local BrokenScenarioPeds = {
-        "s_m_y_construct_01",
-        "s_m_y_construct_02",
-        "csb_janitor",
-        "ig_russiandrunk",
-        "s_m_m_gardener_01",
-        "s_m_y_winclean_01",
-        "a_f_m_bodybuild_01",
-        "s_m_m_cntrybar_01",
-        "s_m_y_chef_01",
-        "ig_abigail",
-    }
-    local BrokenScenarios = {
-        "WORLD_HUMAN_CONST_DRILL",
-        "WORLD_HUMAN_HAMMERING",
-        "WORLD_HUMAN_JANITOR",
-        "WORLD_HUMAN_DRINKING",
-        "WORLD_HUMAN_GARDENER_PLANT",
-        "WORLD_HUMAN_MAID_CLEAN",
-        "WORLD_HUMAN_MUSCLE_FREE_WEIGHTS",
-        "WORLD_HUMAN_STAND_FISHING",
-        "PROP_HUMAN_BBQ",
-        "WORLD_HUMAN_WELDING",
-    }
-    local BrokenScenariosProps = {
-        "prop_tool_jackham",
-        "prop_tool_hammer",
-        "prop_tool_broom",
-        "prop_amb_40oz_02",
-        "prop_cs_trowel",
-        "prop_rag_01",
-        "prop_curl_bar_01",
-        "prop_fishing_rod_01",
-        "prop_fish_slice_01",
-        "prop_weld_torch",
-        "p_amb_coffeecup_01",
-    }
+local all_peds_list = {"ig_siemonyetarian"}
+local BrokenScenarioPeds = {"s_m_y_construct_01", "s_m_y_construct_02", "csb_janitor", "ig_russiandrunk",
+                            "s_m_m_gardener_01", "s_m_y_winclean_01", "a_f_m_bodybuild_01", "s_m_m_cntrybar_01",
+                            "s_m_y_chef_01", "ig_abigail"}
+local BrokenScenarios = {"WORLD_HUMAN_CONST_DRILL", "WORLD_HUMAN_HAMMERING", "WORLD_HUMAN_JANITOR",
+                         "WORLD_HUMAN_DRINKING", "WORLD_HUMAN_GARDENER_PLANT", "WORLD_HUMAN_MAID_CLEAN",
+                         "WORLD_HUMAN_MUSCLE_FREE_WEIGHTS", "WORLD_HUMAN_STAND_FISHING", "PROP_HUMAN_BBQ",
+                         "WORLD_HUMAN_WELDING"}
+local BrokenScenariosProps = {"prop_tool_jackham", "prop_tool_hammer", "prop_tool_broom", "prop_amb_40oz_02",
+                              "prop_cs_trowel", "prop_rag_01", "prop_curl_bar_01", "prop_fishing_rod_01",
+                              "prop_fish_slice_01", "prop_weld_torch", "p_amb_coffeecup_01"}
 --
-    local function BlockSyncs(pid, callback)
-        for _, i in ipairs(players.list(false, true, true)) do
-            if i ~= pid then
-                local outSync = menu.ref_by_rel_path(menu.player_root(i), "Outgoing Syncs>Block")
-                menu.trigger_command(outSync, "on")
-            end
-        end
-        wait(10)
-        callback()
-        for _, i in ipairs(players.list(false, true, true)) do
-            if i ~= pid then
-                local outSync = menu.ref_by_rel_path(menu.player_root(i), "Outgoing Syncs>Block")
-                menu.trigger_command(outSync, "off")
-            end
+local function BlockSyncs(pid, callback)
+    for _, i in ipairs(players.list(false, true, true)) do
+        if i ~= pid then
+            local outSync = menu.ref_by_rel_path(menu.player_root(i), "Outgoing Syncs>Block")
+            menu.trigger_command(outSync, "on")
         end
     end
+    wait(10)
+    callback()
+    for _, i in ipairs(players.list(false, true, true)) do
+        if i ~= pid then
+            local outSync = menu.ref_by_rel_path(menu.player_root(i), "Outgoing Syncs>Block")
+            menu.trigger_command(outSync, "off")
+        end
+    end
+end
 --
 GTAC(updates, "宵宵古今", {"reol"}, "流星&堕落", function()
     reolcrash(pid)
-    menu.trigger_commands("12crash".. PLAYER.GET_PLAYER_NAME(pid))
+    menu.trigger_commands("12crash" .. PLAYER.GET_PLAYER_NAME(pid))
 end)
 --
 
-diudiuflower = GT(updates,"猛女散花", {"diudiucrash"}, "")
+diudiuflower = GT(updates, "猛女散花", {"diudiucrash"}, "")
 GTAC(diudiuflower, "猛女散花", {"diudiuevil"}, "针对个人玩家\n不建议一直按住", function()
-    menu.trigger_commands("givesh".. PLAYER.GET_PLAYER_NAME(pid))
-    menu.trigger_commands("ghostv6".. PLAYER.GET_PLAYER_NAME(pid))
-    menu.trigger_commands("ghostv8".. PLAYER.GET_PLAYER_NAME(pid))
+    menu.trigger_commands("givesh" .. PLAYER.GET_PLAYER_NAME(pid))
+    menu.trigger_commands("ghostv6" .. PLAYER.GET_PLAYER_NAME(pid))
+    menu.trigger_commands("ghostv8" .. PLAYER.GET_PLAYER_NAME(pid))
 end)
 
-GTAC(diudiuflower, "猛女散花(全局版本)", {"diudiuevilall"}, "全局崩溃版本\n不建议一直按住", function()
-    menu.trigger_commands("givesh".. PLAYER.GET_PLAYER_NAME(pid)) --Let Player Become Scripts Host to Manager Event
-    menu.trigger_commands("ghostv8".. PLAYER.GET_PLAYER_NAME(pid)) --Crash Event(XQ) & MP Freemode 01 Ped Spawner
-    menu.trigger_commands("12crash".. PLAYER.GET_PLAYER_NAME(pid)) --Freemode Entity Control Spawner (Taxi Ped)
-    menu.trigger_commands("chokeall") --Command For Stand Crash All (C2)
-    menu.trigger_commands("sixfeel") --Invalid Object Crash (Prevent Youself)
-end)
+GTAC(diudiuflower, "猛女散花(全局版本)", {"diudiuevilall"}, "全局崩溃版本\n不建议一直按住",
+    function()
+        menu.trigger_commands("givesh" .. PLAYER.GET_PLAYER_NAME(pid)) -- Let Player Become Scripts Host to Manager Event
+        menu.trigger_commands("ghostv8" .. PLAYER.GET_PLAYER_NAME(pid)) -- Crash Event(XQ) & MP Freemode 01 Ped Spawner
+        menu.trigger_commands("12crash" .. PLAYER.GET_PLAYER_NAME(pid)) -- Freemode Entity Control Spawner (Taxi Ped)
+        menu.trigger_commands("chokeall") -- Command For Stand Crash All (C2)
+        menu.trigger_commands("sixfeel") -- Invalid Object Crash (Prevent Youself)
+    end)
 
-GTAC(updates, "雨落纷纷", {"rainfell"}, "如今的瓢泼大雨比以往更加强烈\n你仍然可以站在GTVIP的雨伞之下", function()
-    local edition = menu.get_edition()
-    if edition == 3 then
-    util.toast("再见")
-    menu.trigger_commands("umbrella".. PLAYER.GET_PLAYER_NAME(pid))
-    menu.trigger_commands("steamroll".. PLAYER.GET_PLAYER_NAME(pid))
-    menu.trigger_commands("ghostv3".. PLAYER.GET_PLAYER_NAME(pid))
-    menu.trigger_commands("ghostv4".. PLAYER.GET_PLAYER_NAME(pid))
-    elseif edition == 0 then
-    util.toast("您是免费版用户，我还能说什么呢")
-    elseif edition == 1 then
-    util.toast("您是基础版用户，该崩溃仅在终极版可用")
-    elseif edtion == 2 then
-    util.toast("您是常规版用户，该崩溃仅在终极版可用")
-    end
+GTAC(updates, "雨落纷纷", {"rainfell"},
+    "如今的瓢泼大雨比以往更加强烈\n你仍然可以站在GTVIP的雨伞之下", function()
+        local edition = menu.get_edition()
+        if edition == 3 then
+            util.toast("再见")
+            menu.trigger_commands("umbrella" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("steamroll" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("ghostv3" .. PLAYER.GET_PLAYER_NAME(pid))
+            menu.trigger_commands("ghostv4" .. PLAYER.GET_PLAYER_NAME(pid))
+        elseif edition == 0 then
+            util.toast("您是免费版用户，我还能说什么呢")
+        elseif edition == 1 then
+            util.toast("您是基础版用户，该崩溃仅在终极版可用")
+        elseif edtion == 2 then
+            util.toast("您是常规版用户，该崩溃仅在终极版可用")
+        end
     end)
 --
 
-GTAC(updates, 'NSA崩溃', {"nsacrash"}, '', function ()
+GTAC(updates, 'NSA崩溃', {"nsacrash"}, '', function()
     ped_task = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
     ENTITY.FREEZE_ENTITY_POSITION(PLAYER.GET_PLAYER_PED(pid), true)
-    entities.create_object(0x9cf21e0f , ped_task, true, false) 
+    entities.create_object(0x9cf21e0f, ped_task, true, false)
     local Rui_task = CreateVehicle(util.joaat("Ruiner2"), ped_task, ENTITY.GET_ENTITY_HEADING(TTPed), true)
-    local ped_task2 = CreatePed(26 , util.joaat("ig_kaylee"), ped_task, 0)
-    for i=0, 10 do
-    local pedps = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    local allpeds = entities.get_all_peds_as_handles()
-    local allvehicles = entities.get_all_vehicles_as_handles()
-    local allobjects = entities.get_all_objects_as_handles()
-    local ownped = players.user_ped(players.user())
-    request_model(0x78BC1A3C)
-    request_model(0x000B75B9)
-    request_model(0x15F27762)
-    request_model(0x0E512E79)
-    CreateVehicle(0xD6BC7523,pedps,0)
-    CreateVehicle(0x1F3D44B5,pedps,0)
-    CreateVehicle(0x2A72BEAB,pedps,0)
-    CreateVehicle(0x174CB172,pedps,0)
-    CreateVehicle(0x78BC1A3C,pedps,0)
-    CreateVehicle(0x0E512E79,pedps,0)
-    for i = 1, #allpeds do
-    if allpeds[i] ~= ownped then
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allpeds[i], 0, 0, 0)
-    end
-    end
-    for i = 1, #allvehicles do
-    if allvehicles[i] ~= ownvehicle then
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allvehicles[i], 0, 0, 0)
-    VEHICLE.SET_VEHICLE_ON_GROUND_PROPERLY(allvehicles[i], 0, 0, 0)
-    VEHICLE.SET_TAXI_LIGHTS(allvehicles[i])
-    end
-    end
-    for i = 1, #allobjects do
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allobjects[i], 0, 0, 0)
-    end
-    wait()
+    local ped_task2 = CreatePed(26, util.joaat("ig_kaylee"), ped_task, 0)
+    for i = 0, 10 do
+        local pedps = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        local allpeds = entities.get_all_peds_as_handles()
+        local allvehicles = entities.get_all_vehicles_as_handles()
+        local allobjects = entities.get_all_objects_as_handles()
+        local ownped = players.user_ped(players.user())
+        request_model(0x78BC1A3C)
+        request_model(0x000B75B9)
+        request_model(0x15F27762)
+        request_model(0x0E512E79)
+        CreateVehicle(0xD6BC7523, pedps, 0)
+        CreateVehicle(0x1F3D44B5, pedps, 0)
+        CreateVehicle(0x2A72BEAB, pedps, 0)
+        CreateVehicle(0x174CB172, pedps, 0)
+        CreateVehicle(0x78BC1A3C, pedps, 0)
+        CreateVehicle(0x0E512E79, pedps, 0)
+        for i = 1, #allpeds do
+            if allpeds[i] ~= ownped then
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allpeds[i], 0, 0, 0)
+            end
+        end
+        for i = 1, #allvehicles do
+            if allvehicles[i] ~= ownvehicle then
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allvehicles[i], 0, 0, 0)
+                VEHICLE.SET_VEHICLE_ON_GROUND_PROPERLY(allvehicles[i], 0, 0, 0)
+                VEHICLE.SET_TAXI_LIGHTS(allvehicles[i])
+            end
+        end
+        for i = 1, #allobjects do
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(allobjects[i], 0, 0, 0)
+        end
+        wait()
     end
     PED.RESURRECT_PED(players.user_ped(pid))
     wait(2000)
     entities.delete_by_handle(Rui_task)
     entities.delete_by_handle(ped_task2)
-    end)
+end)
 
-    GTAC(updates, '彩色泡泡', {"rainbowpapaw"}, '', function (f)
+GTAC(updates, '彩色泡泡', {"rainbowpapaw"}, '', function(f)
     player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
     veh = entities.get_all_vehicles_as_handles()
     for i = 1, #veh do
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh[i])
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(veh[i], 0, 0, 5)
-    TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 18, 777)
-    TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 17, 888)
-    TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 16, 999)
+        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh[i])
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(veh[i], 0, 0, 5)
+        TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 18, 777)
+        TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 17, 888)
+        TASK.TASK_VEHICLE_TEMP_ACTION(player, veh[i], 16, 999)
     end
-    end)
+end)
 
-    GTAC(updates, '花神之舞', {"flowerdance"}, '', function (f)
+GTAC(updates, '花神之舞', {"flowerdance"}, '', function(f)
     plauuepos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
     plauuepos.x = plauuepos.x + 1.2
-    plauuepos.z = plauuepos.z -0.5
+    plauuepos.z = plauuepos.z - 0.5
     hunter = {}
-    for i = 1 ,3 do
-    for n = 0,120 do
-    hunter[n] = CreateVehicle(-692292317,plauuepos,0)
-    wait(0)
-    ENTITY.FREEZE_ENTITY_POSITION(hunter[n],true)
-    wait(0)
-    VEHICLE.EXPLODE_VEHICLE(hunter[n], true, true)
-    end
-    wait(190)
-    for i = 1,#hunter do
-    if hunter[i] ~= nil then
-    entities.delete_by_handle(hunter[i])
-    end
-    end
+    for i = 1, 3 do
+        for n = 0, 120 do
+            hunter[n] = CreateVehicle(-692292317, plauuepos, 0)
+            wait(0)
+            ENTITY.FREEZE_ENTITY_POSITION(hunter[n], true)
+            wait(0)
+            VEHICLE.EXPLODE_VEHICLE(hunter[n], true, true)
+        end
+        wait(190)
+        for i = 1, #hunter do
+            if hunter[i] ~= nil then
+                entities.delete_by_handle(hunter[i])
+            end
+        end
     end
     util.toast("崩溃已结束")
     hunter = nil
     plauuepos = nil
-    end)
+end)
 
-    GTAC(updates, "支离破碎", {"lettingbreak"}, "GRANDTOURINGVIP\n2Take1版本同款崩溃", function(f)--增加部分模型
+GTAC(updates, "支离破碎", {"lettingbreak"}, "GRANDTOURINGVIP\n2Take1版本同款崩溃",
+    function(f) -- 增加部分模型
         local vehs = {}
         local c = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-        local m = {
-            "dubsta",
-            "dubsta2",
-            "fq2",
-            "patriot",
-            "radi",
-            "habanero",
-            "landstalker",
-            "serrano",
-            "cavalcade",
-            "rocoto",
-            "GRANGER",
-            "Baller",
-            "gresley",
-            "baller2",
-            "cavalcade2",
-            "MESA",
-            "Seminole",
-            "BjXL",
-            "mesa2",
-            "huntley",
-            "toros",
-            "squaddie",
-            "rebla",
-            "baller3",
-            "baller4",
-            "baller5",
-            "baller6",
-            "xls",
-            "xls2",
-            "contender",
-            "patriot2",
-            "Novak",
-            "landstalker2",
-            "seminole2",
-            "iwagen",
-            "astron",
-            "baller7",
-            "jubilee",
-            "granger2",
-        }
-        for i=1,#m do
-        local h = util.joaat(m[i])
-        util.toast(h)
-        STREAMING.REQUEST_MODEL(h)
-        while not STREAMING.HAS_MODEL_LOADED(h) do
-        wait(0)
-        end
-        c.z = c.z + 1.0
-        vehs[i] = CreateVehicle(h, c, 0, true, false)
-        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(h)
+        local m = {"dubsta", "dubsta2", "fq2", "patriot", "radi", "habanero", "landstalker", "serrano", "cavalcade",
+                   "rocoto", "GRANGER", "Baller", "gresley", "baller2", "cavalcade2", "MESA", "Seminole", "BjXL",
+                   "mesa2", "huntley", "toros", "squaddie", "rebla", "baller3", "baller4", "baller5", "baller6", "xls",
+                   "xls2", "contender", "patriot2", "Novak", "landstalker2", "seminole2", "iwagen", "astron", "baller7",
+                   "jubilee", "granger2"}
+        for i = 1, #m do
+            local h = util.joaat(m[i])
+            util.toast(h)
+            STREAMING.REQUEST_MODEL(h)
+            while not STREAMING.HAS_MODEL_LOADED(h) do
+                wait(0)
+            end
+            c.z = c.z + 1.0
+            vehs[i] = CreateVehicle(h, c, 0, true, false)
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(h)
         end
         while f do
-        for i=1,#vehs do
-        ENTITY.SET_ENTITY_VISIBLE(vehs[i], false)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 0, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 1, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 2, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 3, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 4, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 5, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 6, true)
-        VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 7, true)
-        wait(0)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 0, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 1, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 2, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 3, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 4, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 5, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 6, false)
-        VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 7, false)
+            for i = 1, #vehs do
+                ENTITY.SET_ENTITY_VISIBLE(vehs[i], false)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 0, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 1, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 2, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 3, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 4, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 5, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 6, true)
+                VEHICLE.SET_DOOR_ALLOWED_TO_BE_BROKEN_OFF(vehs[i], 7, true)
+                wait(0)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 0, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 1, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 2, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 3, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 4, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 5, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 6, false)
+                VEHICLE.SET_VEHICLE_DOOR_BROKEN(vehs[i], 7, false)
+            end
+            wait(100)
+            for i = 1, #vehs do
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehs[i])
+                VEHICLE.SET_VEHICLE_FIXED(vehs[i])
+            end
+            wait(100)
         end
-        wait(100)
-        for i=1,#vehs do
-        NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehs[i])
-        VEHICLE.SET_VEHICLE_FIXED(vehs[i])
-        end
-        wait(100)
-        end
-        for i=1,#vehs do
-        entities.delete_by_handle(vehs[i])
+        for i = 1, #vehs do
+            entities.delete_by_handle(vehs[i])
         end
     end)
 
-    GTAC(updates, '不可饶恕', {"nofuckoff"}, '', function ()
-    plauuepos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    pedmy = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-    pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    towtruck = CreateVehicle(-1323100960, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck, true)			
-    towtruck2 = CreateVehicle(-442313018, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck2, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck2, true)
-    scrap = CreateVehicle(-1700801569, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(scrap, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(scrap, true)					
-    dinghy3	= CreateVehicle(509498602, pos,0)	
-    ENTITY.SET_ENTITY_INVINCIBLE(dinghy3, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(dinghy3, true)		
-    barracks = CreateVehicle(-823509173, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(barracks, true)	
-    car_1 = CreateVehicle(1886712733, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck, true)			
-    car_2 = CreateVehicle(516990260, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck2, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck2, true)
-    car_3 = CreateVehicle(887537515, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(scrap, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(scrap, true)					
-    car_4	= CreateVehicle(3251507587, pos,0)	
-    ENTITY.SET_ENTITY_INVINCIBLE(dinghy3, true)	
-    ENTITY.FREEZE_ENTITY_POSITION(dinghy3, true)		
-    car_5 = CreateVehicle(444583674, pos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(barracks, true)	
-    car = CreateVehicle(0x432EA949,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car,true)
-    car2 = CreateVehicle(0x432EA949,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car2,true)
-    car3 = CreateVehicle(0xFCFCB68B,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car3,true)
-    car4 = CreateVehicle(0xFCFCB68B,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car4,true)
-    car5 = CreateVehicle(0xFCFCB68B,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car5,true)
-    car6 = CreateVehicle(0xFCFCB68B,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car6,true)
-    car7 = CreateVehicle(0x1E5E54EA,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car7,true)
-    car8 = CreateVehicle(0x33B47F96,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car8,true)
-    car9 = CreateVehicle(0x1E5E54EA,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car9,true)
-    car10 = CreateVehicle(0x78BC1A3C,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car10,true)
-    car11 = CreateVehicle(0x78BC1A3C,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car11,true)
-    car12 = CreateVehicle(0x8125BCF9,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car12,true)
-    car13 = CreateVehicle(0x9AE6DDA1,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car13,true)
-    car14 = CreateVehicle(0x9AE6DDA1,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car14,true)
-    car15 = CreateVehicle(0xAC5DF515,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car15,true)
-    car16 = CreateVehicle(0xAC5DF515,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car16,true)
-    car17 = CreateVehicle(0xAC5DF515,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car17,true)
-    car18 = CreateVehicle(0xAC5DF515,pos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(car18,true)
-    ENTITY.FREEZE_ENTITY_POSITION(barracks, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,towtruck2,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,scrap,towtruck, 0, 0, 0,0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,dinghy3,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,barracks,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,towtruck,towtruck2, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car_1,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car_2,towtruck, 0, 0, 0,0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car_3,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car_4,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car_5,towtruck2, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car2,towtruck, 0, 0, 0,0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car3,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car4,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car5,towtruck2, 0,0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car6,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car7,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car8,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car9,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car10,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car11,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car12,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car13,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car14,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car15,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car16,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car17,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,car18,towtruck, 0, 0, 0, 0, 0,0,0, false, true, false, 0, true)
-    plauuepos.x = plauuepos.x + 1
-    plauuepos.z = plauuepos.z + 1
-    for i = 0, 60 do
-    towtruck = CreateVehicle(-442313018,plauuepos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck,true)
-    towtruck2 = CreateVehicle(0x1A7FCEFA,plauuepos,0)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck2,true)
-    ENTITY.SET_ENTITY_INVINCIBLE(towtruck,true)
-    WIRI_VEHICLE.ATTACH_VEHICLE_TO_TOW_TRUCK(towtruck,towtruck2,false, 0, 0, 0)
-    car = CreateVehicle(0xF337AB36,plauuepos,0)
-    WIRI_VEHICLE.ATTACH_VEHICLE_TO_TOW_TRUCK(towtruck,car,false, 0, 0, 0)
-    end
-    car = CreateVehicle(0x432EA949,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car2 = CreateVehicle(0x432EA949,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car3 = CreateVehicle(0xFCFCB68B,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car4 = CreateVehicle(0xFCFCB68B,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car5 = CreateVehicle(0xFCFCB68B,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car6 = CreateVehicle(0xFCFCB68B,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car7 = CreateVehicle(0x1E5E54EA,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car8 = CreateVehicle(0x33B47F96,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car9 = CreateVehicle(0x1E5E54EA,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car10 = CreateVehicle(0x78BC1A3C,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car11 = CreateVehicle(0x78BC1A3C,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car12 = CreateVehicle(0x8125BCF9,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car13 = CreateVehicle(0x9AE6DDA1,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car14 = CreateVehicle(0x9AE6DDA1,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car15 = CreateVehicle(0xAC5DF515,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car16 = CreateVehicle(0xAC5DF515,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car17 = CreateVehicle(0xAC5DF515,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    car18 = CreateVehicle(0xAC5DF515,plauuepos,0)
-    ENTITY.FREEZE_ENTITY_POSITION(towtruck,true)
-    plauuepos = nil
-    wait(4500)
-    if players.exists(pid) then
-    for i = 1, #vehicles do
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(0,vehicles[i])
-    end
-    if #vehicles > 30 then
-    util.toast("找到有效物体 正在执行崩溃...")
-    wait(1000)
-    STREAMING.REQUEST_MODEL(0x6FACDF31)
-    tow_truck_5g_vehicle = CreateVehicle(0x6FACDF31, utilities.offset_coords_forward(ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)) + 0, 0, 5, ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED(pid)), 10), 0, true, false)
-    ENTITY.SET_ENTITY_INVINCIBLE(tow_truck_5g_vehicle, true)
-    ENTITY.SET_ENTITY_VISIBLE(tow_truck_5g_vehicle, false)
-    for i = 1, #vehicles do
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(0,vehicles[i])
-    ENTITY.SET_ENTITY_INVINCIBLE(vehicles[i], true)
-    ENTITY.SET_ENTITY_VISIBLE(vehicles[i], false)
-    end
-    for i = 1, #vehicles do
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(0,vehicles[i])
-    ENTITY.ATTACH_ENTITY_TO_ENTITY(0,vehicles[i], tow_truck_5g_vehicle, 0, 0,0,0, 0,0,0, true, true, false, 0, false)
-    wait(1)
-    end
-    local time = util.current_time_millis() + 2000
-    while time > util.current_time_millis() do
-    wait(0)
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
-    TASK.CLEAR_PED_TASKS_IMMEDIATELY(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
-    for i = 1, #vehicles do
-    NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(vehicles[i])
-    ENTITY.SET_ENTITY_COORDS_NO_OFFSET(vehicles[i], 0, 0, 5)
-    end
-    end
-    util.toast("崩溃完成.")
-    else
-    util.toast("崩溃完成")
-    end
-    else
-    util.toast("崩溃完成")
-    end
-    end)
-
-    GTAC(updates, '销声割迹', {}, '', function (f)
-    local model_array <const> = {0x58f77553,0x1446590a}
-    local pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)) pos.x = pos.x + 3
-    local ped_ <const> = CreatePed(26,util.joaat("ig_kaylee"),pos,0)
+GTAC(updates, '销声割迹', {}, '', function(f)
+    local model_array<const> = {0x58f77553, 0x1446590a}
+    local pos<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+    pos.x = pos.x + 3
+    local ped_<const> = CreatePed(26, util.joaat("ig_kaylee"), pos, 0)
     for spawn, vel in pairs(model_array) do
-    local ves <const> = {}
-    ves[spawn] = CreateVehicle(vel,pos,0)
-    for key, value in pairs(ves) do
-    PED.SET_PED_INTO_VEHICLE(ped_,value,-1)
-    TASK.TASK_VEHICLE_HELI_PROTECT(ped_,value,PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid),1,1,100,10,1)
-    end
+        local ves<const> = {}
+        ves[spawn] = CreateVehicle(vel, pos, 0)
+        for key, value in pairs(ves) do
+            PED.SET_PED_INTO_VEHICLE(ped_, value, -1)
+            TASK.TASK_VEHICLE_HELI_PROTECT(ped_, value, PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 1, 1, 100, 10, 1)
+        end
     end
     wait(2000)
-    local vels_ <const> = entities.get_all_vehicles_as_handles()
+    local vels_<const> = entities.get_all_vehicles_as_handles()
     for delete, value in pairs(vels_) do
-    entities.delete_by_handle(value)
-    entities.delete_by_handle(ped_)
-    end
-    if f then
-    local position <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    position.x = position.x + 3
-    local sb_ped <const> = CreatePed(26,util.joaat("a_c_rat"),position,0)
-    local crash_plane <const> = CreateVehicle(0x9c5e5644,position,0)
-    PED.SET_PED_INTO_VEHICLE(sb_ped,crash_plane,-1)
-    PED.SET_PED_INTO_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid),crash_plane,-1)
-    ENTITY.FREEZE_ENTITY_POSITION(crash_plane,true)
-    local time <const> = util.current_time_millis() + 2000
-    TASK.TASK_OPEN_VEHICLE_DOOR(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), crash_plane, 9999, -1, 2)
-    while time > util.current_time_millis() do
-    TASK.TASK_LEAVE_VEHICLE(sb_ped, crash_plane, 0)
-    wait(5)
-    end
-    entities.delete_by_handle(sb_ped)
-    end
-    if f then
-    local positions <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
-    local rat <const> = CreatePed(26,util.joaat("a_c_rat"),positions,0)
-    ENTITY.SET_ENTITY_VISIBLE(rat,false)
-    local obs <const> = OBJECT.CREATE_OBJECT_NO_OFFSET(1888301071,3,0,0,true,false)
-    local time <const> = util.current_time_millis() + 2000
-    while time > util.current_time_millis() do
-    TASK.TASK_CLIMB_LADDER(rat)	
-    wait(100)
-    TASK.CLEAR_PED_TASKS_IMMEDIATELY(rat)
-    end
-    if f then
-    local position <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)) position.x = position.x + 3
-    local model = {util.joaat("cs_wade"),util.joaat("a_c_rat")}
-    for _spawn, value in pairs(model) do
-    local task_crash = {}
-    task_crash[_spawn] = CreatePed(26,value,position,0)
-    ENTITY.FREEZE_ENTITY_POSITION(task_crash[_spawn],true)
-    for start, value1 in pairs(task_crash) do
-    local play = {}
-    WEAPON.GIVE_DELAYED_WEAPON_TO_PED(value1, util.joaat("weapon_pistol"), 0, true)
-    wait(200)
-    play[start] = MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 0.1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_stungun"), players.user_ped(), false, true, 100)
-    wait(500)
-    ENTITY.FREEZE_ENTITY_POSITION(value1,false)
-    end
-    wait(2000)
-    entities.delete_by_handle(value)
-    end
-    end
-    end
-    end)
-
-    GTLP(updates, "地铁头", {}, "", function()
-        menu.trigger_commands("rainbowpapaw".. PLAYER.GET_PLAYER_NAME(pid))
-        wait(100)
-        menu.trigger_commands("flowerdance".. PLAYER.GET_PLAYER_NAME(pid))
-        wait(100)
-        menu.trigger_commands("lettingbreak".. PLAYER.GET_PLAYER_NAME(pid))
-        wait(200)
-        menu.trigger_commands("superc")
-    end)
-
-    GTAC(updates, "OG崩溃", {}, "" ,function ()
-        ogcrash(pid)
-    end)
-
-    GTAC(updates, "小苏专属崩溃", {}, "" ,function ()
-        local stupid_pos <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid)) 
-        stupid_pos.y = stupid_pos.y - 2
-        local mod_vel = {-692292317,184361638,642617954,586013744,}       
-        for _spawn, value in pairs(mod_vel) do
-        local s = {}
-        for i = 1, 10, 1 do  
-        s[_spawn] = CreateVehicle(value,stupid_pos,0)
-        ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Entity, true, false)
-        wait(0)
-        end
-        end
-        wait(100)
-        local ar_vs = entities.get_all_vehicles_as_handles()
-        for key, value in pairs(ar_vs) do
         entities.delete_by_handle(value)
+        entities.delete_by_handle(ped_)
+    end
+    if f then
+        local position<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        position.x = position.x + 3
+        local sb_ped<const> = CreatePed(26, util.joaat("a_c_rat"), position, 0)
+        local crash_plane<const> = CreateVehicle(0x9c5e5644, position, 0)
+        PED.SET_PED_INTO_VEHICLE(sb_ped, crash_plane, -1)
+        PED.SET_PED_INTO_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), crash_plane, -1)
+        ENTITY.FREEZE_ENTITY_POSITION(crash_plane, true)
+        local time<const> = util.current_time_millis() + 2000
+        TASK.TASK_OPEN_VEHICLE_DOOR(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), crash_plane, 9999, -1, 2)
+        while time > util.current_time_millis() do
+            TASK.TASK_LEAVE_VEHICLE(sb_ped, crash_plane, 0)
+            wait(5)
         end
-        menu.trigger_commands("nofuckoff".. PLAYER.GET_PLAYER_NAME(pid))
-        menu.trigger_commands("steamroll".. PLAYER.GET_PLAYER_NAME(pid))
-    end)
+        entities.delete_by_handle(sb_ped)
+    end
+    if f then
+        local positions<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+        local rat<const> = CreatePed(26, util.joaat("a_c_rat"), positions, 0)
+        ENTITY.SET_ENTITY_VISIBLE(rat, false)
+        local obs<const> = OBJECT.CREATE_OBJECT_NO_OFFSET(1888301071, 3, 0, 0, true, false)
+        local time<const> = util.current_time_millis() + 2000
+        while time > util.current_time_millis() do
+            TASK.TASK_CLIMB_LADDER(rat)
+            wait(100)
+            TASK.CLEAR_PED_TASKS_IMMEDIATELY(rat)
+        end
+        if f then
+            local position<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+            position.x = position.x + 3
+            local model = {util.joaat("cs_wade"), util.joaat("a_c_rat")}
+            for _spawn, value in pairs(model) do
+                local task_crash = {}
+                task_crash[_spawn] = CreatePed(26, value, position, 0)
+                ENTITY.FREEZE_ENTITY_POSITION(task_crash[_spawn], true)
+                for start, value1 in pairs(task_crash) do
+                    local play = {}
+                    WEAPON.GIVE_DELAYED_WEAPON_TO_PED(value1, util.joaat("weapon_pistol"), 0, true)
+                    wait(200)
+                    play[start] = MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 0.1, pos.x, pos.y,
+                        pos.z, 0, true, util.joaat("weapon_stungun"), players.user_ped(), false, true, 100)
+                    wait(500)
+                    ENTITY.FREEZE_ENTITY_POSITION(value1, false)
+                end
+                wait(2000)
+                entities.delete_by_handle(value)
+            end
+        end
+    end
+end)
 
-    GTAC(other_crash, "GT崩溃", {}, "", function()
-        gtcrash(pid)
-    end)
+GTLP(updates, "地铁头", {}, "", function()
+    menu.trigger_commands("rainbowpapaw" .. PLAYER.GET_PLAYER_NAME(pid))
+    wait(100)
+    menu.trigger_commands("flowerdance" .. PLAYER.GET_PLAYER_NAME(pid))
+    wait(100)
+    menu.trigger_commands("lettingbreak" .. PLAYER.GET_PLAYER_NAME(pid))
+    wait(200)
+    menu.trigger_commands("superc")
+end)
 
-    GTAC(PlayerMainMenu, "复制名称", {''}, "", function(state)
-        local r_id = PLAYER.GET_PLAYER_NAME(pid)
-        util.copy_to_clipboard(r_id)
-    end)
-        
-    GTAC(PlayerMainMenu, "复制RID", {''}, "", function(state)
+GTAC(updates, "OG崩溃", {}, "", function()
+    ogcrash(pid)
+end)
+
+GTAC(updates, "小苏专属崩溃", {}, "", function()
+    local stupid_pos<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED(pid))
+    stupid_pos.y = stupid_pos.y - 2
+    local mod_vel = {-692292317, 184361638, 642617954, 586013744}
+    for _spawn, value in pairs(mod_vel) do
+        local s = {}
+        for i = 1, 10, 1 do
+            s[_spawn] = CreateVehicle(value, stupid_pos, 0)
+            ENTITY.SET_ENTITY_AS_MISSION_ENTITY(Entity, true, false)
+            wait(0)
+        end
+    end
+    wait(100)
+    local ar_vs = entities.get_all_vehicles_as_handles()
+    for key, value in pairs(ar_vs) do
+        entities.delete_by_handle(value)
+    end
+    menu.trigger_commands("nofuckoff" .. PLAYER.GET_PLAYER_NAME(pid))
+    menu.trigger_commands("steamroll" .. PLAYER.GET_PLAYER_NAME(pid))
+end)
+
+GTAC(other_crash, "GT崩溃", {}, "", function()
+    gtcrash(pid)
+end)
+
+GTAC(PlayerMainMenu, "复制名称", {''}, "", function(state)
+    local r_id = PLAYER.GET_PLAYER_NAME(pid)
+    util.copy_to_clipboard(r_id)
+end)
+
+GTAC(PlayerMainMenu, "复制RID", {''}, "", function(state)
     local rid = players.get_rockstar_id(pid)
     util.copy_to_clipboard(rid)
-    end)
+end)
 
-    GTAC(PlayerMainMenu,"传送到玩家", {""}, "", function()
+GTAC(PlayerMainMenu, "传送到玩家", {""}, "", function()
+    tpplayer(pid)
+end)
+
+sply4 = GTLP(PlayerMainMenu, "持续传送到玩家", {""}, "", function()
+    if players.user() == pid then
+        gtoast("不能对自己使用")
+        menu.set_value(sply4, false)
+    else
         tpplayer(pid)
-    end)	   
-
-    sply4 = GTLP(PlayerMainMenu,"持续传送到玩家", {""}, "", function()
-        if players.user() == pid then
-            gtoast("不能对自己使用")
-            menu.set_value(sply4, false)
-        else
-            tpplayer(pid)
-            wait(500)
-        end
-    end)	   
+        wait(500)
+    end
+end)
 
 local playerMain = GT(GTROOT, "恶搞选项", {"GTTrolling"}, "无恶不作,无所不为", function()
     local focused = players.get_focused()
@@ -26327,7 +24809,6 @@ local playerMain = GT(GTROOT, "恶搞选项", {"GTTrolling"}, "无恶不作,无�
         end
     end
 end)
-
 
 local updatetroll = GT(playerMain, "近期更新", {}, "")
 
@@ -26353,6 +24834,255 @@ GTTG(updatetroll, '控制无敌', {}, '', function(w)
     ENTITY.SET_ENTITY_PROOFS(pidp, true, true, true, true, true, true, 1, true)
 end)
 
+function is_ped_using_vehicle(Ped, Vehicle)
+    local vhcl_ped_using <const> = PED.GET_VEHICLE_PED_IS_USING(Ped)
+    local vhcl_ped_entering <const> = PED.GET_VEHICLE_PED_IS_ENTERING(Ped)
+    return vhcl_ped_using == Vehicle or vhcl_ped_entering == Vehicle
+end
+function is_ped_using_any_vehicle(Ped)
+    local vhcl_ped_using <const> = PED.GET_VEHICLE_PED_IS_USING(Ped)
+    local vhcl_ped_entering <const> = PED.GET_VEHICLE_PED_IS_ENTERING(Ped)
+    return ENTITY.DOES_ENTITY_EXIST(vhcl_ped_using) or ENTITY.DOES_ENTITY_EXIST(vhcl_ped_entering)
+end
+
+GTTG(updatetroll, '玩家磁场混乱', {}, '', function(f9)
+    fon9 = f9
+    while fon9 do
+        for i, ent in pairs(entities.get_all_peds_as_handles()) do
+            if not PED.IS_PED_A_PLAYER(ent) then
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(ent)
+                if entities.get_owner(ent) == players.user() then
+                    NETWORK.SET_NETWORK_ID_CAN_MIGRATE(NETWORK.NETWORK_GET_NETWORK_ID_FROM_ENTITY(ent), false)
+                    if is_ped_using_any_vehicle(ent) then
+                        TASK.CLEAR_PED_TASKS_IMMEDIATELY(ent)
+                    end
+                    local NewOffset<const> = v3.sub(ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)),
+                        ENTITY.GET_ENTITY_COORDS(ent))
+                    ENTITY.APPLY_FORCE_TO_ENTITY(ent, 1, NewOffset.x * 500, NewOffset.y * 500, NewOffset.z * 500, 0, 0,
+                        0, false, true)
+                end
+            end
+        end
+        for i, entveh in pairs(entities.get_all_vehicles_as_handles()) do
+            for pid in players.list(false, true, true) do
+                if is_ped_using_vehicle(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), entveh) then
+                    goto Magnet_Continue
+                end
+            end
+            if entities.get_owner(entveh) == players.user() then
+                entity_owner_can_migrate(entveh, false)
+                ENTITY.SET_ENTITY_ROTATION(entveh, math.random(0, 360), math.random(0, 360), math.random(0, 360))
+                local NewOffset<const> = v3.sub(ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)),
+                    ENTITY.GET_ENTITY_COORDS(entveh))
+                ENTITY.APPLY_FORCE_TO_ENTITY(entveh, 1, NewOffset.x * 500, NewOffset.y * 500, NewOffset.z * 500, 0, 0,
+                    0, false, true)
+            else
+                NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(entveh)
+            end
+            ::Magnet_Continue::
+        end
+        wait(250)
+    end
+    if not fon9 then
+        for i, entped in pairs(entities.get_all_peds_as_handles()) do
+            entity_owner_can_migrate(entped, true)
+            ENTITY.SET_ENTITY_INVINCIBLE(entped, false)
+        end
+        for i, entveh in pairs(entities.get_all_vehicles_as_handles()) do
+            entity_owner_can_migrate(entveh, true)
+        end
+    end
+end)
+
+
+GTTG(updatetroll, '神出鬼没声', {}, '', function(f2)
+    fon2 = f2
+    local Spam_PTFX<const> = {}
+    if fon2 then
+        for i = 1, 30 do
+            local pos1<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            Spam_PTFX[i] = entityspawn_entity(joaat("xs_prop_arena_oil_jack_01a"),
+                v3.new(pos1.x + 75, pos1.y, pos1.z + 75), math.random(0, 360), false, true, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(Spam_PTFX[i], math.random(0, 360), math.random(0, 360), math.random(0, 360))
+            ENTITY.SET_ENTITY_VISIBLE(Spam_PTFX[i], 0)
+            for i in ipairs(Spam_PTFX) do
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Spam_PTFX[i], pos1.x + 75, pos1.y, pos1.z + 75)
+            end
+            wait(100)
+        end
+    end
+    while fon2 do
+        local pos1<const> = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0,
+            0.0, -2.0)
+        for i in ipairs(Spam_PTFX) do
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Spam_PTFX[i], pos1.x, pos1.y, pos1.z)
+            ENTITY.SET_ENTITY_ROTATION(Spam_PTFX[i], math.random(0, 360), math.random(0, 360), math.random(0, 360))
+        end
+        wait()
+    end
+    if not fon2 then
+        for i in ipairs(Spam_PTFX) do
+            entitydelete_entity(Spam_PTFX[i])
+        end
+    end
+end)
+
+
+GTTG(updatetroll,'禁用行走和武器',{},'',function(f16)
+    fon16 = f16
+    while fon16 do
+        for i, ent in pairs(entities.get_all_vehicles_as_handles()) do
+            TASK.TASK_VEHICLE_TEMP_ACTION(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), ent, -1, 1000)
+        end
+        wait()
+    end
+    fon16 = false
+end)
+
+GTTG(updatetroll, '禁用跳跃和攀登',{},'',function(f17)
+    fon17 = f17
+    if fon17 then
+        local pos1 <const> = ENTITY.GET_ENTITY_COORDS(
+            PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        DisableJumpVeh = entityspawn_entity(joaat("dump"), v3.new(pos1.x, pos1.y, pos1.z), 
+        ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)), 
+        false, true, false, true, false)
+    end
+    while fon17 do
+        local pos1 <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(DisableJumpVeh, pos1.x, pos1.y, pos1.z)
+        ENTITY.SET_ENTITY_ROTATION(DisableJumpVeh, 0, 0, ENTITY.GET_ENTITY_HEADING(
+            PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+        if entities.get_owner(DisableJumpVeh) ~= players.user() then
+            gtoast("发生错误,如果问题仍然存在,请更改战局.")
+            fon17n = false
+        end
+        wait()
+    end
+    if not fon17 then
+        entitydelete_entity(DisableJumpVeh)
+    end
+end)
+
+GTAC(updatetroll, '禁用炮弹',{},'',function()
+    for i = 1, 5 do
+        local pos1 <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        for i = 1, 60 do
+            WEAPON.GIVE_DELAYED_WEAPON_TO_PED(players.user_ped(), joaat("WEAPON_BALL"), 0, false)
+            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos1.x, pos1.y, pos1.z, pos1.x, pos1.y, pos1.z + 5, 0,
+            true, joaat("WEAPON_BALL"), players.user_ped(), false, true, 0)
+        end
+        wait(500)
+            MISC.CLEAR_AREA_OF_PROJECTILES(ENTITY.GET_ENTITY_COORDS(players.user_ped()).x, 
+            ENTITY.GET_ENTITY_COORDS(players.user_ped()).y,ENTITY.GET_ENTITY_COORDS(players.user_ped()).z,400, 0)
+        wait(100)
+    end
+end)
+
+GTTG(updatetroll, '午夜DJ', {}, '需要等待五秒左右', function(f3)
+    fon3 = f3
+    local Disco_Light<const> = {}
+    if fon3 then
+        for i = 1, 30 do
+            local pos1<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            Disco_Light[i] = entityspawn_entity(joaat("prop_spot_01"), v3.new(pos1.x + 75, pos1.y, pos1.z + 75), 0,
+                false, true, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(Disco_Light[i], math.random(0, 360), math.random(0, 360), math.random(0, 360))
+            for i in ipairs(Disco_Light) do
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Disco_Light[i], pos1.x + 75, pos1.y, pos1.z + 75)
+            end
+            wait(100)
+        end
+    end
+    while fon3 do
+        local pos1<const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        for i in ipairs(Disco_Light) do
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Disco_Light[i], pos1.x, pos1.y, pos1.z + 1.5)
+            ENTITY.SET_ENTITY_ROTATION(Disco_Light[i], math.random(0, 360), math.random(0, 360), math.random(0, 360))
+        end
+        wait()
+    end
+    if not fon3 then
+        for i in ipairs(Disco_Light) do
+            entitydelete_entity(Disco_Light[i])
+        end
+    end
+end)
+
+
+GTTG(updatetroll, '附加垃圾车',{},'需要等待五秒左右\n尽量远离目标,因为具有无比响亮的噪声',function(f)
+    fon = f
+    local Horn_Car <const> = {}
+    if fon then
+        for i = 1, 30 do
+            local pos1 <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            Horn_Car[i] = entityspawn_entity(joaat("t20"), v3.new(pos1.x + 110, pos1.y, 2600),
+            math.random(0, 360), false, true, true, true, false)
+            VEHICLE.SET_VEHICLE_MOD(Horn_Car[i], 14, 16)
+            for i in ipairs(Horn_Car) do
+                ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Horn_Car[i], pos1.x + 110, pos1.y, 2600)
+            end
+            wait(100)
+        end
+    end
+    while fon do
+        for i in ipairs(Horn_Car) do
+            local pos1 <const> = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            ENTITY.SET_ENTITY_COORDS_NO_OFFSET(Horn_Car[i], pos1.x, pos1.y, pos1.z + 1.5)
+            VEHICLE.SET_VEHICLE_ALARM(Horn_Car[i], true)
+            VEHICLE.START_VEHICLE_ALARM(Horn_Car[i])
+        end
+        wait()
+    end
+    if not fon then
+        for i in ipairs(Horn_Car) do
+            entitydelete_entity(Horn_Car[i])
+        end
+    end
+end)
+
+GTLP(updatetroll, '压杀1', {}, '大多菜单阻止', function()
+    local playerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local playerPos = ENTITY.GET_ENTITY_COORDS(playerPed)
+    local playerHeading = ENTITY.GET_ENTITY_HEADING(playerPed)
+    yasha1(pid, util.joaat("khanjali"), playerPos, playerHeading)
+end)
+
+GTLP(updatetroll, '压杀2', {}, '大多菜单阻止', function()
+    yasha2(pid, util.joaat("prop_roofvent_06a"))
+end)
+
+GTTG(updatetroll, '压杀3', {}, '', function(f5)
+    fon5 = f5
+    if fon5 then
+        local pos1<const> = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0,
+            3.0, 0.0)
+        crush_ent = entityspawn_entity(joaat("BUS"), v3.new(pos1.x, pos1.y, ENTITY.GET_ENTITY_COORDS(
+            PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)).z + 100),
+            ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)), false, true, true, false, true)
+        ENTITY.SET_ENTITY_HAS_GRAVITY(crush_ent, false)
+        wait()
+        ENTITY.SET_ENTITY_VISIBLE(crush_ent, true)
+        entities.set_can_migrate(crush_ent, 0)
+    end
+    while fon5 do
+        local pos1<const> = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0.0,
+            3.0, 0.0)
+        ENTITY.SET_ENTITY_COORDS_NO_OFFSET(crush_ent, pos1.x, pos1.y,
+            ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)).z + 5)
+        ENTITY.SET_ENTITY_ROTATION(crush_ent, 0, 0, ENTITY.GET_ENTITY_HEADING(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)))
+        wait(250)
+        ENTITY.APPLY_FORCE_TO_ENTITY(crush_ent, 1, 0, 0, -25, 0, 0, 0, false, true)
+        wait(1000)
+        if entities.get_owner(crush_ent) ~= players.user() then
+            gtoast("发生错误,如果问题仍然存在,请更改战局.")
+            fon5 = false
+        end
+    end
+    if not fon5 then
+        entitydelete_entity(crush_ent)
+    end
+end)
 
 GTAC(updatetroll, '传送位置故障', {},'',function()
     local teleportLocations = {
@@ -26409,7 +25139,7 @@ GTTG(updatetroll, '视觉痉挛', {}, '', function(ft)
 
         local playerPed = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local playerCoords = players.get_position(playerPed)
-        request_ptfx("scr_indep_fireworks")
+        request_ptfx_asset("scr_indep_fireworks")
         GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_AT_COORD("scr_indep_firework_trail_spawn", playerCoords.x,
             playerCoords.y, playerCoords.z, 0, 0, 0, 1.0, true, true, true)
         local objectHashes = {util.joaat("prop_xmas_ext"), util.joaat("prop_food_van_01")}
@@ -26657,7 +25387,7 @@ local ramp = OBJECT.CREATE_OBJECT(ramp_hash, pos.x, pos.y, pos.z, true, false, t
     entities.delete_by_handle(ramp)
 end)
 
-updatetroll:slider_text("分离车轮(新版)", {}, "把轮子卸载", { "前左", "前右", "后左", "后右", "全卸了"}, function(index, value, click_type)
+updatetroll:textslider("分离车轮(新版)", {}, "把轮子卸载", { "前左", "前右", "后左", "后右", "全卸了"}, function(index, value, click_type)
     local pedm = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
     if PED.IS_PED_IN_ANY_VEHICLE(pedm, true) then 
         local vmod = PED.GET_VEHICLE_PED_IS_IN(pedm, true) 
@@ -26828,9 +25558,9 @@ end)
 
 --[[GTAC(updatetroll, "让他滚蛋", {}, "", function ()
     if players.user() then
-    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.random(1, 10)})
-    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1})
+    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.random(1, 10)})
+    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1})
     end
 end)]]
 
@@ -27533,7 +26263,7 @@ end)
     local req_count = 0
     GTLP(updatetroll, "TA的车变成飘柔", {""}, "360旋转该玩家的载具", function()
         local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local spv = WIRI_PED.GET_VEHICLE_PED_IS_USING(ped)
+        local spv = PED.GET_VEHICLE_PED_IS_USING(ped)
         local height = ENTITY.GET_ENTITY_HEIGHT_ABOVE_GROUND(spv)
         if not PED.IS_PED_IN_ANY_VEHICLE(ped, false) then
             util.toast("不在车里")
@@ -27551,7 +26281,7 @@ end)
         if height < 5.0 and height > 0.1 then
             VEHICLE.SET_VEHICLE_ON_GROUND_PROPERLY(spv, 2)
         end
-        if spv ~= 0 and not WIRI_PED.IS_PED_DEAD_OR_DYING(ped) then
+        if spv ~= 0 and not PED.IS_PED_DEAD_OR_DYING(ped) then
             ENTITY.APPLY_FORCE_TO_ENTITY(spv, 5, 0.0, 0.0, 150.0, 0, 0, 0, 0, true, false, true, false, true)
         end
     end)
@@ -28283,151 +27013,127 @@ end)
         end)
         --附加物体
 
-        OBJECT_AT = {
-        6286,
-        57597,
-        24818,
-        24817,
-        24816,
-        23553,
-        11816,
-        40269,
-        51826,
-        57005,
-        28252,
-        52301,
-        10706,
-        36864,
-        11816,
-        39317,
-        45509,
-        58271,
-        18905,
-        61163,
-        14201,
-        64729,
-        63931,
-        65068,
-        31086,
-        12844,
-        }
-
-        GTAC(attach_update, "附加666", {}, "", function(f)
+            GTAC(attach_update, "附加666", {}, "", function(f)
         spawned_cunts = {}
         pped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local pos = v3()
         for i = 1, #OBJECT_AT do
-        bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
-        spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(84140480,0,0,0,true,false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx,0, 0,0,0, 0,0,0, true, true, false,0, false)
+            bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
+            spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(84140480, 0, 0, 0, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0, 0, 0, 0, 0, 0, 0, true, true,
+                false, 0, false)
         end
-        end)
+    end)
 
-        GTAC(attach_update, "附加一身屎", {}, "", function(f)
+    GTAC(attach_update, "附加一身屎", {}, "", function(f)
         spawned_cunts = {}
         pped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local pos = v3()
         for i = 1, #OBJECT_AT do
-        bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
-        spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(2223607550,0,0,0,true,false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx,0, 0,0,0, 0,0,0, true, true, false,0, false)
+            bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
+            spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(2223607550, 0, 0, 0, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0, 0, 0, 0, 0, 0, 0, true, true,
+                false, 0, false)
         end
-        end)
+    end)
 
-        GTAC(attach_update, "附加导弹车", {}, "", function(f)
+    GTAC(attach_update, "附加导弹车", {}, "", function(f)
         spawned_cunts = {}
         pped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local pos = v3()
         for i = 1, #OBJECT_AT do
-        bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
-        spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(-692292317,0,0,0,true,false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx,0, 0,0,0, 0,0,0, true, true, false,0, false)
+            bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
+            spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(-692292317, 0, 0, 0, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0, 0, 0, 0, 0, 0, 0, true, true,
+                false, 0, false)
         end
-        end)
+    end)
 
-        GTAC(attach_update, "附加门", {}, "", function(f)
+    GTAC(attach_update, "附加门", {}, "", function(f)
         spawned_cunts = {}
         pped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local pos = v3()
         for i = 1, #OBJECT_AT do
-        bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
-        spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(520341586,0,0,0,true,false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0,0,0,0, 0,0,0, true, true, false,0, false)
+            bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
+            spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(520341586, 0, 0, 0, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0, 0, 0, 0, 0, 0, 0, true, true,
+                false, 0, false)
         end
-        end)
+    end)
 
-        GTAC(attach_update, "附加假jb", {}, "", function(f)
+    GTAC(attach_update, "附加假jb", {}, "", function(f)
         spawned_cunts = {}
         pped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
         local pos = v3()
         for i = 1, #OBJECT_AT do
-        bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
-        spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(-422877666,0,0,0,true,false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0,0,0,0, 0,0,0, true, true, false,0, false)
+            bone_idx = PED.GET_PED_BONE_INDEX(pped, OBJECT_AT[i])
+            spawned_cunts[#spawned_cunts + 1] = OBJECT.CREATE_OBJECT_NO_OFFSET(-422877666, 0, 0, 0, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(spawned_cunts[#spawned_cunts], pped, bone_idx, 0, 0, 0, 0, 0, 0, 0, true, true,
+                false, 0, false)
         end
-        end)
+    end)
 
-        GTAC(attach_update, "附加篮球", {}, "", function(f)
+    GTAC(attach_update, "附加篮球", {}, "", function(f)
         playerped1 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object1 = OBJECT.CREATE_OBJECT_NO_OFFSET(1840863642,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object1, playerped1,0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object1 = OBJECT.CREATE_OBJECT_NO_OFFSET(1840863642, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object1, playerped1, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加篝火", {}, "", function(f)
+    GTAC(attach_update, "附加篝火", {}, "", function(f)
         playerped1 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object1 = OBJECT.CREATE_OBJECT_NO_OFFSET(-1065766299,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object1, playerped1,0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object1 = OBJECT.CREATE_OBJECT_NO_OFFSET(-1065766299, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object1, playerped1, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加垃圾桶", {}, "", function(f)
+    GTAC(attach_update, "附加垃圾桶", {}, "", function(f)
         playerped2 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object2 = OBJECT.CREATE_OBJECT_NO_OFFSET(1143474856,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object2, playerped2,0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object2 = OBJECT.CREATE_OBJECT_NO_OFFSET(1143474856, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object2, playerped2, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加仙人掌", {}, "", function(f)
+    GTAC(attach_update, "附加仙人掌", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-194496699,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0,0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-194496699, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加消防栓", {}, "", function(f)
+    GTAC(attach_update, "附加消防栓", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(200846641,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0,0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(200846641, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加加油站", {}, "", function(f)
+    GTAC(attach_update, "附加加油站", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-2007231801,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0,0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-2007231801, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加太阳伞", {}, "", function(f)
+    GTAC(attach_update, "附加太阳伞", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-2108662770,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0,0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-2108662770, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加傻逼", {}, "", function(f)
+    GTAC(attach_update, "附加傻逼", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-1059647297,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3,0, 0, 0, 0, 0.5, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(-1059647297, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0.5, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
 
-        GTAC(attach_update, "附加国旗", {}, "", function(f)
+    GTAC(attach_update, "附加国旗", {}, "", function(f)
         playerped3 = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(757141590,0, 0, 0, true, false)
-        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3,0, 0, 0, 0, 0.5, 0.0, 0, 0.0, true, true, false, 0, false)
-        end)
-    
+        attach_object3 = OBJECT.CREATE_OBJECT_NO_OFFSET(757141590, 0, 0, 0, true, false)
+        ENTITY.ATTACH_ENTITY_TO_ENTITY(attach_object3, playerped3, 0, 0, 0, 0, 0.5, 0.0, 0, 0.0, true, true, false, 0, false)
+    end)
+
     local attack = GT(playerMain, "闪电突击", {}, "召唤军队袭击该玩家")
     require "lib.GTSCRIPTS.GTA.attacker"
     lazer_visible = true
     local gunner_weapons = "weapon_combatmg"
     GTAC(attack, "突击该玩家!!!", {"flashout"}, "默认无敌模式", function()
         local pilot, lazer = spawn_lazer(pid, gunner_weapons, collision)
-        while ENTITY.GET_ENTITY_HEALTH(PLAYER.GET_PLAYER_PED(pid),pilot) > 0 do
+        while ENTITY.GET_ENTITY_HEALTH(PLAYER.GET_PLAYER_PED(pid), pilot) > 0 do
             local player_peds = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
             local a = ENTITY.GET_ENTITY_COORDS(player_peds)
             local b = ENTITY.GET_ENTITY_COORDS(lazer)
@@ -28443,20 +27149,295 @@ end)
     GTTG(attack, "可见性", {"visablearmy"}, "是否让目标玩家可发现", function(on)
         lazer_visible = on
     end, true)
-    
+
     GTTG(attack, "碰撞性", {"collisionarmy"}, "是否存在实体碰撞(基本碰撞始终启用)", function(on)
         collision = on
     end, false)
-    
+
     GTAC(attack, "删除", {"deletearmy"}, "删除你的军队", function()
         menu.trigger_commands("superc")
     end)
 
     local playerOtherTrolling = GT(playerMain, "载具恶搞", {}, "")
 
+    updateveh = GT(playerOtherTrolling, "载具飞升")
+
     local player_veh_teleport = GT(playerOtherTrolling, "传送载具", {}, "")
 
-     GTLuaScript.list_action(playerOtherTrolling, "附加车辆", {}, "", {"到他的车", "他的车到我的车", "我的车到他的车", "分离"}, function(index, value, click_type)
+    GTAC(updateveh, '史车', {}, '对方需在车里', function()
+        local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then
+            return util.toast("不在车辆中. :<")
+        end
+        local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+        for _, boneName in pairs({"seat_pside_r", "bodyshell", "platelight", "attach_female", "bonnet", "windscreen_f",
+                                "windscreen", "seat_dside_f", "seat_pside_f", "exhaust"}) do
+            local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(vehicle, boneName)
+            local boojj1 = OBJECT.CREATE_OBJECT(joaat("prop_big_shit_02"), pos.x, pos.y, pos.z, true, true, false)
+            ENTITY.ATTACH_ENTITY_TO_ENTITY(boojj1, vehicle, bone, 0, 0, 0, 0, 0, 0, true, true, false, 0, true)
+        end
+    end)
+
+    GTTG(updateveh, '轮子有几个妹妹', {}, '对方需在车里', function(gqd)
+        local function createped(type, hash, pos, dir)
+            STREAMING.REQUEST_MODEL(hash)
+            while not STREAMING.HAS_MODEL_LOADED(hash) do
+                wait(10)
+            end
+            local ped = entities.create_ped(type, hash, pos, dir, true, false)
+            STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(hash)
+            return ped
+        end
+        if gqd then
+            local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then
+                return util.toast("不在车辆中. :<")
+            end
+            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            for _, boneName in pairs({"wheel_lf", "wheel_lr", "wheel_rf", "wheel_rr"}) do
+                local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(vehicle, boneName)
+                local boojj1 = createped(26, 0x9CF26183, pos, 0)
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(boojj1, vehicle, bone, -0.2, 0, 0, 0, 0, 0, true, true, false, 0, true)
+            end
+        else
+            local count = 0
+            for k, ent in pairs(entities.get_all_peds_as_handles()) do
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+                entities.delete_by_handle(ent)
+                count = count + 1
+                wait()
+            end
+        end
+    end)
+
+    GTTG(updateveh, '给予国家的荣誉', {}, '对方需在车里', function(gqf)
+        if gqf then
+            local vehicle = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false) then
+                return util.toast("不在车辆中. :<")
+            end
+            local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
+            for _, boneName in pairs({"wheel_lf", "wheel_rf"}) do
+                local bone = ENTITY.GET_ENTITY_BONE_INDEX_BY_NAME(vehicle, boneName)
+                local boojj1 = OBJECT.CREATE_OBJECT(joaat("apa_prop_flag_china"), pos.x, pos.y, pos.z, true, true, false)
+                ENTITY.ATTACH_ENTITY_TO_ENTITY(boojj1, vehicle, bone, 0, 0, 1.3, 0, 0, 0, true, true, false, 0, true)
+            end
+        else
+            local count = 0
+            for k, ent in pairs(entities.get_all_objects_as_handles()) do
+                ENTITY.SET_ENTITY_AS_MISSION_ENTITY(ent, false, false)
+                entities.delete_by_handle(ent)
+                count = count + 1
+                wait()
+            end
+        end
+    end)
+
+    local vehicleModels = {"adder", "Airbus", "Airtug", "akula", "akuma", "aleutian", "alkonost", "alpha", "alphaz1",
+                        "AMBULANCE", "annihilator", "annihilator2", "apc", "ardent", "armytanker", "armytrailer",
+                        "armytrailer2", "asbo", "asea", "asea2", "asterope", "asterope2", "astron", "autarch", "avarus",
+                        "avenger", "avenger2", "avenger3", "avenger4", "avisa", "bagger", "baletrailer", "Baller",
+                        "baller2", "baller3", "baller4", "baller5", "baller6", "baller7", "baller8", "banshee",
+                        "banshee2", "BARRACKS", "BARRACKS2", "BARRACKS3", "barrage", "bati", "bati2", "Benson",
+                        "benson2", "besra", "bestiagts", "bf400", "BfInjection", "Biff", "bifta", "bison", "Bison2",
+                        "Bison3", "BjXL", "blade", "blazer", "blazer2", "blazer3", "blazer4", "blazer5", "BLIMP",
+                        "BLIMP2", "blimp3", "blista", "blista2", "blista3", "BMX", "boattrailer", "boattrailer2",
+                        "boattrailer3", "bobcatXL", "Bodhi2", "bombushka", "boor", "boxville", "boxville2", "boxville3",
+                        "boxville4", "boxville5", "boxville6", "brawler", "brickade", "brickade2", "brigham", "brioso",
+                        "brioso2", "brioso3", "broadway", "bruiser", "bruiser2", "bruiser3", "brutus", "brutus2",
+                        "brutus3", "btype", "btype2", "btype3", "buccaneer", "buccaneer2", "buffalo", "buffalo2",
+                        "buffalo3", "buffalo4", "buffalo5", "bulldozer", "bullet", "Burrito", "burrito2", "burrito3",
+                        "Burrito4", "burrito5", "BUS", "buzzard", "Buzzard2", "cablecar", "caddy", "Caddy2", "caddy3",
+                        "calico", "CAMPER", "caracara", "caracara2", "carbonizzare", "carbonrs", "Cargobob", "cargobob2",
+                        "Cargobob3", "Cargobob4", "cargoplane", "cargoplane2", "casco", "cavalcade", "cavalcade2",
+                        "cavalcade3", "cerberus", "cerberus2", "cerberus3", "champion", "cheburek", "cheetah",
+                        "cheetah2", "chernobog", "chimera", "chino", "chino2", "cinquemila", "cliffhanger", "clique",
+                        "clique2", "club", "coach", "cog55", "cog552", "cogcabrio", "cognoscenti", "cognoscenti2",
+                        "comet2", "comet3", "comet4", "comet5", "comet6", "comet7", "conada", "conada2", "contender",
+                        "coquette", "coquette2", "coquette3", "coquette4", "corsita", "coureur", "cruiser", "CRUSADER",
+                        "cuban800", "cutter", "cyclone", "cyclone2", "cypher", "daemon", "daemon2", "deathbike",
+                        "deathbike2", "deathbike3", "defiler", "deity", "deluxo", "deveste", "deviant", "diablous",
+                        "diablous2", "dilettante", "dilettante2", "Dinghy", "dinghy2", "dinghy3", "dinghy4", "dinghy5",
+                        "dloader", "docktrailer", "docktug", "dodo", "Dominator", "dominator2", "dominator3",
+                        "dominator4", "dominator5", "dominator6", "dominator7", "dominator8", "dominator9", "dorado",
+                        "double", "drafter", "draugur", "drifteuros", "driftfr36", "driftfuto", "driftjester",
+                        "driftremus", "drifttampa", "driftyosemite", "driftzr350", "dubsta", "dubsta2", "dubsta3",
+                        "dukes", "dukes2", "dukes3", "dump", "dune", "dune2", "dune3", "dune4", "dune5", "duster",
+                        "Dynasty", "elegy", "elegy2", "ellie", "emerus", "emperor", "Emperor2", "emperor3", "enduro",
+                        "entity2", "entity3", "entityxf", "esskey", "eudora", "Euros", "everon", "everon2", "exemplar",
+                        "f620", "faction", "faction2", "faction3", "fagaloa", "faggio", "faggio2", "faggio3", "FBI",
+                        "FBI2", "fcr", "fcr2", "felon", "felon2", "feltzer2", "feltzer3", "firetruk", "fixter",
+                        "flashgt", "FLATBED", "fmj", "FORKLIFT", "formula", "formula2", "fq2", "fr36", "freecrawler",
+                        "freight", "freight2", "freightcar", "freightcar2", "freightcont1", "freightcont2",
+                        "freightgrain", "freighttrailer", "Frogger", "frogger2", "fugitive", "furia", "furoregt",
+                        "fusilade", "futo", "futo2", "gargoyle", "Gauntlet", "gauntlet2", "gauntlet3", "gauntlet4",
+                        "gauntlet5", "gauntlet6", "gb200", "gburrito", "gburrito2", "glendale", "glendale2", "gp1",
+                        "graintrailer", "GRANGER", "granger2", "greenwood", "gresley", "growler", "gt500", "guardian",
+                        "habanero", "hakuchou", "hakuchou2", "halftrack", "handler", "Hauler", "Hauler2", "havok",
+                        "hellion", "hermes", "hexer", "hotknife", "hotring", "howard", "hunter", "huntley", "hustler",
+                        "hydra", "ignus", "ignus2", "imorgon", "impaler", "impaler2", "impaler3", "impaler4", "impaler5",
+                        "impaler6", "imperator", "imperator2", "imperator3", "inductor", "inductor2", "infernus",
+                        "infernus2", "ingot", "innovation", "insurgent", "insurgent2", "insurgent3", "intruder", "issi2",
+                        "issi3", "issi4", "issi5", "issi6", "issi7", "issi8", "italigtb", "italigtb2", "italigto",
+                        "italirsx", "iwagen", "jackal", "jb700", "jb7002", "jester", "jester2", "jester3", "jester4",
+                        "jet", "jetmax", "journey", "journey2", "jubilee", "jugular", "kalahari", "kamacho", "kanjo",
+                        "kanjosj", "khamelion", "khanjali", "komoda", "kosatka", "krieger", "kuruma", "kuruma2", "l35",
+                        "landstalker", "landstalker2", "Lazer", "le7b", "lectro", "lguard", "limo2", "lm87", "locust",
+                        "longfin", "lurcher", "luxor", "luxor2", "lynx", "mamba", "mammatus", "manana", "manana2",
+                        "manchez", "manchez2", "manchez3", "marquis", "marshall", "massacro", "massacro2", "maverick",
+                        "menacer", "MESA", "mesa2", "MESA3", "metrotrain", "michelli", "microlight", "Miljet",
+                        "minitank", "minivan", "minivan2", "Mixer", "Mixer2", "mogul", "molotok", "monroe", "monster",
+                        "monster3", "monster4", "monster5", "monstrociti", "moonbeam", "moonbeam2", "Mower", "Mule",
+                        "Mule2", "Mule3", "mule4", "mule5", "nebula", "nemesis", "neo", "neon", "nero", "nero2",
+                        "nightblade", "nightshade", "nightshark", "nimbus", "ninef", "ninef2", "nokota", "Novak",
+                        "omnis", "omnisegt", "openwheel1", "openwheel2", "oppressor", "oppressor2", "oracle", "oracle2",
+                        "osiris", "outlaw", "Packer", "panthere", "panto", "paradise", "paragon", "paragon2", "pariah",
+                        "patriot", "patriot2", "patriot3", "patrolboat", "pbus", "pbus2", "pcj", "penetrator",
+                        "penumbra", "penumbra2", "peyote", "peyote2", "peyote3", "pfister811", "Phantom", "phantom2",
+                        "phantom3", "Phantom4", "Phoenix", "picador", "pigalle", "polgauntlet", "police", "police2",
+                        "police3", "police4", "police5", "policeb", "policeold1", "policeold2", "policet", "polmav",
+                        "pony", "pony2", "postlude", "Pounder", "pounder2", "powersurge", "prairie", "pRanger",
+                        "Predator", "premier", "previon", "primo", "primo2", "proptrailer", "prototipo", "pyro", "r300",
+                        "radi", "raiden", "raiju", "raketrailer", "rallytruck", "RancherXL", "rancherxl2", "RapidGT",
+                        "RapidGT2", "rapidgt3", "raptor", "ratbike", "ratel", "ratloader", "ratloader2", "rcbandito",
+                        "reaper", "Rebel", "rebel2", "rebla", "reever", "regina", "remus", "Rentalbus", "retinue",
+                        "retinue2", "revolter", "rhapsody", "rhinehart", "RHINO", "riata", "RIOT", "riot2", "Ripley",
+                        "rocoto", "rogue", "romero", "rrocket", "rt3000", "Rubble", "ruffian", "ruiner", "ruiner2",
+                        "ruiner3", "ruiner4", "rumpo", "rumpo2", "rumpo3", "ruston", "s80", "s95", "sabregt", "sabregt2",
+                        "Sadler", "sadler2", "Sanchez", "sanchez2", "sanctus", "sandking", "sandking2", "savage",
+                        "savestra", "sc1", "scarab", "scarab2", "scarab3", "schafter2", "schafter3", "schafter4",
+                        "schafter5", "schafter6", "schlagen", "schwarzer", "scorcher", "scramjet", "scrap", "seabreeze",
+                        "seashark", "seashark2", "seashark3", "seasparrow", "seasparrow2", "seasparrow3", "Seminole",
+                        "seminole2", "sentinel", "sentinel2", "sentinel3", "sentinel4", "serrano", "SEVEN70", "Shamal",
+                        "sheava", "SHERIFF", "sheriff2", "shinobi", "shotaro", "skylift", "slamtruck", "slamvan",
+                        "slamvan2", "slamvan3", "slamvan4", "slamvan5", "slamvan6", "sm722", "sovereign", "SPECTER",
+                        "SPECTER2", "speeder", "speeder2", "speedo", "speedo2", "speedo4", "speedo5", "squaddie",
+                        "squalo", "stafford", "stalion", "stalion2", "stanier", "starling", "stinger", "stingergt",
+                        "stingertt", "stockade", "stockade3", "stratum", "streamer216", "streiter", "stretch",
+                        "strikeforce", "stromberg", "Stryder", "Stunt", "submersible", "submersible2", "Sugoi", "sultan",
+                        "sultan2", "sultan3", "sultanrs", "Suntrap", "superd", "supervolito", "supervolito2", "Surano",
+                        "SURFER", "Surfer2", "surfer3", "surge", "swift", "swift2", "swinger", "t20", "Taco", "tahoma",
+                        "tailgater", "tailgater2", "taipan", "tampa", "tampa2", "tampa3", "tanker", "tanker2",
+                        "tankercar", "taxi", "technical", "technical2", "technical3", "tempesta", "tenf", "tenf2",
+                        "terbyte", "terminus", "tezeract", "thrax", "thrust", "thruster", "tigon", "TipTruck",
+                        "TipTruck2", "titan", "toreador", "torero", "torero2", "tornado", "tornado2", "tornado3",
+                        "tornado4", "tornado5", "tornado6", "toro", "toro2", "toros", "TOURBUS", "TOWTRUCK", "Towtruck2",
+                        "towtruck3", "towtruck4", "tr2", "tr3", "tr4", "TRACTOR", "tractor2", "tractor3", "trailerlarge",
+                        "trailerlogs", "trailers", "trailers2", "trailers3", "trailers4", "trailers5", "trailersmall",
+                        "trailersmall2", "Trash", "trash2", "trflat", "tribike", "tribike2", "tribike3", "trophytruck",
+                        "trophytruck2", "tropic", "tropic2", "tropos", "tug", "tula", "tulip", "tulip2", "turismo2",
+                        "turismo3", "turismor", "tvtrailer", "tvtrailer2", "tyrant", "tyrus", "utillitruck",
+                        "utillitruck2", "Utillitruck3", "vacca", "Vader", "vagner", "vagrant", "valkyrie", "valkyrie2",
+                        "vamos", "vectre", "velum", "velum2", "verlierer2", "verus", "vestra", "vetir", "veto", "veto2",
+                        "vigero", "vigero2", "vigero3", "vigilante", "vindicator", "virgo", "virgo2", "virgo3", "virtue",
+                        "viseris", "visione", "vivanite", "volatol", "volatus", "voltic", "voltic2", "voodoo", "voodoo2",
+                        "vortex", "vstr", "warrener", "warrener2", "washington", "wastelander", "weevil", "weevil2",
+                        "windsor", "windsor2", "winky", "wolfsbane", "xa21", "xls", "xls2", "yosemite", "yosemite2",
+                        "yosemite3", "youga", "youga2", "youga3", "youga4", "z190", "zeno", "zentorno", "zhaba", "zion",
+                        "zion2", "zion3", "zombiea", "zombieb", "zorrusso", "zr350", "zr380", "zr3802", "zr3803", "Ztype"}
+    GTLP(updateveh, '载具循环轰炸', {}, '', function()
+        if NETWORK.NETWORK_IS_PLAYER_ACTIVE(pid) then
+            local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            local randomModel = vehicleModels[math.random(1, #vehicleModels)]
+            local modelHash = MISC.GET_HASH_KEY(randomModel)
+            local vehicle = VEHICLE.CREATE_VEHICLE(modelHash, coords.x, coords.y, coords.z + 20, 0.0, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(vehicle, 0, 0, 0, 2, true)
+            local networkId = NETWORK.VEH_TO_NET(vehicle)
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(vehicle) then
+                NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true)
+            end
+            if vehicle then
+                ENTITY.SET_ENTITY_VELOCITY(vehicle, 0, 0, -100000000)
+                VEHICLE.SET_ALLOW_VEHICLE_EXPLODES_ON_CONTACT(vehicle, true)
+            end
+            local vehicle2 = VEHICLE.CREATE_VEHICLE(modelHash, coords.x, coords.y, coords.z - 20, 0.0, true, true, false)
+            ENTITY.SET_ENTITY_ROTATION(vehicle2, 0, 0, 0, 2, true)
+            local networkId = NETWORK.VEH_TO_NET(vehicle2)
+            if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(vehicle2) then
+                NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true)
+            end
+            if vehicle2 then
+                ENTITY.SET_ENTITY_VELOCITY(vehicle2, 0, 0, 100000000)
+                VEHICLE.SET_ALLOW_VEHICLE_EXPLODES_ON_CONTACT(vehicle2, true)
+            end
+            util.toast("汽车轰炸 " .. PLAYER.GET_PLAYER_NAME(pid))
+            set_entity_as_no_longer_needed(vehicle)
+            set_entity_as_no_longer_needed(vehicle2)
+        end
+    end)
+
+    local balls = {"p_ld_soc_ball_01", "p_ld_am_ball_01", "prop_bowling_ball", "prop_beach_volball01",
+                "prop_beach_volball02", "prop_beachball_02", "v_ilev_exball_blue"}
+    GTLP(updateveh, '神奇的输出', {}, '即使不在车中也可以使用', function()
+        local vehtable = entities.get_all_vehicles_as_handles()
+        for _, vehs in pairs(vehtable) do
+            local selfpos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            local ped = VEHICLE.GET_PED_IN_VEHICLE_SEAT(vehs, -1, false)
+            local player = false
+            for playerId = 0, 31 do
+                if PLAYER.GET_PLAYER_PED(playerId) == ped then
+                    player = true
+                end
+            end
+            if ped ~= 0 and player == false then
+                requestControlLoop(vehs)
+                requestControlLoop(ped)
+                TASK.TASK_VEHICLE_DRIVE_TO_COORD(ped, vehs, selfpos.x, selfpos.y, selfpos.z, 70.0, 1, vehs, 16777216, 0.0, 1)
+            else
+            end
+        end
+        local selectedItem = "prop_cs_dildo_01"
+        local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
+        while not STREAMING.HAS_MODEL_LOADED(joaat(selectedItem)) do
+            STREAMING.REQUEST_MODEL(joaat(selectedItem))
+            wait()
+        end
+        OBJECT.CREATE_AMBIENT_PICKUP(738282662, coords.x, coords.y, coords.z + 1.5, 0, 1, joaat(selectedItem), false, true)
+        local randomIndex = math.random(1, #balls)
+        local selectedItem = balls[randomIndex]
+        local coords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), false)
+        while not STREAMING.HAS_MODEL_LOADED(joaat(selectedItem)) do
+            STREAMING.REQUEST_MODEL(joaat(selectedItem))
+            wait()
+        end
+        OBJECT.CREATE_AMBIENT_PICKUP(738282662, coords.x, coords.y, coords.z + 2, 0, 1, joaat(selectedItem), false, true)
+        if not PED.IS_PED_IN_ANY_VEHICLE(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true) then
+            gtoast("玩家不在车里")
+        else
+            veh = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+            local time = os.time()
+            local request = false
+            while not request do
+                if os.time() - time >= 5 then
+                    gtoast("无法控制车辆")
+                    break
+                end
+                request = requestControlLoop(veh)
+                wait()
+            end
+            gtoast("旋转的车辆")
+            ENTITY.APPLY_FORCE_TO_ENTITY(veh, 5, 0, 0, 150.0, 0, 0, 0, 0, true, false, true, false, true)
+        end
+        player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        coords = ENTITY.GET_ENTITY_COORDS(player, true)
+        FIRE.ADD_OWNED_EXPLOSION(player, coords.x, coords.y, coords.z - 2.0, 24, 1, true, false, 0)
+        player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        coords = ENTITY.GET_ENTITY_COORDS(player, true)
+        FIRE.ADD_OWNED_EXPLOSION(player, coords.x, coords.y, coords.z - 2.0, 11, 1, true, false, 0)
+        player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        coords = ENTITY.GET_ENTITY_COORDS(player, true)
+        FIRE.ADD_OWNED_EXPLOSION(player, coords.x, coords.y, coords.z - 2.0, 13, 1, true, false, 0)
+        player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        coords = ENTITY.GET_ENTITY_COORDS(player, true)
+        FIRE.ADD_OWNED_EXPLOSION(player, coords.x, coords.y, coords.z - 2.0, 1, 100, true, false, 2147483647)
+        player = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+        coords = ENTITY.GET_ENTITY_COORDS(player, true)
+        FIRE.ADD_OWNED_EXPLOSION(player, coords.x, coords.y, coords.z - 2.0, 1, 0, true, false, 2147483647)
+    end)
+
+    --
+    
+    GTLuaScript.list_action(playerOtherTrolling, "附加车辆", {}, "", {"到他的车", "他的车到我的车", "我的车到他的车", "分离"}, function(index, value, click_type)
     local car = PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
     if car ~= 0 then
         request_control_of_entity(car)
@@ -28482,9 +27463,9 @@ end)
                 end
                 ENTITY.DETACH_ENTITY(players.user_ped(), false, false)
                 break
+            end
         end
-    end
-end)
+    end)
 
     GTAC(player_veh_teleport, "传送载具到我", {"tpvtome"}, "如果这不起作用，它不是一个bug", function(on_click)
         tpcartome(pid)
@@ -28532,11 +27513,11 @@ end)
         send_veh_attacker(pid)
 	end)
 
-	GTluaScript.slider_text(trolly_Vehicles, "匪徒武器", {}, "", {util.get_label_text("BAND_BOMB"), util.get_label_text("TOP_MINE")}, function (index, value)
+	GTluaScript.textslider(trolly_Vehicles, "匪徒武器", {}, "", {util.get_label_text("BAND_BOMB"), util.get_label_text("TOP_MINE")}, function (index, value)
         send_veh_attacker_weapon(index, value)
 	end)
 
-	mineSlider = GTluaScript.slider_text(trolly_Vehicles, "地雷", {}, "", {util.get_label_text("KINET_MINE"), util.get_label_text("EMP_MINE")}, function (index, value)
+	mineSlider = GTluaScript.textslider(trolly_Vehicles, "地雷", {}, "", {util.get_label_text("KINET_MINE"), util.get_label_text("EMP_MINE")}, function (index, value)
 		send_veh_attacker_weapon_mine(index, value)
 	end)
 
@@ -28556,11 +27537,11 @@ end)
         veh_attacker_spawn(pid, index, option)
 	end)
 
-	GTluaScript.slider_text(enemyVehiclesOpt, "迷你坦克武器", {}, "", {util.get_label_text("WT_V_PLRBUL"),util.get_label_text("MINITANK_WEAP2"),util.get_label_text("MINITANK_WEAP3"),}, function(index)
+	GTluaScript.textslider(enemyVehiclesOpt, "迷你坦克武器", {}, "", {util.get_label_text("WT_V_PLRBUL"),util.get_label_text("MINITANK_WEAP2"),util.get_label_text("MINITANK_WEAP3"),}, function(index)
         mintank_weapon(index)
 	end)
 
-	GTluaScript.slider_text(enemyVehiclesOpt, "枪手的武器", {}, "", {util.get_label_text("WT_MG"), util.get_label_text("WT_RPG")}, function(index)
+	GTluaScript.textslider(enemyVehiclesOpt, "枪手的武器", {}, "", {util.get_label_text("WT_MG"), util.get_label_text("WT_RPG")}, function(index)
 		gunner_weapon(index)
 	end)
 
@@ -28969,16 +27950,16 @@ elseif pedhash == util.joaat('player_two') then
 elseif pedhash == util.joaat('u_m_m_jesus_01') then
     Jesuslovesyou(peds)  
 elseif pedhash ~= util.joaat('IG_LesterCrest') or util.joaat('player_two') then
-if GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'GENERIC_FUCK_YOU') ==true
+if AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'GENERIC_FUCK_YOU') ==true
 then Fuckyou(peds)
 
-elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'Provoke_Trespass')
+elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'Provoke_Trespass')
 then Provoke(peds)
 
-elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'Generic_Insult_High')
+elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'Generic_Insult_High')
 then Insulthigh(peds)
 
-elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'GENERIC_WAR_CRY')
+elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(peds[1], 'GENERIC_WAR_CRY')
 then Warcry(peds)
 else
 end
@@ -29088,16 +28069,16 @@ local rpedca =  GTLP(lz, '随机Ped笼', {'RAMDOMPCAGE'}, '将玩家困在一个
   elseif pedhash == util.joaat('u_m_m_jesus_01') then
       Jesuslovesyou(rpeds)  
   elseif pedhash ~= util.joaat('IG_LesterCrest') or util.joaat('player_two') then
-  if GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'GENERIC_FUCK_YOU') ==true
+  if AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'GENERIC_FUCK_YOU') ==true
   then Fuckyou(rpeds)
 
-  elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'Provoke_Trespass')
+  elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'Provoke_Trespass')
   then Provoke(rpeds)
 
-  elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'Generic_Insult_High')
+  elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'Generic_Insult_High')
   then Insulthigh(rpeds)
 
-  elseif GENERIC_AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'GENERIC_WAR_CRY')
+  elseif AUDIO.DOES_CONTEXT_EXIST_FOR_THIS_PED(rpeds[1], 'GENERIC_WAR_CRY')
   then Warcry(rpeds)
   else
   end
@@ -29453,39 +28434,40 @@ end)
             STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(ped_hash)
         end
 	end)
-GTAC(lz, "房子笼子", {""}, "", function ()
-zdlzsz(pid)
+GTAC(lz, "房子笼子", {""}, "", function()
+    zdlzsz(pid)
 end)
-GTAC(lz, "七度空间", {""}, "", function ()
-qdkj(pid)
+GTAC(lz, "七度空间", {""}, "", function()
+    qdkj(pid)
 end)
-GTAC(lz, "钱笼子", {""}, "", function ()
-zdlz(pid)
+GTAC(lz, "钱笼子", {""}, "", function()
+    zdlz(pid)
 end)
-GTAC(lz, "垃圾箱", {""}, "", function ()
-yylz(pid)
+GTAC(lz, "垃圾箱", {""}, "", function()
+    yylz(pid)
 end)
-GTAC(lz, "小车车", {""}, "", function ()
-cclz(pid)
+GTAC(lz, "小车车", {""}, "", function()
+    cclz(pid)
 end)
-GTAC(lz, "圣诞快乐", {""}, "", function ()
-sdkl2(pid)
+GTAC(lz, "圣诞快乐", {""}, "", function()
+    sdkl2(pid)
 end)
-GTAC(lz, "电击笼", {""}, "", function ()
-powercage(pid)
+GTAC(lz, "电击笼", {""}, "", function()
+    powercage(pid)
 end)
 GTAC(lz, "英国女王笼子", {""}, "", function(cl)
-gueencage(pid)
+    gueencage(pid)
 end)
 GTAC(lz, "运输集装箱", {"cage123"}, "", function()
-chestcage(pid)
+    chestcage(pid)
 end)
 GTAC(lz, "载具笼子", {"cage4321"}, "", function()
-vehcagelol(pid)
+    vehcagelol(pid)
 end)
 GTAC(lz, "燃气笼", {"gascage4321"}, "", function()
-gascage(pid)
+    gascage(pid)
 end)
+
 
 GTLP(lz, "混合笼子", {"toggleallcages"}, "", function(on_toggle)
     if on_toggle then
@@ -29726,131 +28708,131 @@ function load_model(hash) -- lancescript
         wait()
     end
 end
-    local BlackholeEntities = GT(jindianegao, "黑洞恶搞", {}, "")
-    
-	local dont_stop = false
-	GTLP(BlackholeEntities,"载具黑洞", {"vehicleblackholes"}, "", function(on)
-		for k, veh in pairs(entities.get_all_vehicles_as_handles()) do
-			local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
-			local locspeed2 = speed
-        			local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
-			if not PED.IS_PED_A_PLAYER(PedInSeat) then
-				NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
-	      ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
-                        vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
-                        speed = 100
-                        local x_vec = (holecoords['x']-vcoords['x'])*speed
-                        local y_vec = (holecoords['y']-vcoords['y'])*speed
-                        local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
-                        ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
-                        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
-				if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
-					VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
-				end
-			end
-		end
-	end)
+local BlackholeEntities = GT(jindianegao, "黑洞恶搞", {}, "")
 
-    GTLP(BlackholeEntities,"物体黑洞", {"objectblackholes"}, "", function(on)
-		for k, veh in pairs(entities.get_all_objects_as_handles()) do
-			local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
-			local locspeed2 = speed
-        			local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
-			if not PED.IS_PED_A_PLAYER(PedInSeat) then
-				NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
-	      ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
-                        vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
-                        speed = 100
-                        local x_vec = (holecoords['x']-vcoords['x'])*speed
-                        local y_vec = (holecoords['y']-vcoords['y'])*speed
-                        local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
-                        ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
-                        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
-				if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
-					VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
-				end
-			end
-		end
-	end)
-
-    GTLP(BlackholeEntities,"NPC黑洞", {"pedblackholes"}, "", function(on)
-		for k, veh in pairs(entities.get_all_peds_as_handles()) do
-			local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
-			local locspeed2 = speed
-        			local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
-			if not PED.IS_PED_A_PLAYER(PedInSeat) then
-				NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
-	      ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
-                        vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
-                        speed = 100
-                        local x_vec = (holecoords['x']-vcoords['x'])*speed
-                        local y_vec = (holecoords['y']-vcoords['y'])*speed
-                        local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
-                        ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
-                        ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
-				if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
-					VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
-				    end
-			    end
+local dont_stop = false
+GTLP(BlackholeEntities,"载具黑洞", {"vehicleblackholes"}, "", function(on)
+    for k, veh in pairs(entities.get_all_vehicles_as_handles()) do
+        local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
+        local locspeed2 = speed
+                local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+        if not PED.IS_PED_A_PLAYER(PedInSeat) then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
+                    vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
+                    speed = 100
+                    local x_vec = (holecoords['x']-vcoords['x'])*speed
+                    local y_vec = (holecoords['y']-vcoords['y'])*speed
+                    local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
+                    ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
+                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
+            if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
+                VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
             end
-        end)
-
-    hole_zoff = 50
-    GTluaScript.slider(BlackholeEntities, "方向", {"blackholeoffset"}, "", 0, 100, 50, 10, function(s)
-    hole_zoff = s
-    end)
-
-    local tormentplayer = GT(jindianegao, "折磨玩家")
-
-    player_toggle_loop(tormentplayer, pid, "子弹轰炸", {"taseron"}, "", function()
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local pos = ENTITY.GET_ENTITY_COORDS(ped)
-        for i = 1, 50 do
-            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_stungun"), players.user_ped(), false, true, 1.0)
         end
-        wait()
-    end)
+    end
+end)
 
-    player_toggle_loop(tormentplayer, pid, "抬起他", {"atomizeron"}, "", function()
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local pos = ENTITY.GET_ENTITY_COORDS(ped)
-        for i = 1, 24 do
-            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_raypistol"), players.user_ped(), false, true, 1.0)
+GTLP(BlackholeEntities,"物体黑洞", {"objectblackholes"}, "", function(on)
+    for k, veh in pairs(entities.get_all_objects_as_handles()) do
+        local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
+        local locspeed2 = speed
+                local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+        if not PED.IS_PED_A_PLAYER(PedInSeat) then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
+                    vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
+                    speed = 100
+                    local x_vec = (holecoords['x']-vcoords['x'])*speed
+                    local y_vec = (holecoords['y']-vcoords['y'])*speed
+                    local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
+                    ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
+                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
+            if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
+                VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
+            end
         end
-        wait()
-    end)
+    end
+end)
 
-    player_toggle_loop(tormentplayer, pid, "闪耀", {"flareon"}, "", function()
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local pos = ENTITY.GET_ENTITY_COORDS(ped)
-        for i = 1, 49 do
-            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_flare"), players.user_ped(), false, true, 1.0)
+GTLP(BlackholeEntities,"NPC黑洞", {"pedblackholes"}, "", function(on)
+    for k, veh in pairs(entities.get_all_peds_as_handles()) do
+        local PedInSeat = VEHICLE.GET_PED_IN_VEHICLE_SEAT(veh, -1, false)
+        local locspeed2 = speed
+                local holecoords = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), true)
+        if not PED.IS_PED_A_PLAYER(PedInSeat) then
+            NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(veh)
+        ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(bh_target), true)
+                    vcoords = ENTITY.GET_ENTITY_COORDS(veh, true)
+                    speed = 100
+                    local x_vec = (holecoords['x']-vcoords['x'])*speed
+                    local y_vec = (holecoords['y']-vcoords['y'])*speed
+                    local z_vec = ((holecoords['z']+hole_zoff)-vcoords['z'])*speed
+                    ENTITY.SET_ENTITY_INVINCIBLE(veh, true)
+                    ENTITY.APPLY_FORCE_TO_ENTITY_CENTER_OF_MASS(veh, 1, x_vec, y_vec, z_vec, true, false, true, true)
+            if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
+                VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
+                end
+            end
         end
-        wait()
     end)
 
-    player_toggle_loop(tormentplayer, pid, "烟花", {"fireworkon"}, "", function()
-        local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
-        local pos = ENTITY.GET_ENTITY_COORDS(ped)
-        for i = 1, 30 do
-            MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_firework"), players.user_ped(), false, true, 1.0)
-        end
-        wait()
-    end)
+hole_zoff = 50
+GTluaScript.slider(BlackholeEntities, "方向", {"blackholeoffset"}, "", 0, 100, 50, 10, function(s)
+hole_zoff = s
+end)
 
-    GTLP(tormentplayer, "小行星", {"asteroidon"}, "", function() 
-        local coords = players.get_position(pid)
-        coords.z = coords['z'] + 15.0
-        local asteroid = entities.create_object(3751297495, coords)
-        ENTITY.SET_ENTITY_DYNAMIC(asteroid, true)
-    end)
+local tormentplayer = GT(jindianegao, "折磨玩家")
 
-    GTLP(tormentplayer, "布偶猫", {"ragdollon"}, "", function()
-        local coords = players.get_position(pid)
-        coords.z = coords['z'] - 2.0
-        FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 11, 1, false, true, 0, true)
-        wait(10)
-    end)
+player_toggle_loop(tormentplayer, pid, "子弹轰炸", {"taseron"}, "", function()
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pos = ENTITY.GET_ENTITY_COORDS(ped)
+    for i = 1, 50 do
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_stungun"), players.user_ped(), false, true, 1.0)
+    end
+    wait()
+end)
+
+player_toggle_loop(tormentplayer, pid, "抬起他", {"atomizeron"}, "", function()
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pos = ENTITY.GET_ENTITY_COORDS(ped)
+    for i = 1, 24 do
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_raypistol"), players.user_ped(), false, true, 1.0)
+    end
+    wait()
+end)
+
+player_toggle_loop(tormentplayer, pid, "闪耀", {"flareon"}, "", function()
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pos = ENTITY.GET_ENTITY_COORDS(ped)
+    for i = 1, 49 do
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_flare"), players.user_ped(), false, true, 1.0)
+    end
+    wait()
+end)
+
+player_toggle_loop(tormentplayer, pid, "烟花", {"fireworkon"}, "", function()
+    local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+    local pos = ENTITY.GET_ENTITY_COORDS(ped)
+    for i = 1, 30 do
+        MISC.SHOOT_SINGLE_BULLET_BETWEEN_COORDS(pos.x, pos.y, pos.z + 1, pos.x, pos.y, pos.z, 0, true, util.joaat("weapon_firework"), players.user_ped(), false, true, 1.0)
+    end
+    wait()
+end)
+
+GTLP(tormentplayer, "小行星", {"asteroidon"}, "", function() 
+    local coords = players.get_position(pid)
+    coords.z = coords['z'] + 15.0
+    local asteroid = entities.create_object(3751297495, coords)
+    ENTITY.SET_ENTITY_DYNAMIC(asteroid, true)
+end)
+
+GTLP(tormentplayer, "布偶猫", {"ragdollon"}, "", function()
+    local coords = players.get_position(pid)
+    coords.z = coords['z'] - 2.0
+    FIRE.ADD_EXPLOSION(coords.x, coords.y, coords.z, 11, 1, false, true, 0, true)
+    wait(10)
+end)
 
 GTLP(tormentplayer, "鲜血飞溅", {"bloodslash"}, "", function(on_toggle)
         local pos = players.get_position(pid)
@@ -31118,9 +30100,9 @@ end
                 for k,v in pairs(blacklist) do
                 if pid ~= players.user() and players.exists(pid) then end
                     if v[2] == scied and not players.is_marked_as_modder(pid) then
-                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.random(1, 10)})
-                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, WIRI_NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1})
+                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, math.random(1, 10)})
+                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
+                    util.trigger_script_event(1 << pid, {1103127469, players.user(), id, 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1})
                         if bolkp ~= pid then
                             bolkp = pid
                             notification("~r~检测黑名单\n名字： "..name.."\nRid: "..scied.." 正在踢出黑名单玩家",blue)
@@ -31149,8 +30131,8 @@ GTAC(friendly, "检测状态", {"checkstats"}, "", function()
     util.show_corner_help("名称 : "..players.get_name(pid).."\n国家: "..language.. "\n等级: "..rank.."\n金钱: "..string.format("%.2f", money/1000000).."M$".."\n杀人/死亡: "..kills.."/"..deaths.."\n比率: "..string.format("%.2f", kdratio))
 end)
 
-GTAC(friendly, "发送好友请求", {"sendfriend"}, "", function()
-    menu.show_command_box("historybefriend " .. PLAYER.GET_PLAYER_NAME(pid))
+GTAC(friendly, "发送好友请求", {""}, "", function()
+    menu.trigger_commands("befriend " .. PLAYER.GET_PLAYER_NAME(pid))
 end, nil, nil, COMMANDPERM_FRIENDLY)
 
 GTLP(friendly, "循环称赞", {}, "", function(on_toggle)
@@ -31163,6 +30145,20 @@ GTLP(friendly, "循环称赞", {}, "", function(on_toggle)
     end
 end)
 
+GTLP(friendly, '给钱和经验',{},'对方很可能会掉线.',function(f)
+    for i = 0, 9 do
+        for v = 0, 20 do
+        util.trigger_script_event(1 << pid, {968269233, 0, i, v, v, v})
+    for n = 0, 16 do
+        util.trigger_script_event(1 << pid, {968269233, n, i, v, v, v})
+        end
+    end
+    util.trigger_script_event(1 << pid, {968269233, 1, i, 1, 1, 1})
+    util.trigger_script_event(1 << pid, {968269233, 3, i, 1, 1, 1})
+    util.trigger_script_event(1 << pid, {968269233, 10, i, 1, 1, 1})
+    util.trigger_script_event(1 << pid, {968269233, 0, i, 1, 1, 1})
+    end
+end)
 
 local hugs = GT(friendly, "拥抱玩家", {"hug"}, "注意: 确保他们站着不动")
 
@@ -32137,14 +31133,25 @@ function get_prostitutes(pid)
 end
 
 function t_b()
-local focused = players.get_focused()
-local pid = focused[1]
-   if players.is_in_interior(pid) then
-       return "~r~室内"
-   else
-       return "~g~室外"
-   end 
+    local focused = players.get_focused()
+    local pid = focused[1]
+    if players.is_in_interior(pid) then
+        return "~r~室内"
+    else
+        return "~g~室外"
+    end
 end
+
+ATTACH_CAM_TO_ENTITY_WITH_FIXED_DIRECTION = function (--[[Cam (int)]] cam, --[[Entity (int)]] entity, --[[float]] xRot, --[[float]] yRot, --[[float]] zRot, --[[float]] xOffset, --[[float]] yOffset, --[[float]] zOffset, --[[BOOL (bool)]] isRelative)
+    native_invoker.begin_call()
+    native_invoker.push_arg_int(cam)
+    native_invoker.push_arg_int(entity)
+    native_invoker.push_arg_float(xRot); native_invoker.push_arg_float(yRot); native_invoker.push_arg_float(zRot)
+    native_invoker.push_arg_float(xOffset); native_invoker.push_arg_float(yOffset); native_invoker.push_arg_float(zOffset)
+    native_invoker.push_arg_bool(isRelative)
+    native_invoker.end_call("202A5ED9CE01D6E7")
+end
+
 --
 function p_to_d(pid)
     return PLAYER.GET_PLAYER_PED(pid)
@@ -32224,67 +31231,6 @@ function baocun()
     end
 end
 
-
-VEH_MISSILE_SPEED = 10000
-
-MISL_AIM = false
-missile_settings = {
-    radius = 300,
-    speed = 100,
-    los = true,
-    cam = false,
-    ptfx = true,
-    ptfx_scale = 1,
-    air_target = false,
-    multitarget = false,
-    multiped = false
-}
-missile_particles = {
-    name = "exp_grd_rpg_lod",
-    dictionary = "core"
-}
-
-ATTACH_CAM_TO_ENTITY_WITH_FIXED_DIRECTION = function (--[[Cam (int)]] cam, --[[Entity (int)]] entity, --[[float]] xRot, --[[float]] yRot, --[[float]] zRot, --[[float]] xOffset, --[[float]] yOffset, --[[float]] zOffset, --[[BOOL (bool)]] isRelative)
-    native_invoker.begin_call()
-    native_invoker.push_arg_int(cam)
-    native_invoker.push_arg_int(entity)
-    native_invoker.push_arg_float(xRot); native_invoker.push_arg_float(yRot); native_invoker.push_arg_float(zRot)
-    native_invoker.push_arg_float(xOffset); native_invoker.push_arg_float(yOffset); native_invoker.push_arg_float(zOffset)
-    native_invoker.push_arg_bool(isRelative)
-    native_invoker.end_call("202A5ED9CE01D6E7")
-end
-
-Rocket_Hashes = {
-    {"rpg", util.joaat("w_lr_rpg_rocket")},
-    {"homingrpg", util.joaat("w_lr_homing_rocket")},
-    {"oppressor2", util.joaat("w_ex_vehiclemissile_3")},
-    {"b11barrage", util.joaat("w_smug_airmissile_01b")},
-    {"b11regular", util.joaat("w_battle_airmissile_01")},
-    {"chernobog", util.joaat("w_ex_vehiclemissile_4")},
-    {"akula", util.joaat("w_smug_airmissile_02")},
-    {"grenadelauncher", util.joaat("w_lr_40mm")}, --grenade launcher lmfao
-    {"compactemplauncher", util.joaat("w_lr_ml_40mm")}, --compact emp launhcer lmao
-    {"teargas", util.joaat("w_ex_grenadesmoke")} --tear gas grenade lmfao
-}
-
-Chosen_Rocket_Hash = Rocket_Hashes[1][2]
-MISSILE_ENTITY_TABLE = {}
-
-MISL_AIR = false
-
-ORB_Sneaky = false
-
-sa_fov = 180
-
-sa_odmg = 100
-
-CAR_S_sneaky = false
-CAR_S_BLACKLIST = {}
-
-
-LegitRapidFire = false
-LegitRapidMS = 100
-
 --[[
  _________     _________    ________     ________     ________     _________     _________    ________     ________     ________      _________     _________    ________     ________     ________ 
 |\   ____ \   |\___  ___\  |\   __  \   |\   __  \   |\   __  \   |\   ____ \   |\___  ___\  |\   __  \   |\   __  \   |\   __  \    |\   ____ \   |\___  ___\  |\   __  \   |\   __  \   |\   __  \
@@ -32292,13 +31238,21 @@ LegitRapidMS = 100
  \ \  \ __  \     \ \  \    \ \   __  \  \ \   __  \  \ \   __  \  \ \  \ __  \     \ \  \    \ \   __  \  \ \   __  \  \ \   __  \   \ \  \ __  \     \ \  \    \ \   __  \  \ \   __  \  \ \   __  \ 
   \ \  \|\ \ \     \ \  \    \ \  \|\  \  \ \  \|\  \  \ \  \|\  \  \ \  \|\ \ \     \ \  \    \ \  \|\  \  \ \  \|\  \  \ \  \|\  \   \ \  \|\ \ \     \ \  \    \ \  \|\  \  \ \  \|\  \  \ \  \|\  \
    \ \________\     \ \__\    \ \_______\  \ \_______\  \ \_______\  \ \________\     \ \__\    \ \_______\  \ \_______\  \ \_______\   \ \________\     \ \__\    \ \_______\  \ \_______\  \ \_______\
-    \|________|      \|__|     \|_______|   \|_______|   \|_______|   \|________|      \|__|     \|_______|   \|_______|   \|_______|    \|________|      \|__|     \|_______|   \|_______|   \|_______|
-                                                                                                                                                                                                                                    
- _________  ________  ________  ________   ________  ___       ________  _________  _______   ________          ________ ________  ________  _____ ______              _________      _________ 
-|\___   ___\\   __  \|\   __  \|\   ___  \|\   ____\|\  \     |\   __  \|\___   ___\\  ___ \ |\   ___ \        |\  _____\\   __  \|\   __  \|\   _ \  _   \           |\    _____\   |\___  ___\  
-\|___ \  \_\ \  \|\  \ \  \|\  \ \  \\ \  \ \  \___|\ \  \    \ \  \|\  \|___ \  \_\ \   __/|\ \  \_|\ \       \ \  \__/\ \  \|\  \ \  \|\  \ \  \\\__\ \  \           \ \  \___| \  \|___\  \_/  
-     \ \  \ \ \   _  _\ \   __  \ \  \\ \  \ \_____  \ \  \    \ \   __  \   \ \  \ \ \  \_|/_\ \  \ \\ \       \ \   __\\ \   _  _\ \  \\\  \ \  \\|__| \  \           \ \  \ __  \     \ \  \    
-      \ \  \ \ \  \\  \\ \  \ \  \ \  \\ \  \|____|\  \ \  \____\ \  \ \  \   \ \  \ \ \  \_|\ \ \  \_\\ \       \ \  \_| \ \  \\  \\ \  \\\  \ \  \    \ \  \           \ \  \|\ \ \     \ \  \    
-       \ \__\ \ \__\\ _\\ \__\ \__\ \__\\ \__\____\_\  \ \_______\ \__\ \__\   \ \__\ \ \_______\ \_______\       \ \__\   \ \__\\ _\\ \_______\ \__\    \ \__\           \ \________\     \ \__\    
-        \|__|  \|__|\|__|\|__|\|__|\|__| \|__|\_________\|_______|\|__|\|__|    \|__|  \|_______|\|_______|        \|__|    \|__|\|__|\|_______|\|__|     \|__|            \|________|      \|__|  
---]]
+    \|________|      \|__|     \|_______|   \|_______|   \|_______|   \|________|      \|__|     \|_______|   \|_______|   \|_______|    \|________|      \|__|     \|_______|   \|_______|   \|_______|                                                                                                           
+
+GRANDTOURINGVIP™ Copyright© 2024 All rights reserved.
+⠄⠄⠄⣰⣿⠄⠄⠄⠄⠄⢠⠄⠄⢀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⢰⣿⠿⠄⡀⠄⠄⠄⠘⣷⡀⠄⠢⣄⠄⠄⠄⠄⠄⠄⠄⣠⠖⠁⠄⠄⠄⠄
+⠄⣤⢸⣿⣿⣆⠣⠄⠄⠄⠄⠸⣿⣦⡀⠙⢶⣦⣄⡀⠄⡠⠞⠁⢀⡴⠄⠄⠄⠄
+⢰⣿⣎⣿⣿⣿⣦⣀⠄⠄⠄⠄⠹⣿⣿⣦⢄⡙⠻⠿⠷⠶⠤⢐⣋⣀⠄⠄⠄⠄
+⢸⣿⠛⠛⠻⠿⢿⣿⣧⢤⣤⣄⣠⡘⣿⣿⣿⡟⠿⠛⠂⠈⠉⠛⢿⣿⠄⠄⠄⠄
+⠄⡇⢰⣿⣇⡀⠄⠄⣝⣿⣿⣿⣿⣿⣿⣿⣿⣶⣿⡄⠄⠈⠄⣷⢠⡆⠄⠄⠄⠄
+⢹⣿⣼⣿⣯⢁⣤⣄⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡄⣴⠶⣲⣵⠟⠄⠄⠄⠄⠄
+⠄⢿⣿⣿⣿⣷⣮⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣾⣟⣡⡴⠄⠄⠄⠄⠄
+⠄⠰⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠁⡀⠄⠄⠄⠄
+⠄⠄⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣭⣶⡞⠄⠄⠄⠄⠄
+⠄⠄⠐⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠈⠻⣿⣿⣿⣿⣿⣿⣯⣿⣯⣿⣾⣿⣿⣿⣿⣿⡿⠋⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣵⠄⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠄⢀⣿⣯⣟⣿⣿⣿⡿⣟⣯⣷⣿⣿⡏⣤⠄⠄⠄⠄⠄⠄⠄⠄
+⠄⠄⠄⠄⠄⠄⠄⣞⢸⣿⣿⣿⣾⣷⣿⣿⣿⣿⣿⣿⣇⣿⡆⠄⠄⠄⠄⠄⠄⠄]]
