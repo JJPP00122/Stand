@@ -1686,7 +1686,7 @@ Weapons =
  --- Relationship Functions ---
 local function addRelationshipGroup(name)
     local ptr = memory.alloc_int()
-    PED.ADD_RELATIONSHIP_GROUP(name, ptr)
+    PED.ADD_RELATIONSHIP_GROUP(memory.tunable_offset(name), ptr)
     local rel = memory.read_int(ptr)
     memory.free(ptr)
     return rel
@@ -1724,7 +1724,7 @@ local bodyguard_veh = {
 
 local sel_veh_name_list = { "加长礼车", "FBI巡逻车", "奔驰迈巴赫", "限量版大G", "RR幻影", "宾利", "RR魅影" }
 local sel_veh_model_list = { "stretch", "fbi2", "cognoscenti2", "dubsta2", "superd", "deity", "windsor2" }
-menu.slider_text(bodyguard_veh_options, "生成的载具类型", {}, "您需要单击以更改", sel_veh_name_list, function(value)
+menu.textslider(bodyguard_veh_options, "生成的载具类型", {}, "您需要单击以更改", sel_veh_name_list, function(value)
     bodyguard_veh.name = sel_veh_model_list[value]
 end)
 
@@ -1864,7 +1864,7 @@ local bodyguard_heli = {
 
 local sel_heli_name_list = { "秃鹰", "女武神", "猎杀者", "野蛮人" }
 local sel_heli_model_list = { "buzzard", "valkyrie", "hunter", "savage" }
-menu.slider_text(bodyguard_heli_options, "直升机类型", {}, "", sel_heli_name_list, function(value)
+menu.textslider(bodyguard_heli_options, "直升机类型", {}, "", sel_heli_name_list, function(value)
     bodyguard_heli.name = sel_heli_model_list[value]
 end)
 
@@ -2051,7 +2051,7 @@ end)
 		 "自由", "围绕",
 		 "线列", "在你后面"
 	 }
-	 menu.slider_text(list, "小组编队", {"groupformation"}, "", formations, function (index)
+	 menu.textslider(list, "小组编队", {"groupformation"}, "", formations, function (index)
 		 local formation
 		 if index == 1 then
 			 formation = Formation.freedomToMove

@@ -1152,7 +1152,7 @@ menu.slider_float(Nearby_Ped_Trolling_options, "强度", { "nearby_ped_forcefiel
 , function(value)
     control_nearby_ped.data.force_field.strength = value * 0.01
 end)
-menu.slider_text(Nearby_Ped_Trolling_options, "方向", {}, "", { "推开", "拉进" }, function(value)
+menu.textslider(Nearby_Ped_Trolling_options, "方向", {}, "", { "推开", "拉进" }, function(value)
     control_nearby_ped.data.force_field.direction = value
 end)
 menu.toggle(Nearby_Ped_Trolling_options, "摔倒", {}, "", function(toggle)
@@ -3189,7 +3189,7 @@ menu.action(LS_Robbery, "病毒软件：传送到 软件", {}, "", function()
 end)
 
 menu.divider(LS_Robbery, "银行合约")
-menu.slider_text(LS_Robbery, "信号干扰器：传送到", {}, "", {
+menu.textslider(LS_Robbery, "信号干扰器：传送到", {}, "", {
     "A", "B", "C", "D", "E", "F"
 }, function(value)
     local blip = HUD.GET_NEXT_BLIP_INFO_ID(534 + value)

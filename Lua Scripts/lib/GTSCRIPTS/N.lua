@@ -490,7 +490,7 @@ menu.text_input(MISSION_ENTITY_custom, "输入 Model Hash ", { "custom_model_has
 end)
 
 local custom_all_entity = entities.get_all_peds_as_handles()
-menu.slider_text(MISSION_ENTITY_custom, "实体类型", {}, "点击应用修改", { "Ped", "Vehicle", "Object", "Pickup" }, function(value)
+menu.textslider(MISSION_ENTITY_custom, "实体类型", {}, "点击应用修改", { "Ped", "Vehicle", "Object", "Pickup" }, function(value)
     if value == 1 then
         custom_all_entity = entities.get_all_peds_as_handles()
         util.toast("Ped")
