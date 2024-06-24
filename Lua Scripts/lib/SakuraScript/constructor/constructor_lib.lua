@@ -108,8 +108,8 @@ constructor_lib.table_merge = function(t1, t2)
     return t1
 end
 
-constructor_lib.trim = function(string)
-    return string:gsub("%s+", "")
+constructor_lib.trim = function(strings)
+    return strings:gsub("%s+", "")
 end
 
 constructor_lib.is_attachment_entity = function(attachment)

@@ -18,7 +18,7 @@ GTluaScript = menu GT = GTluaScript.list GTAC = GTluaScript.action GTD = GTluaSc
 GTLP = GTluaScript.toggle_loop GTTG = GTluaScript.toggle GTH = GTluaScript.hyperlink GTS = menu.textslider gtlog = util.log
 new = {} Ini = {}
 --
-GT_version = '30R4'
+GT_version = '6.13'
 translations = {}
 setmetatable(translations, {
     __index = function (self, key)
@@ -26,7 +26,7 @@ setmetatable(translations, {
     end
 })
 function updatelogs()
-    drawnotify("修复在Stand 114.7中出现Package not found错误\n修复GTLua在Stand 114.7中大部分选项无法使用\n更新世界选项生成球体\n更新特效奥义秘术\n恶搞选项>近期更新>球形笼子(花园银行的球)\n载具选项>载具玩乐>载具升级最大化\n载具选项>载具玩乐>DJ载具\n载具选项>载具玩乐>快速跳出载具\n武器选项>新武器玩法>绳索载具枪[新]\n自我选项>自我娱乐>新型娱乐>操控能力\n错误改进和皇榜添加")
+    drawnotify("自我选项>通用实体控制\n有众多控制选项，且可控制载具/人物/实体\n众多功能采用模块化加载，最大程度减轻脚本负载\n错误修复与皇榜添加")
 end
 --
 hasShownToast = false
@@ -37,12 +37,12 @@ currentMonth = tonumber(os.date("%m"))
 currentDay = tonumber(os.date("%d"))
 
 notifyYear = 2024
-notifyMonth = 4
-notifyDay = 30
+notifyMonth = 6
+notifyDay = 13
 
 _G.daysSince = _G.daysSince or 0
 
-util.create_tick_handler(function ()
+util.create_thread(function ()
     wait()
 
     local daysSince = (currentYear - notifyYear) * 365 + (currentMonth - notifyMonth) * 30 + (currentDay - notifyDay)
@@ -73,6 +73,7 @@ util.create_tick_handler(function ()
             HUD.END_TEXT_COMMAND_DISPLAY_TEXT(0.0655, 0.29)
         end
     end
+
 end)
 --
 
@@ -80,7 +81,8 @@ function bannotiy()
     local cs = players.get_name(players.user()) 
     for _,id in ipairs(chusheng) do 
         if cs == id.cs then
-            util.toast(">这个账户下的使用权限被撤销<\n你已被永久禁止使用GTLua 除此之外如果你拥有特殊权利也已被一并撤销")
+            wait(1000)
+            util.toast("GRANDTOURINGVIP\n你已被永久禁止使用GTLua 除此之外如果你拥有特殊权利也已被一并撤销")
             util.stop_script()
         end
     end
@@ -6358,6 +6360,105 @@ function do_vehicle_fly()
     if not dont_stop and not PAD.IS_CONTROL_PRESSED(2, 71) and not PAD.IS_CONTROL_PRESSED(2, 72) then
         VEHICLE.SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
     end
+end
+
+function get_ped_weapon(ped)
+    local weaponHash = 0
+    if ENTITY.DOES_ENTITY_EXIST(ped) and ENTITY.IS_ENTITY_A_PED(ped) then
+        local ptr = memory.alloc_int()
+        if WEAPON.GET_CURRENT_PED_WEAPON(ped, ptr, true) then
+            weaponHash = memory.read_int(ptr)
+        end
+    end
+    return weaponHash
+end
+
+function get_weapon_name_by_hash(weaponHash)
+    if WEAPON.IS_WEAPON_VALID(weaponHash) then
+        for _, item in pairs(util.get_weapons()) do
+            if item.hash == weaponHash then
+                return util.get_label_text(item.label_key)
+            end
+        end
+    end
+    return ""
+end
+
+function is_player_ped_return(ped)
+    return entities.is_player_ped(ped)
+end
+
+function is_friendly_ped_return(ped)
+    if not ENTITY.IS_ENTITY_A_PED(ped) then
+        return false
+    end
+
+    local rel = PED.GET_RELATIONSHIP_BETWEEN_PEDS(ped, players.user_ped())
+    if rel == 0 or rel == 1 then 
+        return true
+    end
+
+    return false
+end
+
+function is_hostile_ped_return(ped)
+    if not ENTITY.IS_ENTITY_A_PED(ped) then
+        return false
+    end
+
+    if PED.IS_PED_IN_COMBAT(ped, players.user_ped()) then
+        return true
+    end
+
+    local rel = PED.GET_RELATIONSHIP_BETWEEN_PEDS(ped, players.user_ped())
+    if rel == 3 or rel == 4 or rel == 5 then 
+        return true
+    end
+
+    return false
+end
+
+function checkPed(ped, pedTypeSelect)
+    if is_player_ped_return(ped) then
+        return false
+    end
+
+    if pedTypeSelect == 1 and not is_friendly_ped_return(ped) then
+        return true
+    end
+
+    if pedTypeSelect == 2 and is_hostile_ped_return(ped) then
+        return true
+    end
+
+    if pedTypeSelect == 3 then
+        return true
+    end
+
+    return false
+end
+
+function IS_SCRIPT_RUNNING(script)
+    return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(util.joaat(script)) > 0
+end
+
+function LOCAL_SET_INT(script, script_local, value)
+    if memory.script_local(script, script_local) ~= 0 then
+        memory.write_int(memory.script_local(script, script_local), value)
+    end
+end
+
+function inSession()
+    if util.is_session_started() and not util.is_session_transition_active() then
+        return true
+    else
+        return false
+    end
+end
+
+function IS_HELP_MSG_DISPLAYED(label)
+    BEGIN_TEXT_COMMAND_IS_THIS_HELP_MESSAGE_BEING_DISPLAYED(label)
+    return END_TEXT_COMMAND_IS_THIS_HELP_MESSAGE_BEING_DISPLAYED(0)
 end
 
 --杂项
@@ -24089,6 +24190,10 @@ PlayerMainMenu = GT(GTROOT, "崩溃选项", {"GTCrash"}, "", function()
     end
 end)
 
+asap = GTAC(PlayerMainMenu, "ASAP", {}, "", function ()
+    
+end)
+asap.visible = false
 
 updates = GT(PlayerMainMenu, "推荐选项", {}, "#此选项的崩溃为中等强度及以上\n#请您不要观看并且远离崩溃对象\n#切记:请不要无脑使用,否则玩火自焚\n#注意:崩溃需要您自行研究,切莫魔怔\n\n<建议1> #偷偷告诉您,附加黑洞效果更佳喔~\n<建议2> #针对主流菜单的情况下,其实踢出是最优选择喔~")
 
@@ -24899,7 +25004,7 @@ GTAC(updates,"ID3", {""}, "", function(selectedOption)
     spawned_crash_peds = {}
 end)
 
-t3g = GTAC(updates, "T3G Magic", {"t3g"}, "请勿在双开时使用", function ()
+t3g = GTAC(updates, "T3G Magic", {"t3g"}, "请不要在双开时使用", function ()
     util.create_thread(function()
         local obj = util.joaat("prop_tall_grass_ba")
         request_model(obj)

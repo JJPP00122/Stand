@@ -226,3 +226,10 @@ menu.toggle_loop(silent_aimbotroot, "3D准线框", {}, "", function(on)
     size.z = 0.5+(dist/50)
     GRAPHICS.DRAW_MARKER(3, rc.x, rc.y, rc.z, 0.0, 0.0, 0.0, 0.0, 90.0, 0.0, size.y, 1.0, size.x, 255, 255, 255, 50, false, true, 2, false, 'visualflow', 'crosshair')
 end)
+--[[ menu.toggle_loop(silent_aimbotroot, "绘制玩家名字", {}, "", function(on)
+    for pid = 0, 32 do
+        if PLAYER.GET_PLAYER_PED(pid) ~= 0 then
+            draw_string(PLAYER.GET_PLAYER_NAME(pid), 0.02, 0.05, 0.4, 1)
+        end
+    end
+end) ]]

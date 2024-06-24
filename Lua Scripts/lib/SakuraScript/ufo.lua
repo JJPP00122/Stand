@@ -163,7 +163,7 @@ local tractorBeam = function ()
         local distance = vehiclePos:distance(pos)
 
         if ENTITY.DOES_ENTITY_EXIST(vehicle or 0) and distance < 200 then
-            request_control_once(vehicle)
+            request_control(vehicle, 0)
             local delta = v3.new(pos)
             delta:sub(vehiclePos)
             local multiplier = easeOutExpo(distance / 50.0) * 2.5
@@ -473,14 +473,14 @@ local destroy = function()
     scaleform = 0
 
     if ENTITY.DOES_ENTITY_EXIST(jet or 0) then
-        request_control_once(jet)
+        request_control(jet, 0)
         setVehicleCamDistance(jet, -1.57)
         entities.delete_by_handle(jet)
         jet = 0
     end
 
     if ENTITY.DOES_ENTITY_EXIST(object or 0) then
-        request_control_once(object)
+        request_control(object, 0)
         entities.delete_by_handle(object)
         object = 0
     end

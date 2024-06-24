@@ -166,6 +166,18 @@ function entity_control_vehicle(menu_parent, vehicle)
         drive_vehicle(vehicle)
     end)
 
+    menu.action(menu_parent, "切换引擎", {}, "", function(toggle)
+        local is_running = VEHICLE.GET_IS_VEHICLE_ENGINE_RUNNING(vehicle)
+        if request_control(vehicle, 3) then
+            VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, not is_running, true, true)
+        end
+    end)
+    menu.toggle_loop(menu_parent, "保持引擎启动", {}, "", function()
+        VEHICLE.SET_VEHICLE_ENGINE_ON(vehicle, true, true, true)
+        VEHICLE.SET_VEHICLE_LIGHTS(vehicle, 0)
+        VEHICLE.SET_VEHICLE_HEADLIGHT_SHADOWS(vehicle, 2)
+    end)
+
     menu.action(menu_parent, "踢出载具内NPC", {}, "", function()
         local seats = VEHICLE.GET_VEHICLE_MODEL_NUMBER_OF_SEATS(vehicle)
         for k = -1, seats do

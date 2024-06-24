@@ -30,18 +30,6 @@ local hud_yellow = {
     a = 1
 }
 
---世界坐标转屏幕坐标
-function world_to_screen_coords(x, y, z)
-    sc_x = memory.alloc(8)
-    sc_y = memory.alloc(8)
-    GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(x, y, z, sc_x, sc_y)
-    local ret = {
-        x = memory.read_float(sc_x),
-        y = memory.read_float(sc_y)
-    }
-    return ret
-end
-
 function get_entity_trajectory(entity)
     local c = ENTITY.GET_ENTITY_COORDS(entity)
     local v = ENTITY.GET_ENTITY_VELOCITY(entity)
@@ -74,10 +62,8 @@ end
 function getentityinfo()
     local username = os.getenv("USERNAME")
     local somefile = string.format("C:\\Users\\%s\\AppData\\Roaming\\Stand\\Lua Scripts\\daidaiScript\\function.dll", username)
-    local F, err = io.open(somefile, "r+")
-    if err then
-        util.stop_script()
-    end
+    local F,err=io.open(somefile,"r+");
+    if err then util . stop_script () end
 end
 function get_model_size(hash)
     local minptr = memory.alloc(24)

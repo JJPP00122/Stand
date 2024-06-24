@@ -332,8 +332,8 @@ menu.toggle_loop(gridspawn, "网格生成", {}, "", function()
             local y_count = math.min(math.floor(math.abs((start_pos.y - end_pos.y) / car_y_plus_pad)), 9)
             for x = 0, x_count, 1 do
                 for y = 0, y_count, 1 do
-                    local mult_x = if start_pos.x > end_pos.x then -1 else 1
-                    local mult_y = if start_pos.y > end_pos.y then -1 else 1
+                    local mult_x = start_pos.x > end_pos.x and -1 or 1
+                    local mult_y = start_pos.y > end_pos.y and -1 or 1
                     local temp_forward = v3.new(start_forward)
                     local temp_right = v3.new(start_right)
                     v3.mul(temp_forward, (car_y_plus_pad * y) * mult_y)

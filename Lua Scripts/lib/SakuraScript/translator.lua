@@ -714,7 +714,7 @@ function L16_1()
   function L5_2(A0_3, A1_3, A2_3)
     local L3_3, L4_3, L5_3, L6_3, L7_3, L8_3, L9_3
     if 200 == A2_3 and nil ~= A0_3 then
-      L3_3 = StrToTable
+      L3_3 = JsonToTable
       L4_3 = A0_3
       L3_3 = L3_3(L4_3)
       L4_3 = tonumber
@@ -803,7 +803,7 @@ function L12_1(A0_2, A1_2, A2_2, A3_2, A4_2, A5_2)
         function L9_2(A0_3, A1_3, A2_3)
           local L3_3, L4_3, L5_3, L6_3, L7_3, L8_3, L9_3, L10_3, L11_3, L12_3
           if 200 == A2_3 and nil ~= A0_3 then
-            L3_3 = StrToTable
+            L3_3 = JsonToTable
             L4_3 = A0_3
             L3_3 = L3_3(L4_3)
             L4_3 = tonumber

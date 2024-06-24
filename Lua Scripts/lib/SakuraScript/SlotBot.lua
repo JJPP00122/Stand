@@ -648,7 +648,7 @@ end
 ---
 --- Menus
 ---
-menus.auto_spin = menu.toggle(casino_brush_money, "自动刷钱", {}, "", function(toggle)
+menus.auto_spin = menu.toggle(casino_Slot_Machine, "自动刷钱", {}, "", function(toggle)
     debug_log("Toggled auto-spin "..tostring(toggle))
     state.auto_spin = toggle
     if not toggle then
@@ -656,16 +656,16 @@ menus.auto_spin = menu.toggle(casino_brush_money, "自动刷钱", {}, "", functi
     end
 end)
 
-menus.daily_winnings = menu.readonly(casino_brush_money, "每日奖金")
+menus.daily_winnings = menu.readonly(casino_Slot_Machine, "每日奖金")
 refresh_daily_winnings()
-menus.next_spin_time = menu.readonly(casino_brush_money, "距离下一次可执行的时间")
+menus.next_spin_time = menu.readonly(casino_Slot_Machine, "距离下一次可执行的时间")
 refresh_next_spin_time()
 
 ---
 --- Options Menu
 ---
 
-local menu_options = menu.list(casino_brush_money, "选项", {}, "用于控制脚本行为方式的设置")
+local menu_options = menu.list(casino_Slot_Machine, "选项", {}, "用于控制脚本行为方式的设置")
 menu.slider(menu_options, "目标每日奖金（百万）", {}, "设置在 24 小时内赢取的目标金额。在一天内赢得超过 5000 万美元可能会有风险", 1, config.max_allowed_daily_winnings, math.floor(config.max_daily_winnings / 1000000), 1, function(value)
     config.max_daily_winnings = value * 1000000
     refresh_next_spin_time()

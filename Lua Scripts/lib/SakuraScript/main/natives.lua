@@ -59,7 +59,6 @@ NETWORK1={
     ["NETWORK_GET_AVERAGE_LATENCY"]=function(...)return native_invoker.uno_float(0xD414BE129BB81B32,...)end,
 }
 GRAPHICS1={
-    ["_DRAW_SPHERE"]=--[[void]] function(--[[float]] x,--[[float]] y,--[[float]] z,--[[float]] radius,--[[int]] red,--[[int]] green,--[[int]] blue,--[[float]] alpha)native_invoker.begin_call();native_invoker.push_arg_float(x);native_invoker.push_arg_float(y);native_invoker.push_arg_float(z);native_invoker.push_arg_float(radius);native_invoker.push_arg_int(red);native_invoker.push_arg_int(green);native_invoker.push_arg_int(blue);native_invoker.push_arg_float(alpha);native_invoker.end_call("799017F9E3B10112");end,
     ["_SET_FORCE_VEHICLE_TRAILS"]=--[[void]] function(--[[BOOL (bool)]] toggle)native_invoker.begin_call();native_invoker.push_arg_bool(toggle);native_invoker.end_call("4CC7F0FEA5283FE0");end,
     ["_SET_FORCE_PED_FOOTSTEPS_TRACKS"]=--[[void]] function(--[[BOOL (bool)]] toggle)native_invoker.begin_call();native_invoker.push_arg_bool(toggle);native_invoker.end_call("AEEDAD1420C65CC0");end,
     ["REQUEST_NAMED_PTFX_ASSET"]=function(...)return native_invoker.uno_void(0xB80D8756B4668AB6,...)end,
@@ -9631,20 +9630,20 @@ PED={
 	-- componentId:
 	-- enum ePedVarComp
 	-- {
-	-- 	PV_COMP_INVALID = -1,
-	-- 	PV_COMP_HEAD,
-	-- 	PV_COMP_BERD,
-	-- 	PV_COMP_HAIR,
-	-- 	PV_COMP_UPPR,
-	-- 	PV_COMP_LOWR,
-	-- 	PV_COMP_HAND,
-	-- 	PV_COMP_FEET,
-	-- 	PV_COMP_TEEF,
-	-- 	PV_COMP_ACCS,
-	-- 	PV_COMP_TASK,
-	-- 	PV_COMP_DECL,
-	-- 	PV_COMP_JBIB,
-	-- 	PV_COMP_MAX
+    --    PV_COMP_INVALID = -1,
+	--   PV_COMP_HEAD = 0,
+	--   PV_COMP_BERD = 1,
+	--   PV_COMP_HAIR = 2,
+	--   PV_COMP_UPPR = 4,//3,
+	--   PV_COMP_LOWR = 8,//4,
+    --   PV_COMP_HAND = 16,//5,
+	--   PV_COMP_FEET = 32,//6,
+	--   PV_COMP_TEEF = 64,//7,
+	--   PV_COMP_ACCS = 128,//8,
+	--   PV_COMP_TASK = 256,//9,
+	--   PV_COMP_DECL = 512,//10,
+	--   PV_COMP_JBIB = 1024,//11,
+	--   PV_COMP_MAX = 2048,//12,
 	-- };
 	-- 
 	-- Examples: https://gtaxscripting.blogspot.com/2016/04/gta-v-peds-component-and-props.html

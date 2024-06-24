@@ -88,16 +88,12 @@ end
 function uwu(text)
     text = string.lower(text):gsub("l", "w"):gsub("r", "w"):gsub("v", "f"):gsub("i", "i-i"):gsub("d", "d-d"):gsub("n", "n-n")
     local ran = math.random(1,3)
-    pluto_switch ran do 
-        case 1:
-            text = text .. " uwu"
-            break 
-        case 2:
-            text = text .. " nya.."
-            break
-        case 3:
-            text = text .. " ><"
-            break
+    if ran == 1 then
+        text = text .. " uwu"
+    elseif ran == 2 then
+        text = text .. " nya.."
+    elseif ran == 3 then
+        text = text .. " ><"
     end
     return text
 end
@@ -143,7 +139,7 @@ chat.on_message(function(sender, reserved, text, team_chat, networked, is_auto)
 
         -- 自定义标签
         if tag_mode == 1 then 
-            tag = if team_chat then "团队" else "全部"
+            tag = team_chat and "团队" or "全部"
         elseif tag_mode == 2 then 
             tag = players.get_tags_string(sender)
         elseif tag_mode == 3 then

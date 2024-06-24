@@ -2,7 +2,7 @@ local weapon_images = {}
 local resources_dir = filesystem.resources_dir() .. '\\SakuraImg\\weaponhud\\'
 
 --读取图片
-for filesystem.list_files(resources_dir) as path do 
+for _, path in pairs(filesystem.list_files(resources_dir)) do 
     local gun_image = string.gsub(path, resources_dir, '')
     local gun_name = string.gsub(gun_image, '.png', '')
     weapon_images[gun_name] = directx.create_texture(path)
@@ -33,16 +33,12 @@ menu.toggle_loop(weapon_hud,'武器HUD', {}, '', function()
             local wep_name = util.reverse_joaat(wep_hash)
             --if WEAPON.GET_WEAPON_DAMAGE_TYPE(wep_hash) ~= 2 then
                 if wep_name == '' then 
-                    pluto_switch wep_hash do
-                        case 350597077:
-                            wep_name = 'WEAPON_TACTICALSMG'
-                            break
-                        case 911657153:
-                            wep_name = 'WEAPON_STUNGUN'
-                            break
-                        default:
-                            wep_name = 'WEAPON_UNKNOWN'
-                            break
+                    if wep_hash == 350597077 then
+                        wep_name = 'WEAPON_TACTICALSMG'
+                    elseif wep_hash == 911657153 then
+                        wep_name = 'WEAPON_STUNGUN'
+                    else
+                        wep_name = 'WEAPON_UNKNOWN'
                     end
                 end
                 wep_name = string.lower(wep_name)
@@ -56,10 +52,10 @@ menu.toggle_loop(weapon_hud,'武器HUD', {}, '', function()
                     end
                     if WEAPON.GET_WEAPON_DAMAGE_TYPE(wep_hash) ~= 2 then
                         if ammo_in_clip == 1 then
-                            directx.draw_text(pos_x+0.03, pos_y-0.01, ammo_in_clip + cur_total_ammo_for_gun, 6, 0.8, if ammo_in_clip > 0 then MAIN_COLOR else OUT_OF_AMMO_COLOR)
+                            directx.draw_text(pos_x+0.03, pos_y-0.01, ammo_in_clip + cur_total_ammo_for_gun, 6, 0.8, ammo_in_clip > 0 and MAIN_COLOR or OUT_OF_AMMO_COLOR)
                         else
-                            directx.draw_text(pos_x+0.03, pos_y-0.01, ammo_in_clip, 6, 0.8, if ammo_in_clip > 0 then MAIN_COLOR else OUT_OF_AMMO_COLOR)
-                            directx.draw_text(pos_x+0.03, pos_y+0.01, cur_total_ammo_for_gun + 1, 6, 0.45,  if cur_total_ammo_for_gun > 0 then MAIN_COLOR else OUT_OF_AMMO_COLOR)
+                            directx.draw_text(pos_x+0.03, pos_y-0.01, ammo_in_clip, 6, 0.8, ammo_in_clip > 0 and MAIN_COLOR or OUT_OF_AMMO_COLOR)
+                            directx.draw_text(pos_x+0.03, pos_y+0.01, cur_total_ammo_for_gun + 1, 6, 0.45,  cur_total_ammo_for_gun > 0 and MAIN_COLOR or OUT_OF_AMMO_COLOR)
                         end
                     end
 

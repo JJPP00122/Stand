@@ -150,7 +150,7 @@ function generateAnimationAction(key, data)
     return function()
         util.toast("播放动画: " .. data[3] or key)
         util.log(string.format("dict=%s anim=%s name=%s", data[1], data[2], data[3]))
-        play_animation(data[1], data[2], false, data)
+        play_anim(data[1], data[2], false, data)
     end
 end
 
@@ -278,7 +278,7 @@ function populate_user_dict(user, dictionary)
         for animation in string.gmatch(body, "[^\r\n]+") do
             count = count + 1
             local action = menu.action(cloudUsers[user].categories[dictionary].menu, animation, {}, dictionary .. " " .. animation, function(_)
-                play_animation(dictionary, animation)
+                play_anim(dictionary, animation)
             end)
             table.insert(cloudUsers[user].categories[dictionary].animations, action)
         end
@@ -406,7 +406,7 @@ end, function(args)
         if results[i] then
             -- local m = menu.list(searchMenu, group, {}, "All animations for " .. group)
            local m = menu.action(searchMenu, results[i][2], {"animate" .. results[i][1] .. " " .. results[i][2]}, "Plays the " .. results[i][2] .. " animation from group " .. results[i][1], function(v)
-                play_animation(results[i][1], results[i][2], false)
+                play_anim(results[i][1], results[i][2], false)
             end)
             table.insert(resultMenus, m)
         end
@@ -621,10 +621,10 @@ function populate_favorites()
         a = menu.action(favoritesMenu, name, {}, "Plays " .. favorite[2] .. " from group " .. favorite[1], function(v)
             if PAD.IS_CONTROL_PRESSED(2, 209) then
                 menu.show_warning(a, 2, "你确定要从你的收藏夹里删除这个动画吗？", function()
-                    play_animation(favorite[1], favorite[2], false, nil, true)
+                    play_anim(favorite[1], favorite[2], false, nil, true)
                 end)
             else
-                play_animation(favorite[1], favorite[2], false)
+                play_anim(favorite[1], favorite[2], false)
             end
         end)
         table.insert(favoritesActions, a)
@@ -646,7 +646,7 @@ function add_anim_to_recent(group, anim)
         table.remove(recents, 1)
     end
     local action = menu.action(recentsMenu, anim, {"animate" .. group .. " " .. anim}, "Plays the " .. anim .. " animation from group " .. group, function(v)
-        play_animation(group, anim, true)
+        play_anim(group, anim, true)
     end)
     table.insert(recents, { group, anim, action })
 end
@@ -682,7 +682,7 @@ function setup_category_animations(category)
     animMenuData[category].menus = {}
     for _, animation in ipairs(animMenuData[category].animations) do
         local action = menu.action(animMenuData[category].list, animation, {"animate" .. category .. " " .. animation}, "Plays the " .. animation .. " animation from group " .. category, function(v)
-            play_animation(category, animation, false)
+            play_anim(category, animation, false)
         end)
         table.insert(animMenuData[category].menus, action)
     end
@@ -735,7 +735,7 @@ function setup_animation_list()
     animLoaded = true
 end
 
-function play_animation(group, anim, doNotAddRecent, data, remove)
+function play_anim(group, anim, doNotAddRecent, data, remove)
     local flags = animFlags -- Keep legacy animation flags
     local duration = -1
     local props
@@ -788,19 +788,19 @@ function play_animation(group, anim, doNotAddRecent, data, remove)
             local peds = entities.get_all_peds_as_handles()
             for _, npc in ipairs(peds) do
                 if not PED.IS_PED_A_PLAYER(npc) and not PED.IS_PED_IN_ANY_VEHICLE(npc, true) then
-                    _play_animation(npc, group, anim, flags, duration, props)
+                    _play_anim(npc, group, anim, flags, duration, props)
                 end
             end
         end
         -- Play animation on self if enabled:
         if affectType == 0 or affectType == 2 then
-            _play_animation(ped, group, anim, flags, duration, props)
+            _play_anim(ped, group, anim, flags, duration, props)
         end
         STREAMING.REMOVE_ANIM_DICT(group)
     end
 end
 
-function _play_animation(ped, group, animation, flags, duration, props)
+function _play_anim(ped, group, animation, flags, duration, props)
     if clearActionImmediately then
         TASK.CLEAR_PED_TASKS_IMMEDIATELY(ped)
     end
